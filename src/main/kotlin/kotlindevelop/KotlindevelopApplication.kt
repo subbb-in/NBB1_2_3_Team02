@@ -9,3 +9,4 @@ class KotlindevelopApplication
 fun main(args: Array<String>) {
 	runApplication<KotlindevelopApplication>(*args)
 }
+////
