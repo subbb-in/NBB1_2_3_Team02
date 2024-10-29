@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop
+package kotlindevelop
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
