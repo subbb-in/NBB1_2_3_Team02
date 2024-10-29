@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.slf4j.LoggerFactory
 
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
 class ApiSecurityConfig {
 
 
