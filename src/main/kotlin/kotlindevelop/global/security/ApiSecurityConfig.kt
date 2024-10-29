@@ -29,7 +29,7 @@ class ApiSecurityConfig {
                     .requestMatchers(
                         "/api/v1/members/login",
                         "/api/v1/members/register",
-                        // "api/**",
+                         "/api/**",
                         "/api/v1/members/refreshAccessToken",
                         "/api/v1/members/findId",
                         "/api/v1/members/findPW"
