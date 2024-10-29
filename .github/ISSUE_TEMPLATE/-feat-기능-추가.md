@@ -3,7 +3,7 @@ name: "[feat]기능 추가"
 about: 기능 추가 템플릿
 title: ''
 labels: ''
-assignees: wnsgho
+assignees:
 
 ---
 
