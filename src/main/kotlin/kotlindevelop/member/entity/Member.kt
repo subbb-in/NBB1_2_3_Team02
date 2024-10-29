@@ -11,10 +11,12 @@ import java.time.LocalDateTime
 data class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
-    var pw: String? = null,
-    var name: String? = null,
-    var email: String? = null,
+    var id: Long,
+    @Column(unique = true)
+    var loginId: String,
+    var pw: String,
+    var name: String,
+    var email: String,
     var mImage: String? = null,
 
     @Column(columnDefinition = "TEXT")
