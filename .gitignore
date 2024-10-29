@@ -38,3 +38,10 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+## db ##
+nbe2_2_dev.mv.db
+nbe2_2_dev.trace.db
+
+#secret yml#
+application-secret.yml
