@@ -1,6 +1,6 @@
-package kotlindevelop.domain.orders.orderItem.dto
+package edu.example.kotlindevelop.domain.orders.orderItem.dto
 
-import kotlindevelop.domain.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 
 
 data class OrderItemDTO (
@@ -15,7 +15,7 @@ data class OrderItemDTO (
     // DTO -> 엔티티 변환 메서드
     fun toEntity(product: Product?, orders: Orders?): OrderItem {
         return OrderItem.builder()
-            .product(product)
+            .product(product)ㅂ
             .orders(orders)
             .quantity(this.quantity)
             .price(this.price)
