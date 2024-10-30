@@ -1,4 +1,4 @@
-package kotlindevelop.member.exception
+package edu.example.kotlindevelop.member.exception
 
 import org.springframework.http.HttpStatus
 
