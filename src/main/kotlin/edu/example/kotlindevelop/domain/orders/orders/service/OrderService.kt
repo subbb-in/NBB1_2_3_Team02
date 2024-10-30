@@ -1,10 +1,11 @@
 package edu.example.kotlindevelop.domain.orders.orders.service
 
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
 import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.orders.orders.exception.OrderException
 import edu.example.kotlindevelop.domain.orders.orders.repository.OrderRepository
-import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -60,37 +61,48 @@ class OrderService(
         val member = memberRepository.findById(memberId)
             .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
         val ordersPage = orderRepository.findByMember(member, pageable)
-        return ordersPage.map { OrderDTO.OrderListDTO(it) }
+        return ordersPage!!.map { OrderDTO.OrderListDTO(it) }
     }
 
     fun getMonthlyOrderSummary(memberId: Long): List<Map<String, Any?>> {
         val member = memberRepository.findById(memberId)
             .orElseThrow { RuntimeException("Member not found") }
 
-        val results = orderRepository.getMonthlyTotalPrice(member)
+        val results = orderRepository.getMonthlyTotalPrice(member) ?: return emptyList()
 
-        // 결과를 Map 형태로 변환
-        if (results != null) {
-            return results.map { result ->
-                mapOf(
-                    "orderMonth" to result[0], // 월
-                    "totalPrice" to result[1] // 총 금액
-                )
+        return results.mapNotNull { result ->
+            if (result != null && result is Array<*>) { // result가 null이 아니고 Array인지 확인
+                val orderMonth = result.getOrNull(0) as? String
+                val totalPrice = result.getOrNull(1) as? Double
+
+                if (orderMonth != null && totalPrice != null) {
+                    mapOf(
+                        "orderMonth" to orderMonth,
+                        "totalPrice" to totalPrice
+                    )
+                } else {
+                    null
+                }
+            } else {
+                null // result가 null이거나 Array가 아닐 경우 무시
             }
         }
     }
 
-    val monthlyAveragePrices: Map<String, Map<String, Double>>
-        get() {
-            val orderItems = orderItemRepository.findAll()
+    fun getMonthlyAveragePrices(): Map<String, Map<String, Double>> {
+        val orderItems = orderItemRepository.findAll().filterNotNull()
 
-            // 월별 및 상품별 평균 단가 계산
-            return orderItems.groupBy { it.orders.createdAt.month.name }
-                .mapValues { entry ->
-                    entry.value.groupBy { it.product.name }
-                        .mapValues { productEntry ->
-                            productEntry.value.map { it.price.toDouble() / it.quantity }.average()
-                        }
-                }
-        }
+        return orderItems
+            .filter { it.orders?.createdAt != null && it.product?.name != null }
+            .groupBy { it.orders!!.createdAt!!.month.name }
+            .mapValues { (month, itemsByMonth) ->
+                itemsByMonth
+                    .groupBy { it.product?.name ?: "Unknown Product" } // null일 경우 "Unknown Product"로 대체
+                    .mapValues { (_, itemsByProduct) ->
+                        itemsByProduct
+                            .mapNotNull { it.price?.toDouble()?.div(it.quantity ?: 1) }
+                            .average()
+                    }
+            }
+    }
 }
