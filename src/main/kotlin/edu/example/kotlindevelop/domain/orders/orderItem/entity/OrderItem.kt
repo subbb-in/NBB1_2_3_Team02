@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 @Entity
 @Table(name = "orderItem")
-class OrderItem(
+open class OrderItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

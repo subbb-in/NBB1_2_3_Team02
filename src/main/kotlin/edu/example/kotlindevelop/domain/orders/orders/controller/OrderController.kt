@@ -19,7 +19,9 @@ class OrderController {
         @AuthenticationPrincipal user: SecurityUser
     ): Map<String, String> {
         val memberId: Long = user.getId()
-        orderService.createOrder(orderDTO, memberId)
+        if (orderDTO != null) {
+            orderService?.createOrder(orderDTO, memberId)
+        }
 
         return java.util.Map.of("success", "create")
     }
@@ -27,7 +29,7 @@ class OrderController {
     // 주문 조회
     @GetMapping("/{orderId}")
     fun getOrder(@PathVariable orderId: Long?): ResponseEntity<OrderDTO> {
-        val orderDTO: OrderDTO = orderService.read(orderId)
+        val orderDTO: OrderDTO? = orderService?.read(orderId)
         return ResponseEntity.ok<OrderDTO>(orderDTO)
     }
 
@@ -38,13 +40,13 @@ class OrderController {
         @AuthenticationPrincipal user: SecurityUser
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.getId()
-        return ResponseEntity.ok(orderService.getList(pageRequestDTO, memberId))
+        return ResponseEntity.ok(pageRequestDTO?.let { orderService?.getList(it, memberId) })
     }
 
     // 주문 삭제
     @DeleteMapping("/{orderId}")
     fun deleteOrder(@PathVariable orderId: Long?): Map<String, String> {
-        orderService.delete(orderId)
+        orderService?.delete(orderId)
         return java.util.Map.of("success", "delete")
     }
 
@@ -52,12 +54,12 @@ class OrderController {
     @GetMapping("/monthly-summary")
     fun getMonthlyOrderSummary(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<List<Map<String, Any>>> {
         val memberId: Long = user.getId()
-        val monthlySummary: List<Map<String, Any>> = orderService.getMonthlyOrderSummary(memberId)
+        val monthlySummary: List<Map<String, Any?>> = orderService?.getMonthlyOrderSummary(memberId) ?:
         return ResponseEntity.ok(monthlySummary)
     }
 
-    @get:GetMapping("/average-prices")
-    val monthlyAveragePrices: Map<String, Map<String, Double>>
-        //주문 average-prices
-        get() = orderService.getMonthlyAveragePrices()
+    @GetMapping("/average-prices")
+    fun getMonthlyAveragePrices(): Map<String, Map<String, Double>> {
+        return orderService!!.getMonthlyAveragePrices()
+    }
 }
