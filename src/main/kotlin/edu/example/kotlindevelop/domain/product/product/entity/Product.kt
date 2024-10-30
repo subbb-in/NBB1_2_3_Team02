@@ -16,7 +16,7 @@ class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long? = null
 
-    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     var lossRateList: MutableList<LossRate> = ArrayList()
 
 //    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])

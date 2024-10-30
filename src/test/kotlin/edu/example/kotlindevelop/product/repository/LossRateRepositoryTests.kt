@@ -17,7 +17,7 @@ import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class LossRateRepositoryTests {
     @Autowired
     private val productRepository: ProductRepository? = null
@@ -29,8 +29,6 @@ class LossRateRepositoryTests {
     private val lossRateRepository: LossRateRepository? = null
 
     @Test
-    @Transactional
-    @Rollback(false)
     fun 로스율등록테스트() {
         // Given - 회원 및 식재료 생성
         val member: Member = Member(
