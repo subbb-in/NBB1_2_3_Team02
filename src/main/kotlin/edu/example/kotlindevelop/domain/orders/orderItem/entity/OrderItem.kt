@@ -2,6 +2,7 @@ package edu.example.kotlindevelop.domain.orders.orderItem.entity
 
 
 import jakarta.persistence.*
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 
