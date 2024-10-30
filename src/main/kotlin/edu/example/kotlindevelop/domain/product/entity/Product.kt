@@ -1,8 +1,6 @@
-package kotlindevelop.domain.entity
+package edu.example.kotlindevelop.domain.product.entity
 
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import java.time.LocalDateTime
 
 @Entity
 @Table(name = "product")
