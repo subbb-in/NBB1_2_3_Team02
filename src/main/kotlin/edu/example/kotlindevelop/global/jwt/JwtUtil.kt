@@ -3,6 +3,7 @@ package edu.example.kotlindevelop.global.jwt
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
@@ -12,13 +13,15 @@ import javax.crypto.SecretKey
 @Component
 class JwtUtil {
 
-    @Value("\${spring.jwt.secret_key}")
+    @Value("\${spring.custom.jwt.secretKey}")
     lateinit var secretKeyString: String
 
-    private val secretKey: SecretKey by lazy {
-        Keys.hmacShaKeyFor(secretKeyString.toByteArray(StandardCharsets.UTF_8))
-    }
+    private lateinit var secretKey: SecretKey
 
+    @PostConstruct
+    fun init() {
+        secretKey = Keys.hmacShaKeyFor(secretKeyString.toByteArray(StandardCharsets.UTF_8))
+    }
     fun encodeAccessToken(minute: Long, data: Map<String, Any>): String {
         val claims = Jwts
             .claims()
