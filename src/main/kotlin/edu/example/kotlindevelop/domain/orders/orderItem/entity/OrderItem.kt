@@ -1,4 +1,4 @@
-package kotlindevelop.domian.orders.orderItem.entity
+package edu.example.kotlindevelop.domain.orders.orderItem.entity
 
 
 import jakarta.persistence.*
