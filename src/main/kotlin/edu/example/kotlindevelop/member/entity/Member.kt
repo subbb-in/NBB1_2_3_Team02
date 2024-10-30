@@ -33,4 +33,9 @@ data class Member(
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
     var ordersList: MutableList<Orders> = mutableListOf()
-)
+) {
+    fun updateRefreshToken(refreshToken: String?) {
+        this.refreshToken = refreshToken
+
+    }
+}
