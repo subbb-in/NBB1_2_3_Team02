@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "product")
-data class ProjectProduct(
+data class Product(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var productId: Long,
 
@@ -21,13 +21,13 @@ data class ProjectProduct(
     @JoinColumn(name = "loss_id")
     var loss: Long
 
-    ) {
-        fun setMaker(maker: Member){
-            this.maker = maker;
-            maker.productList.add(this)
-        }
-
-        fun changeLoss(newloss: Long) {
-            this.loss = newloss
-        }
+) {
+    fun setMaker(maker: Member){
+        this.maker = maker;
+        maker.productList.add(this)
     }
+
+    fun changeLoss(newloss: Long) {
+        this.loss = newloss
+    }
+}
