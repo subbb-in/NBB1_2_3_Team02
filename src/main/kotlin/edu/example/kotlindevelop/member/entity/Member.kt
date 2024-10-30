@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 data class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long? = null,
     @Column(unique = true)
     var loginId: String,
     var pw: String,
