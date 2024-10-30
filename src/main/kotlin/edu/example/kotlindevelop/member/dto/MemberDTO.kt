@@ -19,7 +19,19 @@ class MemberDTO {
         var name: String,
         @JsonProperty("mImage")
         var mImage: String? = null
-    )
+    ) {
+        fun toEntity(): Member {
+            // Member 객체를 초기화
+            return Member(
+                loginId = loginId,
+                email = email,
+                pw = pw,
+                name = name,
+                mImage = mImage
+            )
+        }
+    }
+
 
     data class CreateResponseDto( var message: String)
 
@@ -42,7 +54,7 @@ class MemberDTO {
 
 
     data class LoginResponseDto(
-        var id: Long,
+        var id: Long?,
         var loginId: String,
         var name: String,
         var mImage: String,
@@ -50,11 +62,12 @@ class MemberDTO {
         var refreshToken: String? = null
     ) {
         constructor(member: Member) : this(
-            id = member.id ?: throw IllegalArgumentException("Member ID cannot be null"),
+            id = member.id,
             loginId = member.loginId,
             name = member.name,
             mImage = member.mImage ?: "default_image.png"
         )
+
     }
 
 
