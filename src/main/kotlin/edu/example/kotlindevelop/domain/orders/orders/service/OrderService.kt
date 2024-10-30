@@ -29,46 +29,54 @@ class OrderService(
         return orderRepository.save(orders)
     }
 
-    fun read(orderId: Long?): OrderDTO {
-        val orders = orderRepository.findById(orderId)
-            .orElseThrow { OrderException.NOT_FOUND.get() }
+    fun read(orderId: Long?): OrderDTO? {
+        val orders = orderId?.let {
+            orderRepository.findById(it)
+                .orElseThrow { OrderException.NOT_FOUND.get() }
+        }
 
-        return OrderDTO(orders)
+        return orders?.let { OrderDTO(it) }
     }
 
     @Transactional
     fun delete(orderId: Long?) {
-        val orders = orderRepository.findById(orderId)
-            .orElseThrow { OrderException.NOT_FOUND.get() }
+        val orders = orderId?.let {
+            orderRepository.findById(it)
+                .orElseThrow { OrderException.NOT_FOUND.get() }
+        }
         try {
-            orderRepository.delete(orders)
+            if (orders != null) {
+                orderRepository.delete(orders)
+            }
         } catch (e: Exception) {
             throw OrderException.NOT_REMOVED.get()
         }
     }
 
-    fun getList(pageRequestDTO: PageRequestDTO, memberId: Long?): Page<OrderListDTO> {
+    fun getList(pageRequestDTO: OrderDTO.PageRequestDTO, memberId: Long?): Page<OrderDTO.OrderListDTO> {
         val sort = Sort.by("id").descending()
         val pageable: Pageable = pageRequestDTO.getPageable(sort)
 
         val member = memberRepository.findById(memberId)
             .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
         val ordersPage = orderRepository.findByMember(member, pageable)
-        return ordersPage.map { OrderListDTO(it) }
+        return ordersPage.map { OrderDTO.OrderListDTO(it) }
     }
 
-    fun getMonthlyOrderSummary(memberId: Long): List<Map<String, Any>> {
+    fun getMonthlyOrderSummary(memberId: Long): List<Map<String, Any?>> {
         val member = memberRepository.findById(memberId)
             .orElseThrow { RuntimeException("Member not found") }
 
         val results = orderRepository.getMonthlyTotalPrice(member)
 
         // 결과를 Map 형태로 변환
-        return results.map { result ->
-            mapOf(
-                "orderMonth" to result[0], // 월
-                "totalPrice" to result[1] // 총 금액
-            )
+        if (results != null) {
+            return results.map { result ->
+                mapOf(
+                    "orderMonth" to result[0], // 월
+                    "totalPrice" to result[1] // 총 금액
+                )
+            }
         }
     }
 
