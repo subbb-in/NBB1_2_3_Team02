@@ -4,6 +4,7 @@ import edu.example.kotlindevelop.member.dto.MemberDTO
 import edu.example.kotlindevelop.member.entity.Member
 import edu.example.kotlindevelop.member.exception.MemberException
 import edu.example.kotlindevelop.member.repository.MemberRepository
+import edu.example.kotlindevelop.member.util.PasswordUtil
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -218,15 +219,15 @@ class MemberService(
         return member.loginId
     }
 
-//    @Transactional
-//    fun setTemplatePassword(loginId: String, email: String): String {
-//        val member: Member = memberRepository.findByLoginIdAndEmail(loginId, email)
-//            .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
-//        val templatePassword: String = PasswordUtil.generateTempPassword()
-//        member.changePw(passwordEncoder!!.encode(templatePassword))
-//        memberRepository.save(member)
-//
-//        return templatePassword
-//    }
+    @Transactional
+    fun setTemplatePassword(loginId: String, email: String): String {
+        val member: Member = memberRepository.findByLoginIdAndEmail(loginId, email)
+            .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
+        val templatePassword: String = PasswordUtil.generateTempPassword()
+        member.pw = (passwordEncoder.encode(templatePassword))
+        memberRepository.save(member)
+
+        return templatePassword
+    }
 }
 
