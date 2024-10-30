@@ -1,7 +1,6 @@
-package edu.example.kotlindevelop.domain.product.lossrate.entity
+package edu.example.kotlindevelop.domain.product.entity
 
 import edu.example.kotlindevelop.domain.member.entity.Member
-import edu.example.kotlindevelop.domain.product.product.entity.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener

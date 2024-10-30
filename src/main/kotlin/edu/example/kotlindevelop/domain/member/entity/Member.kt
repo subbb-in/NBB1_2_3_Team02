@@ -1,7 +1,7 @@
 package edu.example.kotlindevelop.domain.member.entity
 
-import edu.example.kotlindevelop.domain.product.lossrate.entity.LossRate
-import edu.example.kotlindevelop.domain.product.product.entity.Product
+import edu.example.kotlindevelop.domain.product.entity.LossRate
+import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

@@ -1,33 +1,23 @@
 package edu.example.kotlindevelop.domain.product.entity
 
+import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "product")
-data class Product(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var productId: Long,
-
-    var name: String,
-
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    var maker: Member,
+class Product(
+    val name: String,
+    @ManyToOne // 관계 매핑
+    @JoinColumn(name = "member_id") // 외래 키 설정
+    var maker: Member? = null
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private val id: Long? = null
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
-    val orderItems: List<OrderItem> = mutableListOf(),
+    var lossRateList: MutableList<LossRate> = ArrayList()
 
-    @OneToOne
-    @JoinColumn(name = "loss_id")
-    var loss: Long
-
-) {
-    fun setMaker(maker: Member){
-        this.maker = maker;
-        maker.productList.add(this)
-    }
-
-    fun changeLoss(newloss: Long) {
-        this.loss = newloss
-    }
+//    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+//    val orderItems: List<OrderItem> = mutableListOf()
 }

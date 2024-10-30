@@ -2,18 +2,16 @@ package edu.example.kotlindevelop.product.repository
 
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
-import edu.example.kotlindevelop.domain.product.lossrate.entity.LossRate
-import edu.example.kotlindevelop.domain.product.product.entity.Product
-import edu.example.kotlindevelop.domain.product.lossrate.repository.LossRateRepository
-import edu.example.kotlindevelop.domain.product.product.repository.ProductRepository
+import edu.example.kotlindevelop.domain.product.entity.LossRate
+import edu.example.kotlindevelop.domain.product.entity.Product
+import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
+import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 
-import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
