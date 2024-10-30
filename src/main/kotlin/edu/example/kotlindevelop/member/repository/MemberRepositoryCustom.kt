@@ -1,6 +1,6 @@
-package kotlindevelop.member.repository
+package edu.example.kotlindevelop.member.repository
 
-import kotlindevelop.member.entity.Member
+import edu.example.kotlindevelop.member.entity.Member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
