@@ -6,7 +6,8 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import com.querydsl.jpa.impl.JPAQueryFactory
-import kotlindevelop.member.entity.QMember
+import edu.example.kotlindevelop.member.entity.QMember
+
 
 @Repository
 class MemberRepositoryImpl(
