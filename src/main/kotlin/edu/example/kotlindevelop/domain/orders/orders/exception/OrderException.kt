@@ -1,4 +1,4 @@
-package kotlindevelop.domain.orders.orders.exception
+package edu.example.kotlindevelop.domain.orders.orders.exception
 
 enum class OrderException(message: String, code: Int) {
     NOT_FOUND("Order NOT_FOUND", 400),

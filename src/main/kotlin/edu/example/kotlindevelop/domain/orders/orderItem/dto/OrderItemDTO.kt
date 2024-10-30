@@ -1,6 +1,7 @@
-package kotlindevelop.domian.orders.orderItem.dto
+package edu.example.kotlindevelop.domain.orders.orderItem.dto
 
-import kotlindevelop.domian.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 
 
 class OrderItemDTO {

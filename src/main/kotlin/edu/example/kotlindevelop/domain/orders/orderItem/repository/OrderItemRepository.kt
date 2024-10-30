@@ -1,6 +1,6 @@
-package kotlindevelop.domian.orders.orderItem.repository
+package edu.example.kotlindevelop.domain.orders.orderItem.repository
 
-import kotlindevelop.domian.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

@@ -1,5 +1,6 @@
-package kotlindevelop.domain.orders.orders.repository
+package edu.example.kotlindevelop.domain.orders.orders.repository
 
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

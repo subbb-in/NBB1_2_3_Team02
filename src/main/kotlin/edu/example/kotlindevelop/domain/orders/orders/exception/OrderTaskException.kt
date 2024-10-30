@@ -1,4 +1,4 @@
-package kotlindevelop.domain.orders.orders.exception
+package edu.example.kotlindevelop.domain.orders.orders.exception
 
 class OrderTaskException(
     override val message: String? = null,

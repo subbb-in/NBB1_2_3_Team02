@@ -1,12 +1,10 @@
-package kotlindevelop.domain.orders.orders.service
+package edu.example.kotlindevelop.domain.orders.orders.service
 
-import kotlindevelop.domain.orders.orders.dto.OrderDTO
-import kotlindevelop.domain.orders.orders.entity.Orders
-import kotlindevelop.domain.orders.orders.exception.OrderException
-import kotlindevelop.domain.orders.orders.repository.OrderRepository
-import kotlindevelop.domain.orders.orders.repository.ProductRepository
-import kotlindevelop.domain.orders.orders.repository.MemberRepository
-import kotlindevelop.domain.orders.orders.repository.OrderItemRepository
+import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.domain.orders.orders.exception.OrderException
+import edu.example.kotlindevelop.domain.orders.orders.repository.OrderRepository
+import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
