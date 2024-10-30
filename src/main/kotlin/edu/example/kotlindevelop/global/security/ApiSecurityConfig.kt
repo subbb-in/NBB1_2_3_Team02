@@ -1,4 +1,4 @@
-package kotlindevelop.global.security
+package edu.example.kotlindevelop.global.security
 
 
 import jakarta.servlet.http.HttpServletRequest
@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.slf4j.LoggerFactory
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity
 class ApiSecurityConfig {
 
 

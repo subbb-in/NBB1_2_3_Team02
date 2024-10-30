@@ -1,4 +1,4 @@
-package kotlindevelop.global.security
+package edu.example.kotlindevelop.global.security
 
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.slf4j.LoggerFactory
@@ -16,7 +16,7 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity
 class SecurityConfig {
 
 
@@ -43,7 +43,7 @@ class SecurityConfig {
             .csrf { csrf ->
                 csrf.ignoringRequestMatchers("/h2-console/**")
             }
-            .formLogin(Customizer.withDefaults())
+            .formLogin{it.disable()}
 
         return http.build()
     }
