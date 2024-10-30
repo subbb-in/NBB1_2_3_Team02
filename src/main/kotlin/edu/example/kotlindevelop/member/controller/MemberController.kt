@@ -1,20 +1,15 @@
-package edu.example.kotlindevelop.member
+package edu.example.kotlindevelop.member.controller
 
 import edu.example.kotlindevelop.member.dto.MemberDTO
 import edu.example.kotlindevelop.member.service.MemberService
-import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
-import org.springframework.validation.ObjectError
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-import java.util.stream.Collectors
 
 @RestController
 @RequestMapping("api/v1/members")
