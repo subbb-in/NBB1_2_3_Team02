@@ -1,6 +1,9 @@
 package edu.example.kotlindevelop.member.config
 
+import edu.example.kotlindevelop.member.dto.MemberDTO
+import edu.example.kotlindevelop.member.entity.Member
 import org.modelmapper.ModelMapper
+import org.modelmapper.PropertyMap
 import org.modelmapper.convention.MatchingStrategies
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,10 +21,5 @@ class RootConfig {
                 matchingStrategy = MatchingStrategies.LOOSE
             }
         }
-    }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
     }
 }
