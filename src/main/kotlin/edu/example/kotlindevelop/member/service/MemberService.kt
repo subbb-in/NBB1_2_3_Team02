@@ -26,20 +26,21 @@ class MemberService(
 ) {
     @Transactional
     fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.CreateResponseDto {
-        try {
-            //기존의 회원이 있는지 검사
-            val member: Optional<Member> = memberRepository.findByLoginId(dto.loginId)
-            if (member.isPresent) {
-                throw RuntimeException("해당 아이디로 회원가입한 회원이 존재합니다")
-            }
-            dto.pw = passwordEncoder.encode(dto.pw)
-
-            val savedMember: Member = memberRepository.save(modelMapper.map(dto, Member::class.java))
-            return MemberDTO.CreateResponseDto("회원가입이 완료되었습니다")
-        } catch (e: Exception) {
-            throw MemberException.MEMBER_NOT_REGISTERED.memberTaskException
+        // 기존의 회원이 있는지 검사
+        val member: Optional<Member> = memberRepository.findByLoginId(dto.loginId)
+        if (member.isPresent) {
+            throw MemberException.MEMBER_ALREADY_EXISTS.memberTaskException
         }
+
+        // 비밀번호 암호화
+        dto.pw = passwordEncoder.encode(dto.pw)
+
+        // 회원 저장
+        val savedMember: Member = memberRepository.save(dto.toEntity())
+
+        return MemberDTO.CreateResponseDto("회원가입이 완료되었습니다")
     }
+
 
     @Transactional
     fun update(dto: MemberDTO.Update): MemberDTO.Update {
@@ -55,7 +56,7 @@ class MemberService(
             memberRepository.save(member)
 
             return MemberDTO.Update(
-                member.id,
+                dto.id,
                 member.loginId,
                 member.pw,
                 member.name,
@@ -105,7 +106,7 @@ class MemberService(
             member.mImage = fileName // URL 저장
             memberRepository.save(member)
 
-            return MemberDTO.ChangeImage(member.id, imageFile)
+            return MemberDTO.ChangeImage(dto.id, imageFile)
         } else {
             throw MemberException.MEMBER_IMAGE_NOT_MODIFIED.memberTaskException
         }
