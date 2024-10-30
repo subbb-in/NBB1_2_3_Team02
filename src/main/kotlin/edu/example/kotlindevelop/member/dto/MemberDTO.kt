@@ -110,8 +110,8 @@ class MemberDTO {
 
 
     data class FindPWRequestDto (
-         var loginId: String? = null,
-         var email: String? = null
+         var loginId: String,
+         var email: String
     )
 }
 //    @Data
