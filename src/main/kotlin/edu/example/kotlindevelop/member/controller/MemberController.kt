@@ -1,19 +1,23 @@
 package edu.example.kotlindevelop.member.controller
 
+import edu.example.kotlindevelop.global.security.SecurityUser
 import edu.example.kotlindevelop.member.dto.MemberDTO
 import edu.example.kotlindevelop.member.service.MemberService
 import jakarta.mail.internet.MimeMessage
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("api/v1/members")
@@ -54,46 +58,46 @@ class MemberController (
         // 인증 성공
         val responseDto = memberService.checkLoginIdAndPassword(request.loginId, request.pw)
 
-        val id = responseDto.id
+        val id = responseDto.id ?: throw IllegalArgumentException("Member ID cannot be null")
         val loginId = responseDto.loginId
 
-//        val accessToken = memberService.generateAccessToken(id, loginId)
-//        val refreshToken = memberService.generateRefreshToken(id, loginId)
-//
-//        memberService.setRefreshToken(id, refreshToken)
-//
-//        responseDto.accessToken = accessToken
-//        responseDto.refreshToken = refreshToken
+        val accessToken = memberService.generateAccessToken(id, loginId)
+        val refreshToken = memberService.generateRefreshToken(id, loginId)
+
+        memberService.setRefreshToken(id, refreshToken)
+
+        responseDto.accessToken = accessToken
+        responseDto.refreshToken = refreshToken
 
         return ResponseEntity.ok(responseDto)
     }
 
-//
-//    @PostMapping("/refreshAccessToken")
-//    fun login(@RequestBody request: RefreshAccessTokenRequestDto): ResponseEntity<RefreshAccessTokenResponseDto> {
-//        val accessToken: String = memberService.refreshAccessToken(request.getRefreshToken())
-//        val responseDto: RefreshAccessTokenResponseDto =
-//            RefreshAccessTokenResponseDto(accessToken, "새로운 AccessToken 발급")
-//
-//        return ResponseEntity.ok<RefreshAccessTokenResponseDto>(responseDto)
-//    }
+
+    @PostMapping("/refreshAccessToken")
+    fun login(@RequestBody request: MemberDTO.RefreshAccessTokenRequestDto): ResponseEntity<MemberDTO.RefreshAccessTokenResponseDto> {
+        val accessToken: String = memberService.refreshAccessToken(request.refreshToken)
+        val responseDto: MemberDTO.RefreshAccessTokenResponseDto =
+            MemberDTO.RefreshAccessTokenResponseDto(accessToken, "새로운 AccessToken 발급")
+
+        return ResponseEntity.ok<MemberDTO.RefreshAccessTokenResponseDto>(responseDto)
+    }
 
 
-//    @PostMapping("/logout")
-//    fun logout(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.LogoutResponseDto> {
-//        memberService.setRefreshToken(user.id, "null")
-//
-//        return ResponseEntity.ok(MemberDTO.LogoutResponseDto("로그아웃 되었습니다"))
-//    }
+    @PostMapping("/logout")
+    fun logout(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.LogoutResponseDto> {
+        memberService.setRefreshToken(user.id, "null")
+
+        return ResponseEntity.ok(MemberDTO.LogoutResponseDto("로그아웃 되었습니다"))
+    }
 
 
 
-//     나의 회원 정보 조회화기
-//    @GetMapping("/")
-//    fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
-//        val id: Long = user.getId()
-//        return ResponseEntity.ok<T>(memberService.read(id))
-//    }
+     //나의 회원 정보 조회화기
+    @GetMapping("/")
+    fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
+        val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
+        return ResponseEntity.ok(memberService.read(id))
+    }
 
     //다른 유저의 회원정보 조회하기
     @GetMapping("/{id}")
@@ -101,7 +105,7 @@ class MemberController (
         return ResponseEntity.ok(memberService.read(id))
     }
 
-//
+
 //    //내 정보 수정하기
 //    @PutMapping("/")
 //    fun modify(
@@ -112,7 +116,7 @@ class MemberController (
 //        dto.setId(id)
 //        return ResponseEntity.ok<T>(memberService.update(dto))
 //    }
-
+//
 //    //주문 삭제하기
 //    @DeleteMapping("/")
 //    fun delete(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<Map<String, String>> {

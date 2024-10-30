@@ -106,7 +106,7 @@ class MemberDTO {
         var mImage: MultipartFile
     )
 
-    data class logoutResponseDto ( var message: String)
+    data class LogoutResponseDto ( var message: String)
 
 
     data class FindPWRequestDto (

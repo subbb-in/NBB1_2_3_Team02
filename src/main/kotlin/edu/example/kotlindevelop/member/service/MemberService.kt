@@ -1,10 +1,13 @@
 package edu.example.kotlindevelop.member.service
 
+import edu.example.kotlindevelop.global.jwt.JwtUtil
 import edu.example.kotlindevelop.member.dto.MemberDTO
 import edu.example.kotlindevelop.member.entity.Member
 import edu.example.kotlindevelop.member.exception.MemberException
 import edu.example.kotlindevelop.member.repository.MemberRepository
 import edu.example.kotlindevelop.member.util.PasswordUtil
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -23,7 +26,8 @@ import java.util.*
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val modelMapper: ModelMapper
+    private val modelMapper: ModelMapper,
+    private val jwtUtil: JwtUtil
 ) {
     @Transactional
     fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.CreateResponseDto {
@@ -162,57 +166,60 @@ class MemberService(
         return memberRepository.findAll().size
     }
 
-//    @Transactional
-//    fun setRefreshToken(id: Long?, refreshToken: String?) {
-//        val member: Member = memberRepository.findById(id).get()
-//        member.updateRefreshToken(refreshToken)
-//    }
+    @Transactional
+    fun setRefreshToken(id: Long, refreshToken: String?) {
+        val member: Member = memberRepository.findById(id).get()
+        member.updateRefreshToken(refreshToken)
+    }
 
-//    fun generateAccessToken(id: Long, loginId: String): String {
-//        val authorities = if (loginId == "admin") {
-//            listOf("ROLE_ADMIN")
-//        } else {
-//            listOf("ROLE_MEMBER")
-//        }
-//
-//        return JwtUtil.encodeAccessToken(
-//            15,
-//            Map.of<K, V>(
-//                "id", id.toString(),
-//                "loginId", loginId,
-//                "authorities", authorities
-//            )
-//        )
-//    }
-//
-//    fun generateRefreshToken(id: Long, loginId: String): String {
-//        return JwtUtil.encodeRefreshToken(
-//            60 * 24 * 3,
-//            Map.of<K, V>(
-//                "id", id.toString(),
-//                "loginId", loginId
-//            )
-//        )
-//    }
-//
-//    fun refreshAccessToken(refreshToken: String?): String {
-//        //화이트리스트 처리
-//        val member: Member = memberRepository.findByRefreshToken(refreshToken)
-//            .orElseThrow { MemberException.MEMBER_LOGIN_DENIED.getMemberTaskException() }
-//
-//        //리프레시 토큰이 만료되었다면 로그아웃
-//        try {
-//            val claims: Claims = JwtUtil.decode(refreshToken) // 여기서 에러 처리가 남
-//        } catch (e: ExpiredJwtException) {
-//            // 클라이언트한테 만료되었다고 알려주기
-//            throw MemberException.MEMBER_REFRESHTOKEN_EXPIRED.getMemberTaskException()
-//        }
-//
-//
-//        return generateAccessToken(member.getId(), member.getLoginId())
-//    }
+    fun generateAccessToken(id: Long, loginId: String): String {
+        val authorities = if (loginId == "admin") {
+            listOf("ROLE_ADMIN")
+        } else {
+            listOf("ROLE_MEMBER")
+        }
 
-//
+        return jwtUtil.encodeAccessToken(
+            1,
+            mapOf(
+                "id" to id.toString(),
+                "loginId" to loginId,
+                "authorities" to  authorities
+            )
+        )
+    }
+
+    fun generateRefreshToken(id: Long, loginId: String): String {
+        return jwtUtil.encodeRefreshToken(
+            3,
+            mapOf(
+                "id" to id.toString(),
+                "loginId" to loginId
+            )
+        )
+    }
+
+    fun refreshAccessToken(refreshToken: String): String {
+        //화이트리스트 처리
+        val member: Member = memberRepository.findByRefreshToken(refreshToken)
+            .orElseThrow { MemberException.MEMBER_LOGIN_DENIED.memberTaskException }
+
+        //리프레시 토큰이 만료되었다면 로그아웃
+        try {
+            val claims: Claims = jwtUtil.decode(refreshToken) // 여기서 에러 처리가 남
+        } catch (e: ExpiredJwtException) {
+            // 클라이언트한테 만료되었다고 알려주기
+            throw MemberException.MEMBER_REFRESHTOKEN_EXPIRED.memberTaskException
+        }
+
+        // member.id가 null인지 확인
+        val memberId: Long = member.id ?: throw MemberException.MEMBER_LOGIN_DENIED.memberTaskException
+
+
+        return generateAccessToken(memberId, member.loginId)
+    }
+
+
     fun findByEmail(email: String): String {
         val member: Member = memberRepository.findByEmail(email)
             .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
