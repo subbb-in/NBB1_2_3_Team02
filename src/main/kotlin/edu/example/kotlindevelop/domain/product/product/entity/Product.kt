@@ -18,4 +18,7 @@ class Product(
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
     var lossRateList: MutableList<LossRate> = ArrayList()
+
+//    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+//    val orderItems: List<OrderItem> = mutableListOf()
 }
