@@ -1,9 +1,9 @@
-package kotlindevelop.member.service
+package edu.example.kotlindevelop.member.service
 
-import kotlindevelop.member.dto.MemberDTO
-import kotlindevelop.member.entity.Member
-import kotlindevelop.member.exception.MemberException
-import kotlindevelop.member.repository.MemberRepository
+import edu.example.kotlindevelop.member.dto.MemberDTO
+import edu.example.kotlindevelop.member.entity.Member
+import edu.example.kotlindevelop.member.exception.MemberException
+import edu.example.kotlindevelop.member.repository.MemberRepository
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -15,7 +15,6 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
-import java.util.function.Function
 
 
 @Service
@@ -35,7 +34,7 @@ class MemberService(
             }
             dto.pw = passwordEncoder.encode(dto.pw)
 
-            val savedMember: Member = memberRepository.save(modelMapper.map(dto,Member::class.java))
+            val savedMember: Member = memberRepository.save(modelMapper.map(dto, Member::class.java))
             return MemberDTO.CreateResponseDto("회원가입이 완료되었습니다")
         } catch (e: Exception) {
             throw MemberException.MEMBER_NOT_REGISTERED.memberTaskException
@@ -89,85 +88,84 @@ class MemberService(
         }
     }
 
-//    fun readAll(pageable: Pageable?): Page<MemberDTO.Response> {
-//        val members: Page<Member> = memberRepository.searchMembers(pageable)
-//
-//        return members.map<MemberDTO.Response>(Function<Member, MemberDTO.Response> { MemberDTO.Response() })
-//    }
-//
-//    private val uploadDir = "upload/" // 현재 디렉토리의 upload 폴더
-//
-//    @Transactional
-//    fun changeImage(dto: MemberDTO.ChangeImage, imageFile: MultipartFile): MemberDTO.ChangeImage { // MultipartFile 추가
-//        val memberOptional: Optional<Member> = memberRepository.findById(dto.id)
-//        if (memberOptional.isPresent) {
-//            val member: Member = memberOptional.get()
-//            val fileName = saveImage(imageFile)
-//
-//            member.mImage = fileName // URL 저장
-//            memberRepository.save(member)
-//
-//            return MemberDTO.ChangeImage(member.id, imageFile)
-//        } else {
-//            throw MemberException.MEMBER_IMAGE_NOT_MODIFIED.memberTaskException
-//        }
-//    }
+    fun readAll(pageable: Pageable): Page<MemberDTO.Response> {
+        val members: Page<Member> = memberRepository.searchMembers(pageable)
+        return members.map { MemberDTO.Response(it) }
+    }
 
-//    private fun saveImage(imageFile: MultipartFile): String { // MultipartFile로 변경
-//        try {
-//            val uploadPath = Paths.get(uploadDir)
-//            if (!Files.exists(uploadPath)) {
-//                Files.createDirectories(uploadPath) // 디렉토리가 존재하지 않으면 생성
-//            }
-//
-//            // 파일 이름 생성 및 저장
-//            val fileName = System.currentTimeMillis().toString() + "_" + imageFile.originalFilename
-//            val filePath = uploadPath.resolve(fileName)
-//            Files.copy(imageFile.inputStream, filePath) // 실제 파일 저장
-//
-//            return fileName // 저장된 파일 이름 반환
-//        } catch (e: IOException) {
-//            throw RuntimeException("파일 저장 실패", e)
-//        }
-//    }
+    private val uploadDir = "upload/" // 현재 디렉토리의 upload 폴더
 
-//    fun checkLoginIdAndPassword(loginId: String?, pw: String?): MemberDTO.LoginResponseDto {
-//        val opMember: Optional<Member> = memberRepository.findByLoginId(loginId)
-//
-//        if (opMember.isEmpty()) {
-//            throw MemberException.MEMBER_NOT_FOUND.getMemberTaskException()
-//        }
-//
-//        if (!passwordEncoder!!.matches(pw, opMember.get().getPw())) {
-//            throw MemberException.MEMBER_LOGIN_DENIED.getMemberTaskException()
-//        }
-//
-//        val member: Member = opMember.get()
-//        val responseDto: MemberDTO.LoginResponseDto = LoginResponseDto(member)
-//
-//        return responseDto
-//    }
-//
-//    fun getMemberById(id: Long?): Member {
-//        val opMember: Optional<Member> = memberRepository.findById(id)
-//
-//        if (opMember.isEmpty()) {
-//            throw MemberException.MEMBER_NOT_FOUND.getMemberTaskException()
-//        }
-//
-//        return opMember.get()
-//    }
-//
-//    fun count(): Int {
-//        return memberRepository.findAll().size()
-//    }
-//
+    @Transactional
+    fun changeImage(dto: MemberDTO.ChangeImage, imageFile: MultipartFile): MemberDTO.ChangeImage { // MultipartFile 추가
+        val memberOptional: Optional<Member> = memberRepository.findById(dto.id)
+        if (memberOptional.isPresent) {
+            val member: Member = memberOptional.get()
+            val fileName = saveImage(imageFile)
+
+            member.mImage = fileName // URL 저장
+            memberRepository.save(member)
+
+            return MemberDTO.ChangeImage(member.id, imageFile)
+        } else {
+            throw MemberException.MEMBER_IMAGE_NOT_MODIFIED.memberTaskException
+        }
+    }
+
+    private fun saveImage(imageFile: MultipartFile): String { // MultipartFile로 변경
+        try {
+            val uploadPath = Paths.get(uploadDir)
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath) // 디렉토리가 존재하지 않으면 생성
+            }
+
+            // 파일 이름 생성 및 저장
+            val fileName = System.currentTimeMillis().toString() + "_" + imageFile.originalFilename
+            val filePath = uploadPath.resolve(fileName)
+            Files.copy(imageFile.inputStream, filePath) // 실제 파일 저장
+
+            return fileName // 저장된 파일 이름 반환
+        } catch (e: IOException) {
+            throw RuntimeException("파일 저장 실패", e)
+        }
+    }
+
+    fun checkLoginIdAndPassword(loginId: String, pw: String): MemberDTO.LoginResponseDto {
+        val opMember: Optional<Member> = memberRepository.findByLoginId(loginId)
+
+        if (opMember.isEmpty()) {
+            throw MemberException.MEMBER_NOT_FOUND.memberTaskException
+        }
+
+        if (!passwordEncoder!!.matches(pw, opMember.get().pw)) {
+            throw MemberException.MEMBER_LOGIN_DENIED.memberTaskException
+        }
+
+        val member: Member = opMember.get()
+        val responseDto: MemberDTO.LoginResponseDto = MemberDTO.LoginResponseDto(member)
+
+        return responseDto
+    }
+
+    fun getMemberById(id: Long): Member {
+        val opMember: Optional<Member> = memberRepository.findById(id)
+
+        if (opMember.isEmpty()) {
+            throw MemberException.MEMBER_NOT_FOUND.memberTaskException
+        }
+
+        return opMember.get()
+    }
+
+    fun count(): Int {
+        return memberRepository.findAll().size
+    }
+
 //    @Transactional
 //    fun setRefreshToken(id: Long?, refreshToken: String?) {
 //        val member: Member = memberRepository.findById(id).get()
 //        member.updateRefreshToken(refreshToken)
 //    }
-//
+
 //    fun generateAccessToken(id: Long, loginId: String): String {
 //        val authorities = if (loginId == "admin") {
 //            listOf("ROLE_ADMIN")
@@ -213,16 +211,16 @@ class MemberService(
 //    }
 
 //
-//    fun findByEmail(email: String?): String {
-//        val member: Member = memberRepository.findByEmail(email)
-//            .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
-//        return member.getLoginId()
-//    }
-//
+    fun findByEmail(email: String): String {
+        val member: Member = memberRepository.findByEmail(email)
+            .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
+        return member.loginId
+    }
+
 //    @Transactional
-//    fun setTemplatePassword(loginId: String?, email: String?): String {
+//    fun setTemplatePassword(loginId: String, email: String): String {
 //        val member: Member = memberRepository.findByLoginIdAndEmail(loginId, email)
-//            .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
+//            .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
 //        val templatePassword: String = PasswordUtil.generateTempPassword()
 //        member.changePw(passwordEncoder!!.encode(templatePassword))
 //        memberRepository.save(member)
