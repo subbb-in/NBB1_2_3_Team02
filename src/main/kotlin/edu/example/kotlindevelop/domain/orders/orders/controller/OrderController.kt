@@ -32,7 +32,7 @@ class OrderController {
         val orderDTO: OrderDTO? = orderService?.read(orderId)
         return ResponseEntity.ok<OrderDTO>(orderDTO)
     }
-
+    //###//
     // 주문 목록 조회
     @GetMapping("/list")
     fun getList(
@@ -42,7 +42,10 @@ class OrderController {
         val memberId: Long = user.getId()
         return ResponseEntity.ok(pageRequestDTO?.let { orderService?.getList(it, memberId) })
     }
-
+    //
+    //
+    //
+    //
     // 주문 삭제
     @DeleteMapping("/{orderId}")
     fun deleteOrder(@PathVariable orderId: Long?): Map<String, String> {
