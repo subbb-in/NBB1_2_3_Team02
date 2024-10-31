@@ -1,6 +1,6 @@
 package edu.example.kotlindevelop.domain.member.entity
 
-import edu.example.kotlindevelop.domain.product.entity.LossRate
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -10,32 +10,34 @@ import java.time.LocalDateTime
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class Member(
-    private val loginId: String,  // 생성자 매개변수에 private 추가
-    private val pw: String,        // 생성자 매개변수에 private 추가
-    var name: String,              // var로 선언
-    private val mImage: String,    // 생성자 매개변수에 private 추가
-    private val email: String
-) {
+data class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null,
+    @Column(unique = true)
+    var loginId: String,
+    var pw: String,
+    var name: String,
+    var email: String,
+    var mImage: String? = null,
 
     @Column(columnDefinition = "TEXT")
-    private var refreshToken: String? = null
+    var refreshToken: String? = null,
 
     @CreatedDate
-    private var createdAt: LocalDateTime? = null
+    val createdAt: LocalDateTime? = null,
 
     @LastModifiedDate
-    private var modifiedAt: LocalDateTime? = null
+    val modifiedAt: LocalDateTime? = null,
 
     @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var productList: MutableList<Product> = ArrayList()
+    var productList: MutableList<Product> = mutableListOf(),
 
-    @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var lossRateList: MutableList<LossRate> = ArrayList()
+    @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var ordersList: MutableList<Orders> = mutableListOf()
+) {
+    fun updateRefreshToken(refreshToken: String?) {
+        this.refreshToken = refreshToken
 
-//    @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
-//    var ordersList: List<Orders> = ArrayList()
+    }
 }
