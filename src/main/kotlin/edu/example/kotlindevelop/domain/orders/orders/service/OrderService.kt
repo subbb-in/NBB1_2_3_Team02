@@ -68,39 +68,29 @@ class OrderService(
         val member = memberRepository.findById(memberId)
             .orElseThrow { RuntimeException("Member not found") }
 
-        val results = orderRepository.getMonthlyTotalPrice(member) ?: return emptyList()
+        val results = orderRepository.getMonthlyTotalPrice(member)
 
-        return results.mapNotNull { result ->
-            if (result != null && result is Array<*>) { // result가 null이 아니고 Array인지 확인
-                val orderMonth = result.getOrNull(0) as? String
-                val totalPrice = result.getOrNull(1) as? Double
-
-                if (orderMonth != null && totalPrice != null) {
-                    mapOf(
-                        "orderMonth" to orderMonth,
-                        "totalPrice" to totalPrice
-                    )
-                } else {
-                    null
-                }
-            } else {
-                null // result가 null이거나 Array가 아닐 경우 무시
-            }
-        }
+        // 결과를 Map 형태로 변환
+        return results?.map { result ->
+            mapOf(
+                "orderMonth" to result!![0], // 월
+                "totalPrice" to result[1]  // 총 금액
+            ) ?: emptyMap() // null일 경우 빈 맵 반환
+        } ?: emptyList() // results가 null일 경우 빈 리스트 반환
     }
 
     fun getMonthlyAveragePrices(): Map<String, Map<String, Double>> {
-        val orderItems = orderItemRepository.findAll().filterNotNull()
+        val orderItems = orderItemRepository.findAll()
 
         return orderItems
-            .filter { it.orders?.createdAt != null && it.product?.name != null }
-            .groupBy { it.orders!!.createdAt!!.month.name }
+            .filter { it!!.orders?.createdAt != null && it.product?.name != null }
+            .groupBy { it!!.orders!!.createdAt!!.month.name }
             .mapValues { (month, itemsByMonth) ->
                 itemsByMonth
-                    .groupBy { it.product?.name ?: "Unknown Product" } // null일 경우 "Unknown Product"로 대체
+                    .groupBy { it!!.product?.name ?: "Unknown Product" } // null일 경우 "Unknown Product"로 대체
                     .mapValues { (_, itemsByProduct) ->
                         itemsByProduct
-                            .mapNotNull { it.price?.toDouble()?.div(it.quantity ?: 1) }
+                            .mapNotNull { it!!.price?.toDouble()?.div(it.quantity ?: 1) }
                             .average()
                     }
             }

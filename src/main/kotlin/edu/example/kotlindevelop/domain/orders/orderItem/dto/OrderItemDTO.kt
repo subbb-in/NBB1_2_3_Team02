@@ -13,7 +13,7 @@ data class OrderItemDTO(
     fun toEntity(product: Product?, orders: Orders?): OrderItem {
         return OrderItem(
             product = product,
-            orders = orders,
+            orders = orders!!,
             quantity = quantity,
             price = price
         )

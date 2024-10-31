@@ -45,8 +45,8 @@ data class OrderDTO(
         var orderItems: List<OrderItemDTO>? = null // 주문 항목 리스트
     ) {
         // 엔티티로부터 DTO 생성
-        constructor(orders: Orders) : this(
-            id = orders.id,
+        constructor(orders: Orders?) : this(
+            id = orders!!.id,
             memberId = orders.member.id,
             totalPrice = orders.totalPrice,
             createdAt = orders.createdAt,
