@@ -2,6 +2,7 @@ package edu.example.kotlindevelop.domain.orders.orderItem.dto
 
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.member.entity.Product
 
 
 data class OrderItemDTO(
@@ -18,7 +19,7 @@ data class OrderItemDTO(
             price = price
         )
     }
-
+    //
     // 엔티티로부터 DTO 생성
     constructor(orderItem: OrderItem) : this(
         productId = orderItem.product?.id,
