@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.member.config
+package edu.example.kotlindevelop.domain.member.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
