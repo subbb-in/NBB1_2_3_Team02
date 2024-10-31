@@ -13,20 +13,20 @@ import java.time.LocalDateTime
 class LossRate(
     @ManyToOne
     @JoinColumn(name = "member_id")
-    var maker: Member,  // 생성자에서 받는 maker
+    var maker: Member,
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    var product: Product,  // 생성자에서 받는 product
+    var product: Product,
 
-    @Column(nullable = false)  // NULL을 허용하지 않도록 설정
-    var loss: Int  // 생성자에서 받는 loss
+    @Column(nullable = false)
+    var loss: Int
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null  // id는 기본적으로 public입니다.
+    val id: Long? = null
 
     @CreatedDate
     @Column(name = "recorded_at", nullable = false, updatable = false)
-    var recordedAt: LocalDateTime? = null  // recordedAt 필드는 NULL을 허용
+    var recordedAt: LocalDateTime? = null
 }
