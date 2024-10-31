@@ -16,7 +16,7 @@ class Product(
     private val id: Long? = null
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
-    var lossRateList: MutableList<LossRate> = ArrayList()
+    var lossRateList: MutableList<LossRate> = mutableListOf()
 
 //    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
 //    val orderItems: List<OrderItem> = mutableListOf()

@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.member.config
+package edu.example.kotlindevelop.domain.member.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

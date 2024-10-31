@@ -1,12 +1,11 @@
 package edu.example.kotlindevelop.product.repository
 
-import edu.example.kotlindevelop.domain.member.entity.Member
-import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.Product
 import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
 import edu.example.kotlindevelop.domain.product.repository.ProductRepository
-
+import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -28,7 +27,7 @@ class LossRateRepositoryTests {
 
     @Test
     fun 로스율등록테스트() {
-        // Given - 회원 및 식재료 생성
+        // Given
         val member: Member = Member(
             loginId = "membertest",
             pw = "qwer",
@@ -38,14 +37,14 @@ class LossRateRepositoryTests {
         )
         val savedMember = memberRepository!!.save(member)
 
-        val product: Product = Product(
+        val product:Product = Product(
             name = "양파",
             maker = savedMember
         )
         val savedProduct = productRepository!!.save(product)
         savedMember.productList.add(product)
 
-        // When - 로스율 생성 및 등록
+        // When
         val lossRate: LossRate = LossRate(
             maker = savedMember,
             product = savedProduct,
@@ -53,7 +52,7 @@ class LossRateRepositoryTests {
         )
         val savedLossRate = lossRateRepository!!.save(lossRate)
 
-        // Then - 검증
+        // Then
         println("member id: ${savedMember.id}")
         println("member name: ${savedMember.name}")
         println(savedMember.productList)
@@ -61,9 +60,9 @@ class LossRateRepositoryTests {
         println("product's member id: ${savedProduct.maker?.id}")
         println("loss rate for product: ${savedLossRate.loss}")
 
-        assertNotNull(savedProduct) // 저장된 상품이 null이 아님을 확인
-        assertEquals(savedMember.name, savedProduct.maker?.name) // 상품의 제작자 이름이 일치하는지 확인
-        assertEquals("양파", savedProduct.name) // 상품명이 "양파"인지 확인
-        assertEquals(10, savedLossRate.loss) // 저장된 로스율이 10인지 확인
+        assertNotNull(savedProduct)
+        assertEquals(savedMember.name, savedProduct.maker?.name)
+        assertEquals("양파", savedProduct.name)
+        assertEquals(10, savedLossRate.loss)
     }
 }

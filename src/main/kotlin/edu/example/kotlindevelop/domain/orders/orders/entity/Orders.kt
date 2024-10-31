@@ -1,5 +1,6 @@
 package edu.example.kotlindevelop.domain.orders.orders.entity
 
+import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -19,5 +20,9 @@ class Orders {
 
     @LastModifiedDate @Column(name = "modified_at") // 수정일
     private var modifiedAt: LocalDateTime? = null
+
+    @ManyToOne
+    @JoinColumn(name = "member_id") // FK 컬럼 설정
+    var member: Member? = null
 
 }

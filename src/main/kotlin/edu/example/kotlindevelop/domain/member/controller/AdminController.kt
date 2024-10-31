@@ -1,7 +1,7 @@
-package edu.example.kotlindevelop.member.controller
+package edu.example.kotlindevelop.domain.member.controller
 
-import edu.example.kotlindevelop.member.dto.MemberDTO
-import edu.example.kotlindevelop.member.service.MemberService
+import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.service.MemberService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
