@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.domain.orders.orderItem.dto
+package edu.example.kotlindevelop.member.exception.dto
 
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
