@@ -1,8 +1,8 @@
-package edu.example.kotlindevelop.member.dto
+package edu.example.kotlindevelop.domain.member.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.validation.constraints.NotBlank
-import edu.example.kotlindevelop.member.entity.Member
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
@@ -33,7 +33,7 @@ class MemberDTO {
     }
 
 
-    data class CreateResponseDto( var message: String)
+    data class StringResponseDto( var message: String)
 
     data class Update (
         var id: Long,
@@ -54,7 +54,7 @@ class MemberDTO {
 
 
     data class LoginResponseDto(
-        var id: Long?,
+        var id: Long,
         var loginId: String,
         var name: String,
         var mImage: String,
@@ -62,7 +62,8 @@ class MemberDTO {
         var refreshToken: String? = null
     ) {
         constructor(member: Member) : this(
-            id = member.id,
+            // id는 AutoIncrement 로 생성하기 때문에 Null허용 객체 이지만, Response 과정에서는 null일 가능성이 없기 때문에 대입 값으로 0 설정
+            id = member.id?:0,
             loginId = member.loginId,
             name = member.name,
             mImage = member.mImage ?: "default_image.png"
