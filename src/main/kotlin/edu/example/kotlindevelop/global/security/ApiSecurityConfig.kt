@@ -1,6 +1,8 @@
 package edu.example.kotlindevelop.global.security
 
 
+
+import edu.example.kotlindevelop.global.jwt.JwtAuthenticationFilter
 import jakarta.servlet.http.HttpServletRequest
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.context.annotation.Bean
@@ -15,7 +17,9 @@ import org.slf4j.LoggerFactory
 
 @Configuration
 @EnableMethodSecurity
-class ApiSecurityConfig {
+class ApiSecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
 
 
     @Bean
@@ -36,10 +40,13 @@ class ApiSecurityConfig {
                     ).permitAll()
                     .anyRequest().authenticated()
             }
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java) // 필터 인스턴스 추가
+
 
 
 
 
         return http.build()
     }
+
 }
