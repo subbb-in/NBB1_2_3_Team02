@@ -3,10 +3,45 @@ package edu.example.kotlindevelop.domain.member.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.validation.constraints.NotBlank
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
 class MemberDTO {
+    class NaverResponse(attribute: Map<String, Any>) : OAuth2Response {
+        private val attribute: Map<String, Any> = attribute["response"] as Map<String, Any>
+
+        override val provider: String
+            get() = "naver"
+        override val providerId: String
+            get() = attribute["id"].toString()
+        override val email: String
+            get() = attribute["email"].toString()
+        override val name: String
+            get() = attribute["name"].toString()
+    }
+
+    class CustomOAuth2User(
+        private val oAuth2Response: OAuth2Response,
+        private val role: String
+    ) : OAuth2User {
+        override fun getAttributes(): Map<String, Any> {
+            return emptyMap() // 필요에 따라 구현
+        }
+        override fun getAuthorities(): Collection<GrantedAuthority> {
+            return listOf(GrantedAuthority { role }) // 람다 표현식으로 간결하게
+        }
+        override fun getName(): String {
+            return oAuth2Response.name
+        }
+        fun getUsername(): String {
+            return "${oAuth2Response.provider} ${oAuth2Response.providerId}"
+        }
+    }
+
+
+
 
     data class CreateRequestDto(
         @field:NotBlank(message = "로그인 ID는 필수 입력 값 입니다")

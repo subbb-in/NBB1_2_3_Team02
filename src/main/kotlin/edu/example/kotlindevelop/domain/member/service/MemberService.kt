@@ -2,6 +2,8 @@ package edu.example.kotlindevelop.domain.member.service
 
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.dto.MemberDTO.CustomOAuth2User
+import edu.example.kotlindevelop.domain.member.dto.OAuth2Response
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
@@ -11,8 +13,10 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -30,6 +34,23 @@ class MemberService(
     //사용하지 않는 ModelMapper 제거
     private val jwtUtil: JwtUtil
 ) {
+    class CustomOAuth2UserService : DefaultOAuth2UserService() {
+        override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
+            val oAuth2User: OAuth2User = super.loadUser(userRequest)
+            println(oAuth2User.attributes)
+
+            val registrationId = userRequest.clientRegistration.registrationId
+            val oAuth2Response: OAuth2Response = when (registrationId) {
+                "naver" -> MemberDTO.NaverResponse(oAuth2User.attributes)
+                else -> MemberDTO.NaverResponse(oAuth2User.attributes)
+            }
+
+            val role = "ROLE_USER"
+
+            return CustomOAuth2User(oAuth2Response, role)
+        }
+    }
+
     @Transactional
     fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.StringResponseDto {
         // 기존의 회원이 있는지 검사

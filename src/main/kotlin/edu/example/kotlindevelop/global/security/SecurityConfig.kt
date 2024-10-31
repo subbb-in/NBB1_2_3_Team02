@@ -1,23 +1,23 @@
 package edu.example.kotlindevelop.global.security
 
-import org.hibernate.query.sqm.tree.SqmNode.log
-import org.slf4j.LoggerFactory
+import edu.example.kotlindevelop.domain.member.service.MemberService
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
+
 @Configuration
 @EnableMethodSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val customOAuth2UserService: MemberService.CustomOAuth2UserService = MemberService.CustomOAuth2UserService()
+) {
 
 
     @Bean
@@ -32,6 +32,7 @@ class SecurityConfig {
                         AntPathRequestMatcher("/h2-console/**")
                     ).permitAll()
 //                    .requestMatchers("/adm/**").hasRole("ADMIN")
+                    .requestMatchers("/").permitAll()
                     .anyRequest().permitAll()
             }
             .headers { headers ->
@@ -44,6 +45,14 @@ class SecurityConfig {
                 csrf.ignoringRequestMatchers("/h2-console/**")
             }
             .formLogin{it.disable()}
+        http
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .userInfoEndpoint { userInfoEndpointConfig ->
+                        userInfoEndpointConfig
+                            .userService(customOAuth2UserService)
+                    }
+            }
 
         return http.build()
     }
