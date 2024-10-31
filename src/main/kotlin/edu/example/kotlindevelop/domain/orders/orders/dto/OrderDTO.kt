@@ -1,7 +1,11 @@
 package edu.example.kotlindevelop.domain.orders.orders.dto
 
-import edu.example.kotlindevelop.member.exception.dto.OrderItemDTO
+import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.orders.orderItem.dto.OrderItemDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.domain.orders.orders.entity.QOrders.orders
+import edu.example.kotlindevelop.domain.product.repository.ProductRepository
+
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -12,27 +16,34 @@ import java.time.LocalDateTime
 
 
 data class OrderDTO(
-    val id: Long,
-    var items: List<OrderItemDTO> = emptyList(),
+    val id: Long?,
+    var items: List<OrderItemDTO> = mutableListOf(),
     val totalPrice: Long
 ) {
     // 기존 엔티티로 변환하는 메서드
-    fun toEntity(member: Member?, productRepository: ProductRepository): Orders {
+    fun toEntity(member: Member, productRepository: ProductRepository): Orders {
         val orders = Orders(0L, member)
-        require(items.isNotEmpty()) { "Order items cannot be null or empty" }
+
+        if (items.isNullOrEmpty()) {
+            throw IllegalArgumentException("Order items cannot be null or empty")
+        }
+
         for (itemDTO in items) {
-            val product: Product = productRepository.findById(itemDTO.productId)
-                .orElseThrow { RuntimeException("Product not found") }
+            val product = itemDTO.productId?.let {
+                productRepository.findById(it)
+                    .orElseThrow { RuntimeException("Product not found") }
+            }
             orders.addOrderItem(product, itemDTO.quantity, itemDTO.price)
         }
+
         return orders
     }
 
     // 엔티티로부터 DTO 생성
-    constructor(orders: Orders) : this(
-        id = orders.id ?: 0L,
-        items = orders.orderItems.map { OrderItemDTO(it) }, // OrderItemDTO 변환
-        totalPrice = orders.totalPrice
+    constructor(orderssss: Orders) : this(
+        id = orderssss.id ?: throw IllegalArgumentException("Order ID cannot be null"), // null일 경우 예외 던지기
+        items = orderssss.orderItems.map { OrderItemDTO(it) }, // OrderItemDTO 변환
+        totalPrice = orderssss.totalPrice
     )
 
     // 내부 클래스 - 주문 목록을 위한 DTO

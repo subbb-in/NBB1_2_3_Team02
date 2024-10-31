@@ -1,13 +1,12 @@
 package edu.example.kotlindevelop.member.controller
 
+import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.global.security.SecurityUser
 import edu.example.kotlindevelop.member.dto.MemberDTO
-import edu.example.kotlindevelop.member.service.MemberService
 import jakarta.mail.internet.MimeMessage
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
@@ -17,7 +16,6 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("api/v1/members")

@@ -1,8 +1,8 @@
 package edu.example.kotlindevelop.member.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.validation.constraints.NotBlank
-import edu.example.kotlindevelop.member.entity.Member
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 

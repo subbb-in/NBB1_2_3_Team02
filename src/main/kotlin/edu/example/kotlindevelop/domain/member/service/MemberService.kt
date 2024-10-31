@@ -1,10 +1,10 @@
-package edu.example.kotlindevelop.member.service
+package edu.example.kotlindevelop.domain.member.service
 
+import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.member.exception.MemberException
+import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.global.jwt.JwtUtil
 import edu.example.kotlindevelop.member.dto.MemberDTO
-import edu.example.kotlindevelop.member.entity.Member
-import edu.example.kotlindevelop.member.exception.MemberException
-import edu.example.kotlindevelop.member.repository.MemberRepository
 import edu.example.kotlindevelop.member.util.PasswordUtil
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
@@ -180,7 +180,7 @@ class MemberService(
         }
 
         return jwtUtil.encodeAccessToken(
-            1,
+            100,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId,
@@ -191,7 +191,7 @@ class MemberService(
 
     fun generateRefreshToken(id: Long, loginId: String): String {
         return jwtUtil.encodeRefreshToken(
-            3,
+            300,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId
