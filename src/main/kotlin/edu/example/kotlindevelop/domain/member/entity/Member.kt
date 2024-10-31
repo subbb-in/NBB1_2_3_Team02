@@ -1,5 +1,6 @@
-package edu.example.kotlindevelop.member.entity
+package edu.example.kotlindevelop.domain.member.entity
 
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -29,7 +30,7 @@ data class Member(
     val modifiedAt: LocalDateTime? = null,
 
     @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var productList: MutableList<Product> = mutableListOf(),
+    var productList: MutableList<edu.example.kotlindevelop.domain.member.entity.Product> = mutableListOf(),
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
     var ordersList: MutableList<Orders> = mutableListOf()

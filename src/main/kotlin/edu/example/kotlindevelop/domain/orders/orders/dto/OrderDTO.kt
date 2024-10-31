@@ -1,5 +1,7 @@
 package edu.example.kotlindevelop.domain.orders.orders.dto
 
+import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.member.entity.Product
 import edu.example.kotlindevelop.domain.orders.orderItem.dto.OrderItemDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import org.springframework.data.domain.PageRequest
@@ -18,7 +20,7 @@ data class OrderDTO(
 ) {
     // 기존 엔티티로 변환하는 메서드
     fun toEntity(member: Member?, productRepository: ProductRepository): Orders {
-        val orders = Orders(0L, member)
+        val orders = edu.example.kotlindevelop.domain.member.entity.Orders(0L, member)
         require(items.isNotEmpty()) { "Order items cannot be null or empty" }
         for (itemDTO in items) {
             val product: Product = productRepository.findById(itemDTO.productId)

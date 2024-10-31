@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.member.entity
+package edu.example.kotlindevelop.domain.member.entity
 
 import jakarta.persistence.*
 
@@ -10,5 +10,5 @@ data class Product(
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    var maker: Member? = null // Member와의 관계
+    var maker: edu.example.kotlindevelop.domain.member.entity.Member? = null // Member와의 관계
 )

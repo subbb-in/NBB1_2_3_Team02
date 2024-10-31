@@ -1,8 +1,8 @@
-package edu.example.kotlindevelop.member.dto
+package edu.example.kotlindevelop.domain.member.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.NotBlank
-import edu.example.kotlindevelop.member.entity.Member
+import edu.example.kotlindevelop.domain.member.entity.Member
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
@@ -20,9 +20,9 @@ class MemberDTO {
         @JsonProperty("mImage")
         var mImage: String? = null
     ) {
-        fun toEntity(): Member {
+        fun toEntity(): edu.example.kotlindevelop.domain.member.entity.Member {
             // Member 객체를 초기화
-            return Member(
+            return edu.example.kotlindevelop.domain.member.entity.Member(
                 loginId = loginId,
                 email = email,
                 pw = pw,
@@ -61,7 +61,7 @@ class MemberDTO {
         var accessToken: String? = null,
         var refreshToken: String? = null
     ) {
-        constructor(member: Member) : this(
+        constructor(member: edu.example.kotlindevelop.domain.member.entity.Member) : this(
             id = member.id,
             loginId = member.loginId,
             name = member.name,
@@ -89,7 +89,7 @@ class MemberDTO {
         var createdAt: LocalDateTime,
         var modifiedAt: LocalDateTime
     ) {
-        constructor(member: Member) : this(
+        constructor(member: edu.example.kotlindevelop.domain.member.entity.Member) : this(
             id = member.id ?: throw IllegalArgumentException("Member ID cannot be null"),
             loginId = member.loginId,
             pw = member.pw,

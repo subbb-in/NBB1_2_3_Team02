@@ -1,6 +1,6 @@
-package edu.example.kotlindevelop.member.repository
+package edu.example.kotlindevelop.domain.member.repository
 
-import edu.example.kotlindevelop.member.entity.Member
+import edu.example.kotlindevelop.domain.member.entity.Member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -12,9 +12,9 @@ import edu.example.kotlindevelop.member.entity.QMember
 @Repository
 class MemberRepositoryImpl(
     private val queryFactory: JPAQueryFactory
-) : MemberRepositoryCustom {
+) : edu.example.kotlindevelop.domain.member.repository.MemberRepositoryCustom {
 
-    override fun searchMembers(pageable: Pageable): Page<Member> {
+    override fun searchMembers(pageable: Pageable): Page<edu.example.kotlindevelop.domain.member.entity.Member> {
         val member = QMember.member
 
         val content = queryFactory

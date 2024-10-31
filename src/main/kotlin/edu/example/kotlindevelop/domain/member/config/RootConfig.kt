@@ -1,7 +1,7 @@
-package edu.example.kotlindevelop.member.config
+package edu.example.kotlindevelop.domain.member.config
 
 import edu.example.kotlindevelop.member.dto.MemberDTO
-import edu.example.kotlindevelop.member.entity.Member
+import edu.example.kotlindevelop.domain.member.entity.Member
 import org.modelmapper.ModelMapper
 import org.modelmapper.PropertyMap
 import org.modelmapper.convention.MatchingStrategies

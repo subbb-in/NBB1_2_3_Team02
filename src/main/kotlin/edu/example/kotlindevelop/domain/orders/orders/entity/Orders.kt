@@ -1,5 +1,7 @@
 package edu.example.kotlindevelop.domain.orders.orders.entity
 
+import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.member.entity.Product
 import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import org.springframework.data.annotation.CreatedDate

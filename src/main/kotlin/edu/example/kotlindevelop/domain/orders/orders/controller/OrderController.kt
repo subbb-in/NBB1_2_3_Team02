@@ -2,6 +2,7 @@ package edu.example.kotlindevelop.domain.orders.orders.controller
 
 import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
 import edu.example.kotlindevelop.domain.orders.orders.service.OrderService
+import edu.example.kotlindevelop.global.security.SecurityUser
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
