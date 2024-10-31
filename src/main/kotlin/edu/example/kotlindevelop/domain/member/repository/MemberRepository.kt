@@ -1,6 +1,6 @@
-package edu.example.kotlindevelop.member.repository
+package edu.example.kotlindevelop.domain.member.repository
 
-import edu.example.kotlindevelop.member.entity.Member
+import edu.example.kotlindevelop.domain.member.entity.Member
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*

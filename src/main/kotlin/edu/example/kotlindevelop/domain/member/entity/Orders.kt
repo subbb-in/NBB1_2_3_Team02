@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.member.entity
+package edu.example.kotlindevelop.domain.member.entity
 
 import jakarta.persistence.*
 

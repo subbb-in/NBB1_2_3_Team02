@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.member.util
+package edu.example.kotlindevelop.domain.member.util
 
 import java.security.SecureRandom
 
