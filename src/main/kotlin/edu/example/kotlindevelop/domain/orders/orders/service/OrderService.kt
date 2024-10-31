@@ -6,6 +6,8 @@ import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.orders.orders.exception.OrderException
 import edu.example.kotlindevelop.domain.orders.orders.repository.OrderRepository
 import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
+import edu.example.kotlindevelop.member.exception.MemberException
+import edu.example.kotlindevelop.member.repository.MemberRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -78,6 +80,7 @@ class OrderService(
             ) ?: emptyMap() // null일 경우 빈 맵 반환
         } ?: emptyList() // results가 null일 경우 빈 리스트 반환
     }
+    //
 
     fun getMonthlyAveragePrices(): Map<String, Map<String, Double>> {
         val orderItems = orderItemRepository.findAll()
