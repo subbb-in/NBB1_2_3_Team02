@@ -41,7 +41,16 @@ class OrderController(private val orderService: OrderService) {
         @AuthenticationPrincipal user: SecurityUser
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.id
-        return ResponseEntity.ok(pageRequestDTO?.let { orderService?.getList(it, memberId) })
+        return ResponseEntity.ok(pageRequestDTO?.let { orderService.getList(it, memberId) })
+    }
+    @GetMapping("/liste/{month}")
+    fun getListByMonthOrderByOrder(
+        @PathVariable month: Int?,
+        @Validated pageRequestDTO: OrderDTO.PageRequestDTO?,
+        @AuthenticationPrincipal user: SecurityUser
+    ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
+        val memberId: Long = user.id
+        return ResponseEntity.ok(pageRequestDTO?.let { orderService.getList(month, it, memberId) })
     }
     //
     //
@@ -50,7 +59,7 @@ class OrderController(private val orderService: OrderService) {
     // 주문 삭제
     @DeleteMapping("/{orderId}")
     fun deleteOrder(@PathVariable orderId: Long?): Map<String, String> {
-        orderService?.delete(orderId)
+        orderService.delete(orderId)
         return java.util.Map.of("success", "delete")
     }
 
@@ -58,13 +67,14 @@ class OrderController(private val orderService: OrderService) {
     @GetMapping("/monthly-summary")
     fun getMonthlyOrderSummary(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<List<Map<String, Any?>>> {
         val memberId: Long = user.id
-        val monthlySummary: List<Map<String, Any?>> = orderService?.getMonthlyOrderSummary(memberId) ?: emptyList()
+        val monthlySummary: List<Map<String, Any?>> = orderService.getMonthlyOrderSummary(memberId) ?: emptyList()
         return ResponseEntity.ok(monthlySummary)
     }
 
 
     @GetMapping("/average-prices")
     fun getMonthlyAveragePrices(): Map<String, Map<String, Int>> {
-        return orderService!!.getMonthlyAveragePrices()
+        return orderService.getMonthlyAveragePrices()
     }
+
 }

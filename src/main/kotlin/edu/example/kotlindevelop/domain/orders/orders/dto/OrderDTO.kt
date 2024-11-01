@@ -75,7 +75,14 @@ data class OrderDTO(
             val pageNum = if (page < 0) 1 else page - 1
             val sizeNum = if (size <= 10) 10 else size
 
-            return PageRequest.of(pageNum, sizeNum, sort ?: Sort.unsorted())
+            return PageRequest.of(pageNum, sizeNum)
+        }
+
+        fun getPageable2(sort: Sort): Pageable {
+            val pageNum = if (page < 0) 1 else page - 1
+            val sizeNum = if (size <= 10) 10 else size
+
+            return PageRequest.of(pageNum, sizeNum, sort)
         }
     }
 }
