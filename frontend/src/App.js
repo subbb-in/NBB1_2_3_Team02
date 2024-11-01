@@ -218,11 +218,6 @@ function App() {
                                 ID/PW 찾기
                             </button>
                         )}
-                        {activeComponent === '' && (
-                            <button className="auth-button" onClick={() => setActiveComponent('naverLogin')}>
-                                소셜 로그인
-                            </button>
-                        )}
                         {activeComponent === 'login' && <Login onLogin={handleLogin} handleBack={handleBack} />}
                         {activeComponent === 'register' && <Register onRegister={handleRegister} handleBack={handleBack}/>}
                         {activeComponent === 'IdPw' && <FindIdPw onRegister={handleFind} handleBack={handleBack}/>}
