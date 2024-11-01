@@ -13,16 +13,28 @@ class ProductDTO(
     product: Product,
     lossRate: LossRate
 ) {
-    @field:NotBlank
-    val id: Long? = product.id
-    @field:NotBlank
-    val name: String = product.name
 
-    @field:NotBlank
-    val loss: Int = lossRate.loss
-    @field:NotBlank
-    val recordedAt: LocalDate? = lossRate.recordedAt
 
+    data class lossRateDTO(
+        @field:NotBlank
+        val id: Long?,
+
+        @field:NotBlank
+        val name: String,
+
+        @field:NotBlank
+        val loss: Int,
+
+        @field:NotBlank
+        val recordedAt: LocalDate?
+    ){
+        constructor(product: Product, lossRate: LossRate) : this(
+            id = product.id,
+            name = product.name,
+            loss = lossRate.loss,
+            recordedAt = lossRate.recordedAt
+        )
+    }
 
 
 
