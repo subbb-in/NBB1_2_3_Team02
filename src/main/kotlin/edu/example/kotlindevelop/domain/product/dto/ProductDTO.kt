@@ -14,12 +14,11 @@ class ProductDTO {
     data class CreateProductRequestDto(
         @field:NotBlank(message = "식재료 이름은 필수 값입니다.")
         val name: String,
-
-        val lossRates: MutableList<LossRateDTO> = mutableListOf()
+        val loss: Int?
     ) {
         fun toEntity(member: Member): Product {
             val product = Product(name = name, maker = member)
-            val lossRateValue = lossRates.firstOrNull()?.loss ?: 222
+            val lossRateValue = loss ?: 222
             val lossRate = LossRate(
                 maker = member,
                 product = product,

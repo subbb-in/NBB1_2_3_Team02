@@ -26,14 +26,14 @@ class ProductService(
         return dto
     }
 
-    @Transactional
-    fun addLoss(lossRateDTO: ProductDTO.lossRateDTO , memberId : Long): ProductDTO.lossRateDTO{
-        val member: Member = memberService.getMemberById(memberId)
-
-        productRepository.findByMakerAndName(member, productDTO.getName())
-            .ifPresent { product ->
-                throw ProductException.PRODUCT_ALREADY_EXIST.getProductException()
-            }
-
-    }
+//    @Transactional
+//    fun addLoss(lossRateDTO: ProductDTO.lossRateDTO , memberId : Long): ProductDTO.lossRateDTO{
+//        val member: Member = memberService.getMemberById(memberId)
+//
+//        productRepository.findByMakerAndName(member, productDTO.getName())
+//            .ifPresent { product ->
+//                throw ProductException.PRODUCT_ALREADY_EXIST.getProductException()
+//            }
+//
+//    }
 }
