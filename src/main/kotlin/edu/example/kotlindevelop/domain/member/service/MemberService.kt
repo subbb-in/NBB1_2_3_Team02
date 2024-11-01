@@ -3,7 +3,6 @@ package edu.example.kotlindevelop.domain.member.service
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO.CustomOAuth2User
-import edu.example.kotlindevelop.domain.member.dto.OAuth2Response
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
@@ -31,25 +30,8 @@ import java.util.*
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
-    //사용하지 않는 ModelMapper 제거
     private val jwtUtil: JwtUtil
 ) {
-    class CustomOAuth2UserService : DefaultOAuth2UserService() {
-        override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
-            val oAuth2User: OAuth2User = super.loadUser(userRequest)
-            println(oAuth2User.attributes)
-
-            val registrationId = userRequest.clientRegistration.registrationId
-            val oAuth2Response: OAuth2Response = when (registrationId) {
-                "naver" -> MemberDTO.NaverResponse(oAuth2User.attributes)
-                else -> MemberDTO.NaverResponse(oAuth2User.attributes)
-            }
-
-            val role = "ROLE_USER"
-
-            return CustomOAuth2User(oAuth2Response, role)
-        }
-    }
 
     @Transactional
     fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.StringResponseDto {
@@ -129,7 +111,7 @@ class MemberService(
             val member: Member = memberOptional.get()
             val fileName = saveImage(imageFile)
 
-            member.mImage = fileName // URL 저장
+            member.mImage = "api/v1/member/upload/$fileName" // URL 저장
             memberRepository.save(member)
 
             return MemberDTO.ChangeImage(dto.id, imageFile)
