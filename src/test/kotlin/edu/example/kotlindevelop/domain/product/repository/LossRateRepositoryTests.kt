@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 class LossRateRepositoryTests {
     @Autowired
     private val productRepository: ProductRepository? = null
