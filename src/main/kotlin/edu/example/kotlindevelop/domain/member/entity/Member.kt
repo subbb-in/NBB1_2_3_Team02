@@ -18,6 +18,7 @@ data class Member(
     var name: String,
     var email: String,
     var mImage: String? = null,
+    var userName: String? = null,
 
     @Column(columnDefinition = "TEXT")
     var refreshToken: String? = null,
