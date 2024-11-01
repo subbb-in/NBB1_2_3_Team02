@@ -1,6 +1,7 @@
 package edu.example.kotlindevelop.domain.member.entity
 
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -32,6 +33,9 @@ data class Member(
 
     @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL], orphanRemoval = true)
     var productList: MutableList<Product> = mutableListOf(),
+
+    @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL])
+    var lossRateList: MutableList<LossRate> = mutableListOf(),
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
     var ordersList: MutableList<Orders> = mutableListOf()
