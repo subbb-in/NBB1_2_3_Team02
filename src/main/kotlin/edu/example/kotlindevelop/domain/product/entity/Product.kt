@@ -13,7 +13,7 @@ class Product(
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     var lossRateList: MutableList<LossRate> = mutableListOf()
