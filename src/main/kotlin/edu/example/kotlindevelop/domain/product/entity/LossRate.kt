@@ -4,6 +4,7 @@ import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -28,5 +29,5 @@ class LossRate(
 
     @CreatedDate
     @Column(name = "recorded_at", nullable = false, updatable = false)
-    var recordedAt: LocalDateTime? = null
+    var recordedAt: LocalDate? = null
 }
