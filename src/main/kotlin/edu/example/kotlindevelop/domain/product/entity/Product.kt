@@ -15,8 +15,18 @@ class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
     var lossRateList: MutableList<LossRate> = mutableListOf()
+
+    fun addLossRate(member: Member, loss: Int) {
+        val lossRate = LossRate(
+            product = this,
+            maker = member,
+            loss = loss
+        )
+
+        this.lossRateList.add(lossRate)
+    }
 
 //    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
 //    val orderItems: List<OrderItem> = mutableListOf()
