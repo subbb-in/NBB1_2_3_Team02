@@ -1,13 +1,14 @@
 package edu.example.kotlindevelop.domain.orders.orders.service
 
+import edu.example.kotlindevelop.domain.member.exception.MemberException
+import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
 import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.orders.orders.exception.OrderException
 import edu.example.kotlindevelop.domain.orders.orders.repository.OrderRepository
-import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
-import edu.example.kotlindevelop.member.exception.MemberException
-import edu.example.kotlindevelop.member.repository.MemberRepository
+import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -24,19 +25,21 @@ class OrderService(
 ) {
 
     @Transactional
-    fun createOrder(orderDTO: OrderDTO, memberId: Long?): Orders {
-        val member = memberRepository.findById(memberId)
-            .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
+    fun createOrder(orderDTO: OrderDTO, memberId: Long?): Orders? {
+        val member = memberId?.let {
+            memberRepository.findById(it)
+                .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
+        }
 
-        val orders = orderDTO.toEntity(member, productRepository) // DTO에서 엔티티로 변환
-        return orderRepository.save(orders)
+        val orders = member?.let { orderDTO.toEntity(it, productRepository) } // DTO에서 엔티티로 변환
+        return orders?.let { orderRepository.save(it) }
     }
 
     fun read(orderId: Long?): OrderDTO? {
-        val orders = orderId?.let {
-            orderRepository.findById(it)
+        val orders =
+            orderRepository.findById(orderId!!)
                 .orElseThrow { OrderException.NOT_FOUND.get() }
-        }
+
 
         return orders?.let { OrderDTO(it) }
     }
@@ -60,8 +63,10 @@ class OrderService(
         val sort = Sort.by("id").descending()
         val pageable: Pageable = pageRequestDTO.getPageable(sort)
 
-        val member = memberRepository.findById(memberId)
-            .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
+        val member = memberId?.let {
+            memberRepository.findById(it)
+                .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
+        }
         val ordersPage = orderRepository.findByMember(member, pageable)
         return ordersPage?.map { OrderDTO.OrderListDTO(it) } ?: Page.empty()
     }
@@ -82,17 +87,35 @@ class OrderService(
     }
     //
 
-    fun getMonthlyAveragePrices(): Map<String, Map<String, Double>> {
+    fun getMonthlyAveragePrices(): Map<String, Map<String, Int>> {
         val orderItems = orderItemRepository.findAll()
 
         // 월별 및 상품별 평균 단가 계산
-        return orderItems.groupBy { it!!.orders.createdAt?.month?.name ?: "Unknown" } // 월 이름
+        return orderItems.groupBy { it?.orders?.createdAt?.month?.name ?: "Unknown" } // 월 이름
             .mapValues { (_, items) ->
-                items.filterNotNull().groupBy { it.product.name } // 상품 이름
-                    .mapValues { (productName: String, productItems: List<OrderItem>) -> // 타입 명시
+                items.filterNotNull().groupBy { it.product?.name ?: "chicken" } // 상품 이름
+                    .mapValues { (_: String, productItems: List<OrderItem>) -> // 타입 명시
                         productItems.sumOf { it.price / it.quantity } / productItems.size // 평균 단가 계산
                     }
             }
+    }
+
+    fun getList(month: Int?, pageRequestDTO: OrderDTO.PageRequestDTO, memberId: Long?): Page<OrderDTO.OrderListDTO> {
+        val sort = Sort.by(Sort.Order.desc("id"))
+        val pageable: Pageable = pageRequestDTO.getPageable2(sort)
+
+        val member = memberId?.let {
+            memberRepository.findById(it)
+                .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
+        }
+
+        if (month !in 1..12) {
+            throw IllegalArgumentException("Invalid month. Please provide a valid month as a number between 1 and 12.")
+        }
+
+        // 선택한 month와 member로 주문 조회, 주문 횟수에 따라 정렬된 결과 반환
+        val ordersPage = orderRepository.findOrdersByMemberAndMonthWithItemCountDesc(member, month!!, pageable)
+        return ordersPage.map { OrderDTO.OrderListDTO(it) }
     }
 
 }

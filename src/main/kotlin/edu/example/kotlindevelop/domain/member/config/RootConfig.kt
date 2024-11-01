@@ -1,14 +1,9 @@
-package edu.example.kotlindevelop.member.config
+package edu.example.kotlindevelop.domain.member.config
 
-import edu.example.kotlindevelop.member.dto.MemberDTO
-import edu.example.kotlindevelop.member.entity.Member
 import org.modelmapper.ModelMapper
-import org.modelmapper.PropertyMap
 import org.modelmapper.convention.MatchingStrategies
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 class RootConfig {

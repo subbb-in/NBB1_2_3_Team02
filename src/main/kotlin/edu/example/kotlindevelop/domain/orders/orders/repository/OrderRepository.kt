@@ -1,5 +1,6 @@
 package edu.example.kotlindevelop.domain.orders.orders.repository
 
+import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -20,6 +21,20 @@ interface OrderRepository : JpaRepository<Orders?, Long?> {
                 + "ORDER BY FORMATDATETIME(o.createdAt, 'yyyy-MM')"
     )
     fun getMonthlyTotalPrice(@Param("member") member: Member?): List<Array<Any?>?>?
+
+    @Query("""
+        SELECT o FROM Orders o
+        JOIN o.orderItems oi
+        WHERE FUNCTION('MONTH', o.createdAt) = :month 
+        AND o.member = :member
+        GROUP BY o.id
+        ORDER BY COUNT(oi.id) DESC
+    """)
+    fun findOrdersByMemberAndMonthWithItemCountDesc(
+        @Param("member") member: Member?,
+        @Param("month") month: Int,
+        pageable: Pageable
+    ): Page<Orders>
 } //    @Query("SELECT o FROM Orders o WHERE o.member = :member")
 //    List<Orders> findAll(@Param("member") Member member);
 
