@@ -6,14 +6,14 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "product")
 class Product(
-    val name: String,
+    var name: String,
     @ManyToOne // 관계 매핑
     @JoinColumn(name = "member_id") // 외래 키 설정
     var maker: Member? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    val id: Long? = null
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     var lossRateList: MutableList<LossRate> = mutableListOf()
