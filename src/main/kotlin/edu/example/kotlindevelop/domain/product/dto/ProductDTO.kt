@@ -15,14 +15,13 @@ class ProductDTO(
     lossRate: LossRate
 ) {
 
-
     data class CreateProductRequestDto(
         val id: Long,
 
         @field:NotBlank(message = "식재료 이름은 필수 값입니다.")
         val name: String,
 
-        val lossRates: MutableList<LossRateDTO> = mutableListOf()
+        val lossRates: MutableList<LossRateRequestDTO> = mutableListOf()
     ) {
         fun toEntity(member: Member): Product {
             return Product(
@@ -32,23 +31,41 @@ class ProductDTO(
         }
     }
 
-    data class lossRateDTO(
-        @field:NotBlank
-        val id: Long?,
+    data class LossRateRequestDTO(
 
-        @field:NotBlank
-        val name: String,
+        val id: Long? = null,
 
         @field:NotBlank
         val loss: Int,
 
-        @field:NotBlank
-        val recordedAt: LocalDate?
+        val recordedAt: LocalDate? = null
     ){
         constructor(product: Product, lossRate: LossRate) : this(
             id = product.id,
-            name = product.name,
             loss = lossRate.loss,
+            recordedAt = lossRate.recordedAt
+        )
+
+        fun toEntity(product: Product, member: Member): LossRate {
+            return LossRate(
+                maker = member,
+                product = product,
+                loss = this.loss
+            )
+        }
+
+    }
+
+    data class LossRateResponseDTO(
+        val productId: Long?,
+        val productName: String,
+        val lossRate: Int,
+        val recordedAt: LocalDate?
+    ) {
+        constructor(product: Product, lossRate: LossRate) : this(
+            productId = product.id,
+            productName = product.name,
+            lossRate = lossRate.loss,
             recordedAt = lossRate.recordedAt
         )
     }
