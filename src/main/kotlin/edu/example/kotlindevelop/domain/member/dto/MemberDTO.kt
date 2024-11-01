@@ -9,38 +9,39 @@ import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
 class MemberDTO {
-    class NaverResponse(attribute: Map<String, Any>) : OAuth2Response {
-        private val attribute: Map<String, Any> = attribute["response"] as Map<String, Any>
-
-        override val provider: String
-            get() = "naver"
-        override val providerId: String
-            get() = attribute["id"].toString()
-        override val email: String
-            get() = attribute["email"].toString()
-        override val name: String
-            get() = attribute["name"].toString()
+    class NaverResponse(private val attribute: Map<String, Any>) {
+        val provider: String = "naver"
+        val providerId: String = attribute["id"] as String
+        val email: String = attribute["email"] as String
+        val name: String = attribute["name"] as String
+        val nickname: String = attribute["nickname"] as String
+        var profileImage: String = attribute["profile_image"] as String
     }
 
     class CustomOAuth2User(
-        private val oAuth2Response: OAuth2Response,
-        private val role: String
-    ) : OAuth2User {
-        override fun getAttributes(): Map<String, Any> {
-            return emptyMap() // 필요에 따라 구현
-        }
-        override fun getAuthorities(): Collection<GrantedAuthority> {
-            return listOf(GrantedAuthority { role }) // 람다 표현식으로 간결하게
-        }
+        private var oAuth2Response: NaverResponse,
+        private var role: String
+    ): OAuth2User {
         override fun getName(): String {
             return oAuth2Response.name
+        }
+        override fun getAttributes(): Map<String, Any> {
+            return mapOf(
+                "provider" to oAuth2Response.provider,
+                "providerId" to oAuth2Response.providerId,
+                "email" to oAuth2Response.email,
+                "name" to oAuth2Response.name,
+                "nickname" to oAuth2Response.nickname,
+                "profileImage" to oAuth2Response.profileImage,
+            )
+        }
+        override fun getAuthorities(): Collection<GrantedAuthority> {
+            return listOf(GrantedAuthority { role })
         }
         fun getUsername(): String {
             return "${oAuth2Response.provider} ${oAuth2Response.providerId}"
         }
     }
-
-
 
 
     data class CreateRequestDto(
@@ -130,7 +131,7 @@ class MemberDTO {
             loginId = member.loginId,
             pw = member.pw,
             name = member.name,
-            mImage = member.mImage ?: "default_image.png",
+            mImage = member.mImage ?: "api/v1/member/upload/defaultImageUrl.jpg",
             createdAt = member.createdAt ?: LocalDateTime.now(),
             modifiedAt = member.modifiedAt ?: LocalDateTime.now(),
             email = member.email
