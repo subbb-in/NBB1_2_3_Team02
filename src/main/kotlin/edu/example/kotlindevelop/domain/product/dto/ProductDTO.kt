@@ -1,6 +1,7 @@
 package com.example.devcoursed.domain.product.product.dto
 
 import edu.example.kotlindevelop.domain.product.entity.LossRate
+import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.validation.constraints.NotBlank
 import org.springframework.data.domain.PageRequest
@@ -14,6 +15,22 @@ class ProductDTO(
     lossRate: LossRate
 ) {
 
+
+    data class CreateProductRequestDto(
+        val id: Long,
+
+        @field:NotBlank(message = "식재료 이름은 필수 값입니다.")
+        val name: String,
+
+        val lossRates: MutableList<LossRateDTO> = mutableListOf()
+    ) {
+        fun toEntity(member: Member): Product {
+            return Product(
+                name = name,
+                maker = member,
+            )
+        }
+    }
 
     data class lossRateDTO(
         @field:NotBlank
@@ -55,17 +72,19 @@ class ProductDTO(
 //    }
 
     data class PageRequestDTO(
-        val page: Int = 0,
-        val size: Int = 5,
-        val sortField: String = "id",
-        val sortDirection: String = "ASC"
+        private val page: Int = 0,
+        private val size: Int = 5,
+        private val sortField: String = "id",
+        private val sortDirection: String = "ASC",
     ) {
         val pageable: Pageable
             get() {
                 val sort = Sort.by(
-                    Sort.Direction.fromString(sortDirection), sortField
+                    Sort.Direction.fromString(
+                        this.sortDirection
+                    ), this.sortField
                 )
-                return PageRequest.of(page, size, sort)
+                return PageRequest.of(this.page, this.size, sort)
             }
     }
 
