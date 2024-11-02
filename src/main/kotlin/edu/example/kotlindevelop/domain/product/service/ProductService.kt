@@ -26,8 +26,9 @@ class ProductService(
         return dto
     }
 
+    // 식재료 추가 등록
     @Transactional
-    fun addLoss(lossRateDTO: ProductDTO.lossRateDTO , memberId : Long): ProductDTO.lossRateDTO{
+    fun addLoss(dto: ProductDTO.CreateProductRequestDto, memberId : Long): ProductDTO.CreateProductRequestDto{
         val member: Member = memberService.getMemberById(memberId)
 
         productRepository.findByMakerAndName(member, productDTO.getName())

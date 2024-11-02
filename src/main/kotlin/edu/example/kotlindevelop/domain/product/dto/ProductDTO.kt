@@ -15,7 +15,7 @@ class ProductDTO {
         @field:NotBlank(message = "식재료 이름은 필수 값입니다.")
         val name: String,
 
-        val lossRates: MutableList<LossRateDTO> = mutableListOf()
+        val lossRates: MutableList<LossRateDTO.LossRateRequestDTO> = mutableListOf()
     ) {
         fun toEntity(member: Member): Product {
             val product = Product(name = name, maker = member)
