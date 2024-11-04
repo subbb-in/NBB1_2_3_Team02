@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.domain.member.config
+package edu.example.kotlindevelop.global.config
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import jakarta.persistence.EntityManager
