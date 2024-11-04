@@ -1,5 +1,6 @@
 package edu.example.kotlindevelop.domain.product.controller
 
+import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
 import edu.example.kotlindevelop.domain.product.service.ProductService
 import edu.example.kotlindevelop.global.security.SecurityUser
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/products")
-
 class ProductController(
     private final val productService: ProductService
 ) {
@@ -26,6 +26,16 @@ class ProductController(
     ) : ResponseEntity<ProductDTO.CreateProductRequestDto> {
         val id: Long = user.id
         return ResponseEntity.ok(productService.insert(request, id))
+    }
+
+    // 식재료 추가 등록
+    @PostMapping("/loss")
+    fun addLoss(
+        @AuthenticationPrincipal user: SecurityUser,
+        @Validated @RequestBody request: LossRateDTO.LossRateRequestDTO
+    ) : ResponseEntity<LossRateDTO.LossRateRequestDTO> {
+        val id : Long = user.id
+        return ResponseEntity.ok(productService.addLoss(request, id))
     }
 
 

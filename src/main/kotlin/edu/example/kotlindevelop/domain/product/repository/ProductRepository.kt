@@ -23,12 +23,4 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
         @Param("endDate") endDate: LocalDate
     ): List<Array<Any>>
 
-    @Query(
-        value = "SELECT * FROM Product p WHERE p.member_id = :memberId AND p.name = :name ORDER BY p.created_at DESC LIMIT 1",
-        nativeQuery = true
-    )
-    fun findLatestProductByMakerAndName(
-        @Param("memberId") memberId: Long?,
-        @Param("name") name: String?
-    ): Optional<Product?>?
 }

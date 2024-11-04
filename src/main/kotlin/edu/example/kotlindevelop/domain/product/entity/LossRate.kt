@@ -20,7 +20,7 @@ class LossRate(
     var product: Product,
 
     @Column(nullable = false)
-    var loss: Int? = null
+    var loss: Int
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,4 @@ class LossRate(
     @Column(name = "recorded_at", nullable = false, updatable = false)
     var recordedAt: LocalDate? = null
 
-    fun changeLoss(newLoss : Int){
-        this.loss = newLoss
-    }
 }
