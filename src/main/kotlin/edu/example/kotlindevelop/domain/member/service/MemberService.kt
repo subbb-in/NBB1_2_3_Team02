@@ -10,6 +10,8 @@ import edu.example.kotlindevelop.domain.member.util.PasswordUtil
 import edu.example.kotlindevelop.global.jwt.JwtUtil
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -30,7 +32,8 @@ import java.util.*
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtUtil: JwtUtil
+    private val jwtUtil: JwtUtil,
+    @PersistenceContext private val entityManager: EntityManager
 ) {
 
     @Transactional
@@ -163,7 +166,7 @@ class MemberService(
     }
 
     fun count(): Int {
-        return memberRepository.findAll().size
+        return memberRepository.count().toInt()
     }
 
     @Transactional
@@ -236,5 +239,20 @@ class MemberService(
 
         return templatePassword
     }
+
+    @Transactional
+    fun bulkInsertMembers(members: List<Member>, batchSize: Int = 1000) {
+        members.forEachIndexed{ index , member -> memberRepository.save(member)
+            if (index % batchSize == 0 && index > 0) {
+                memberRepository.flush()
+                entityManager.clear()
+            }
+            memberRepository.flush()
+            entityManager.clear()
+
+        }
+
+    }
+
 }
 

@@ -1,7 +1,8 @@
 package edu.example.kotlindevelop.global.initData
 
-import com.oracle.graal.enterprise.hotspot.javacodegen.k.pw
+
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.entity.Product
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.member.service.MemberService
@@ -45,16 +46,23 @@ class NotProd(
 
         memberService.create(adminRequest)
 
-        // 10만 회원 생성
-        for (i in 1..100000) {
-            val createDto = MemberDTO.CreateRequestDto(
-                loginId = "abc$i",
-                pw = "1234",
-                name = "회원$i",
-                email = "abc$i@gmail.com"
-            )
-            memberService.create(createDto)
+        // 10만 회원 생성 _ dto
+//        for (i in 1..100000) {
+//            val createDto = MemberDTO.CreateRequestDto(
+//                loginId = "abc$i",
+//                pw = "1234",
+//                name = "회원$i",
+//                email = "abc$i@gmail.com"
+//            )
+//            memberService.create(createDto)
+//        }
+
+        // 10만 회원 생성 - bulk query
+        val members = mutableListOf<Member>()
+        for (i in 1..1000) {
+            members.add(Member(null ,"abc$i","1234","testname$i","test$i@naver.com" ))
         }
+        memberService.bulkInsertMembers(members)
 
     }
 

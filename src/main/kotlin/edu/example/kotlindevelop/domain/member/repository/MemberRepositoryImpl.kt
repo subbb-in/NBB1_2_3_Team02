@@ -15,6 +15,7 @@ class MemberRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : MemberRepositoryCustom {
 
+    // offeset 기반  페이징 처리
     override fun searchMembers(pageable: Pageable): Page<Member> {
         val member = QMember.member
 
@@ -32,4 +33,7 @@ class MemberRepositoryImpl(
 
         return PageImpl(content,pageable,total)
     }
+
+
+
 }
