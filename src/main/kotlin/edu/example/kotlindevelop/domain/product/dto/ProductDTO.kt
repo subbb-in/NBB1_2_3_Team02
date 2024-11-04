@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import java.math.BigDecimal
+import java.time.LocalDate
 
 
 class ProductDTO {
@@ -53,4 +55,10 @@ class ProductDTO {
                 return PageRequest.of(this.page, this.size, sort)
             }
     }
+
+    data class AverageResponseDTO(
+        val dates: List<LocalDate>,
+        val personalAverages: List<BigDecimal>,
+        val allUserAverages: List<BigDecimal>
+    )
 }

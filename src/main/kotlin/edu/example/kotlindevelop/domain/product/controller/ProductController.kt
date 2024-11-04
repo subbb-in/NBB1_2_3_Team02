@@ -4,10 +4,12 @@ import edu.example.kotlindevelop.domain.product.dto.ProductDTO
 import edu.example.kotlindevelop.domain.product.service.ProductService
 import edu.example.kotlindevelop.global.security.SecurityUser
 import org.springframework.data.domain.Page
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -56,4 +58,19 @@ class ProductController(
         val productDtoPage: Page<ProductDTO.ProductResponseDto> = productService.searchPersonalProducts(keyword, request, memberId)
         return ResponseEntity.ok(productDtoPage)
     }
+
+
+    @GetMapping("/loss/{name}")
+    fun getAverageLossStatistics(
+        @AuthenticationPrincipal user: SecurityUser,
+        @PathVariable name: String,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate
+    ): ResponseEntity<List<ProductDTO.AverageResponseDTO>> {
+        val memberId = user.id
+        val statistics = productService.getAverageStatistics(memberId, name, startDate, endDate)
+        return ResponseEntity.ok(statistics)
+    }
+
+
 }
