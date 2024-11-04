@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import QnADetail from './QnADetail';
-import axiosInstance from "../axiosInstance"; // 질문 상세보기 컴포넌트
+import axiosInstance from "../axiosInstance";
+import './QnAPage.css'; // 새로운 CSS 파일 import
 
 const QnAPage = () => {
     const [questions, setQuestions] = useState([]);
     const [newQuestion, setNewQuestion] = useState({ title: '', description: '' });
-    const [editingQuestion, setEditingQuestion] = useState(null);
+    const [showAddQuestion, setShowAddQuestion] = useState(false); // 질문 추가 폼 표시 여부
     const [errorMessage, setErrorMessage] = useState('');
     const [showDetail, setShowDetail] = useState(null);
 
@@ -30,76 +31,63 @@ const QnAPage = () => {
             const response = await axiosInstance.post('/api/v1/qna/post', newQuestion);
             setQuestions([...questions, response.data]);
             setNewQuestion({ title: '', description: '' });
+            setShowAddQuestion(false); // 질문 추가 후 폼 숨기기
         } catch (error) {
             setErrorMessage('질문 추가에 실패했습니다.');
         }
     };
 
-    // 질문 수정
-    const handleEditQuestion = async (question) => {
-        try {
-            const response = await axiosInstance.put(`/api/v1/qna/${question.id}`, question);
-            setQuestions(questions.map(q => (q.id === question.id ? response.data : q)));
-            setEditingQuestion(null);
-        } catch (error) {
-            setErrorMessage('질문 수정에 실패했습니다.');
-        }
-    };
-
-    // 질문 삭제
-    const handleDeleteQuestion = async (id) => {
-        try {
-            await axiosInstance.delete(`/api/v1/qna/${id}`);
-            setQuestions(questions.filter(q => q.id !== id));
-        } catch (error) {
-            setErrorMessage('질문 삭제에 실패했습니다.');
-        }
+    // 취소 버튼 핸들러
+    const handleCancel = () => {
+        setShowAddQuestion(false);
+        setNewQuestion({ title: '', description: '' }); // 입력 초기화
     };
 
     return (
-        <div>
-            <h1>QnA 게시판</h1>
-            {errorMessage && <div className="error">{errorMessage}</div>}
+        <div className="qna-container">
+            <h1 className="qna-header">QnA 게시판</h1>
+            {errorMessage && <div className="qna-error">{errorMessage}</div>}
 
-            <button onClick={() => setEditingQuestion({ title: '', description: '' })}>
-                질문 게시
-            </button>
-
-            {editingQuestion && (
-                <form onSubmit={(e) => handleEditQuestion(editingQuestion)}>
-                    <input
-                        type="text"
-                        placeholder="제목"
-                        value={editingQuestion.title}
-                        onChange={(e) => setEditingQuestion({ ...editingQuestion, title: e.target.value })}
-                        required
-                    />
-                    <textarea
-                        placeholder="설명"
-                        value={editingQuestion.description}
-                        onChange={(e) => setEditingQuestion({ ...editingQuestion, description: e.target.value })}
-                        required
-                    />
-                    <button type="submit">수정하기</button>
-                    <button type="button" onClick={() => setEditingQuestion(null)}>취소</button>
+            {!showAddQuestion ? (
+                <button className="qna-button" onClick={() => setShowAddQuestion(true)}>
+                    질문 게시
+                </button>
+            ) : (
+                <form onSubmit={handleAddQuestion}>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="제목"
+                            value={newQuestion.title}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, title: e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <textarea
+                            placeholder="설명"
+                            value={newQuestion.description}
+                            onChange={(e) => setNewQuestion({ ...newQuestion, description: e.target.value })}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="qna-button">질문 추가하기</button>
+                    <button type="button" className="qna-button" onClick={handleCancel}>취소</button>
                 </form>
             )}
-
-            <h2>질문 목록</h2>
-            <ul>
-                {questions.map(question => (
-                    <li key={question.id}>
-                        <h3 onClick={() => setShowDetail(question)}>{question.title}</h3>
-                        <p>{question.description}</p>
-                        <button onClick={() => setEditingQuestion(question)}>수정</button>
-                        <button onClick={() => handleDeleteQuestion(question.id)}>삭제</button>
-                    </li>
-                ))}
-            </ul>
 
             {showDetail && (
                 <QnADetail question={showDetail} onClose={() => setShowDetail(null)} />
             )}
+
+            <h2 className="qna-subheader">질문 목록</h2>
+            <ul className="qna-list">
+                {questions.map(question => (
+                    <li key={question.id} className="qna-item">
+                        <h3 onClick={() => setShowDetail(question)}>{question.title}</h3>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
