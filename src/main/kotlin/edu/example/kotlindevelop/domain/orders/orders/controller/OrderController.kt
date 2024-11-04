@@ -30,7 +30,6 @@ class OrderController(private val orderService: OrderService) {
         return ResponseEntity.badRequest().body(mapOf("error" to "Invalid order data"))
     }
 
-
     @GetMapping("/repeat")
     fun putOrderFromPrevMonth(
         @AuthenticationPrincipal user: SecurityUser
@@ -55,9 +54,9 @@ class OrderController(private val orderService: OrderService) {
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.id
         val orders = orderService.getList(pageRequestDTO, memberId)
-// !!지워보기, it 해보기
         return ResponseEntity.ok(orders)
     }
+
     @GetMapping("/list/{month}")
     fun getListByMonthOrderByOrder(
         @PathVariable month: Int?,
@@ -67,9 +66,6 @@ class OrderController(private val orderService: OrderService) {
         val memberId: Long = user.id
         return ResponseEntity.ok(pageRequestDTO?.let { orderService.getList(month, it, memberId) })
     }
-    //
-    //
-    //
     //
     // 주문 삭제
     @DeleteMapping("/{orderId}")
