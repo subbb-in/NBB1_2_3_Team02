@@ -30,7 +30,6 @@ class OrderController(private val orderService: OrderService) {
         return ResponseEntity.badRequest().body(mapOf("error" to "Invalid order data"))
     }
 
-
     @GetMapping("/repeat")
     fun putOrderFromPrevMonth(
         @AuthenticationPrincipal user: SecurityUser
