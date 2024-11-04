@@ -1,17 +1,13 @@
 package edu.example.kotlindevelop.domain.product.controller
-
 import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
 import edu.example.kotlindevelop.domain.product.service.ProductService
 import edu.example.kotlindevelop.global.security.SecurityUser
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
+import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -38,5 +34,26 @@ class ProductController(
         return ResponseEntity.ok(productService.addLoss(request, id))
     }
 
+    // 사용자용 상품 목록 전체 조회
+    @GetMapping
+    fun getList(
+        @AuthenticationPrincipal user: SecurityUser,
+        request: ProductDTO.PageRequestDto
+    ) : ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
+        val memberId: Long = user.id
+        val productDtoPage: Page<ProductDTO.ProductResponseDto> = productService.getPersonalProducts(request, memberId)
+        return ResponseEntity.ok(productDtoPage)
+    }
 
+    // 사용자용 상품 이름 검색
+    @GetMapping("/search")
+    fun searchPersonalProducts(
+        @RequestParam keyword: String,
+        @AuthenticationPrincipal user: SecurityUser,
+        request: ProductDTO.PageRequestDto
+    ): ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
+        val memberId: Long = user.id
+        val productDtoPage: Page<ProductDTO.ProductResponseDto> = productService.searchPersonalProducts(keyword, request, memberId)
+        return ResponseEntity.ok(productDtoPage)
+    }
 }

@@ -2,7 +2,6 @@ package edu.example.kotlindevelop.domain.product.entity
 
 import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.persistence.*
-import java.util.Optional
 
 @Entity
 @Table(name = "product")
