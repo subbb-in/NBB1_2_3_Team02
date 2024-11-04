@@ -30,6 +30,12 @@ class ProductDTO {
         }
     }
 
+    data class ProductResponseDto (
+        val productId: Long,
+        val productName: String,
+        val latestLossRate: Int
+    )
+
     data class PageRequestDTO(
         private val page: Int = 0,
         private val size: Int = 5,
