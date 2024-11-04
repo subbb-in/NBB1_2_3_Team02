@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import QnADetail from './QnADetail';
 import axiosInstance from "../axiosInstance";
-import './QnAPage.css'; // 새로운 CSS 파일 import
+import './QnAPage.css';
+import QnADetailAdmin from "./QnADetailAdmin"; // 새로운 CSS 파일 import
 
-const QnAPage = () => {
+const QnAPageAdmin = () => {
     const [questions, setQuestions] = useState([]);
     const [newQuestion, setNewQuestion] = useState({ title: '', description: '' });
     const [showAddQuestion, setShowAddQuestion] = useState(false); // 질문 추가 폼 표시 여부
@@ -86,7 +86,7 @@ const QnAPage = () => {
             )}
 
             {showDetail && (
-                <QnADetail question={showDetail} onClose={() => setShowDetail(null)} onUpdateQuestions={updateQuestions} />
+                <QnADetailAdmin question={showDetail} onClose={() => setShowDetail(null)} onUpdateQuestions={updateQuestions} />
             )}
 
             <h2 className="qna-subheader">질문 목록</h2>
@@ -101,4 +101,4 @@ const QnAPage = () => {
     );
 };
 
-export default QnAPage;
+export default QnAPageAdmin;

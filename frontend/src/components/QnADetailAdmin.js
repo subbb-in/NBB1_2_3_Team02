@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import axiosInstance from "../axiosInstance";
 
-const QnADetail = ({ question, onClose, onUpdateQuestions  }) => {
-    const userIdFromSession = Number(localStorage.getItem('id'));
+const QnADetailAdmin = ({ question, onClose, onUpdateQuestions  }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedTitle, setUpdatedTitle] = useState(question.title);
     const [updatedDescription, setUpdatedDescription] = useState(question.description);
@@ -43,8 +42,6 @@ const QnADetail = ({ question, onClose, onUpdateQuestions  }) => {
         <div className="qna-modal">
             <h2>{question.title}</h2>
             <p>{question.description}</p>
-            {question.userId === userIdFromSession && (
-                <>
                     <button className="qna-modal-button" onClick={handleEditToggle}>
                         {isEditing ? '취소' : '수정'}
                     </button>
@@ -65,11 +62,9 @@ const QnADetail = ({ question, onClose, onUpdateQuestions  }) => {
                         </form>
                     )}
                     <button className="qna-modal-button" onClick={handleDelete}>삭제</button>
-                </>
-            )}
             <button className="qna-modal-button" onClick={onClose}>닫기</button>
         </div>
     );
 };
 
-export default QnADetail;
+export default QnADetailAdmin;
