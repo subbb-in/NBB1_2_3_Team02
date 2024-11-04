@@ -32,9 +32,9 @@ class ProductService(
 
     // 사용자용 목록 전체 조회
     @Transactional(readOnly = true)
-    fun getList(dto: ProductDTO.PageRequestDTO, memberId: Long): Page<ProductDTO.ProductResponseDto> {
+    fun getPersonalProducts(dto: ProductDTO.PageRequestDto, memberId: Long): Page<ProductDTO.ProductResponseDto> {
         val pageable: Pageable = dto.pageable
-        val productProjections: Page<ProductProjection> = productRepository.listAll(memberId, pageable)
+        val productProjections: Page<ProductProjection> = productRepository.findPersonalProducts(memberId, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
                 productId = projection.getProductId(),

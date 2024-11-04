@@ -29,11 +29,12 @@ class ProductController(
     @GetMapping
     fun getList(
         @AuthenticationPrincipal user: SecurityUser,
-        request: ProductDTO.PageRequestDTO
+        request: ProductDTO.PageRequestDto
     ) : ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
         val memberId: Long = user.id
-        val productDtoPage: Page<ProductDTO.ProductResponseDto> = productService.getList(request, memberId)
+        val productDtoPage: Page<ProductDTO.ProductResponseDto> = productService.getPersonalProducts(request, memberId)
         return ResponseEntity.ok(productDtoPage)
     }
+
 
 }

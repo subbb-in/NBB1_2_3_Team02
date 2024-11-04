@@ -36,7 +36,7 @@ class ProductDTO {
         val latestLossRate: Int
     )
 
-    data class PageRequestDTO(
+    data class PageRequestDto(
         private val page: Int = 0,
         private val size: Int = 5,
         private val sortField: String = "id",

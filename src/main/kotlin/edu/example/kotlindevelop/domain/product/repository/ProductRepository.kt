@@ -37,5 +37,5 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
         ) 
         ORDER BY l.recordedAt DESC
     """)
-    fun listAll(memberId: Long, pageable: Pageable): Page<ProductProjection>
+    fun findPersonalProducts(memberId: Long, pageable: Pageable): Page<ProductProjection>
 }
