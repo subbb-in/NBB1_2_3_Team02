@@ -1,9 +1,7 @@
 package edu.example.kotlindevelop.domain.product.service
 
-import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
-import edu.example.kotlindevelop.domain.product.entity.Product
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
 import edu.example.kotlindevelop.domain.product.exception.ProductException
 import edu.example.kotlindevelop.domain.product.repository.ProductRepository

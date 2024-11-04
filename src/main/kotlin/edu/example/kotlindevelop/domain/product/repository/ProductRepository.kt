@@ -1,7 +1,6 @@
 package edu.example.kotlindevelop.domain.product.repository
 
 import edu.example.kotlindevelop.domain.member.entity.Member
-import edu.example.kotlindevelop.domain.product.dto.ProductDTO
 import edu.example.kotlindevelop.domain.product.entity.Product
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
 import org.springframework.data.domain.Page
