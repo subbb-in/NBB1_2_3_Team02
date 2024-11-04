@@ -1,16 +1,20 @@
 package edu.example.kotlindevelop.domain.orders.orders.service
 
-import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
+import edu.example.kotlindevelop.domain.member.exception.MemberException
+import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
 import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.orders.orders.exception.OrderException
 import edu.example.kotlindevelop.domain.orders.orders.repository.OrderRepository
+import edu.example.kotlindevelop.domain.product.ProductRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
@@ -22,9 +26,9 @@ class OrderService(
 ) {
 
     @Transactional
-    fun createOrder(orderDTO: OrderDTO, memberId: Long?): Orders {
+    fun createOrder(orderDTO: OrderDTO, memberId: Long): Orders {
         val member = memberRepository.findById(memberId)
-            .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
+            .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
 
         val orders = orderDTO.toEntity(member, productRepository) // DTO에서 엔티티로 변환
         return orderRepository.save(orders)
@@ -54,12 +58,12 @@ class OrderService(
         }
     }
 
-    fun getList(pageRequestDTO: OrderDTO.PageRequestDTO, memberId: Long?): Page<OrderDTO.OrderListDTO> {
+    fun getList(pageRequestDTO: OrderDTO.PageRequestDTO, memberId: Long): Page<OrderDTO.OrderListDTO> {
         val sort = Sort.by("id").descending()
         val pageable: Pageable = pageRequestDTO.getPageable(sort)
 
         val member = memberRepository.findById(memberId)
-            .orElseThrow { MemberException.MEMBER_NOT_FOUND.getMemberTaskException() }
+            .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
         val ordersPage = orderRepository.findByMember(member, pageable)
         return ordersPage!!.map { OrderDTO.OrderListDTO(it) }
     }
@@ -83,16 +87,29 @@ class OrderService(
         val orderItems = orderItemRepository.findAll()
 
         return orderItems
-            .filter { it!!.orders?.createdAt != null && it.product?.name != null }
-            .groupBy { it!!.orders!!.createdAt!!.month.name }
+            .groupBy { it?.orders?.createdAt?.month?.name ?: "Unknown Month" }
             .mapValues { (month, itemsByMonth) ->
                 itemsByMonth
-                    .groupBy { it!!.product?.name ?: "Unknown Product" } // null일 경우 "Unknown Product"로 대체
+                    .groupBy { it?.product?.name ?: "Unknown Product" }
                     .mapValues { (_, itemsByProduct) ->
                         itemsByProduct
-                            .mapNotNull { it!!.price?.toDouble()?.div(it.quantity ?: 1) }
+                            .mapNotNull { it?.price?.toDouble()?.div(it.quantity ?: 1) }
                             .average()
                     }
             }
+    }
+
+    fun getPrevMonthOrders(memberId: Long): List<Orders> {
+        // 이전 월의 시작과 끝 날짜 계산
+        val now = LocalDate.now()
+        val startOfLastMonth = now.minusMonths(1).withDayOfMonth(1)
+        val endOfLastMonth = now.minusMonths(1).withDayOfMonth(now.minusMonths(1).lengthOfMonth())
+
+// LocalDateTime으로 변환
+        val startOfLastMonthDateTime: LocalDateTime = startOfLastMonth.atStartOfDay()
+        val endOfLastMonthDateTime: LocalDateTime = endOfLastMonth.atTime(23, 59, 59)
+
+// 해당 기간의 주문 내역 조회
+        return orderRepository.findByMemberIdAndCreatedAtBetween(memberId, startOfLastMonthDateTime, endOfLastMonthDateTime)
     }
 }

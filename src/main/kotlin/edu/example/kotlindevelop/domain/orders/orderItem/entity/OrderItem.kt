@@ -3,6 +3,7 @@ package edu.example.kotlindevelop.domain.orders.orderItem.entity
 
 import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.domain.product.Product
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 
@@ -15,7 +16,7 @@ open class OrderItem(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val product: Product,
+    val product: Product?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")

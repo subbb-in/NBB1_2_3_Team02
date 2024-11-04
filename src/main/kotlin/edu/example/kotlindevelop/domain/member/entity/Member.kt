@@ -1,6 +1,8 @@
 package edu.example.kotlindevelop.domain.member.entity
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.domain.product.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -30,9 +32,10 @@ data class Member(
     val modifiedAt: LocalDateTime? = null,
 
     @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var productList: MutableList<edu.example.kotlindevelop.domain.member.entity.Product> = mutableListOf(),
+    var productList: MutableList<Product> = mutableListOf(),
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonManagedReference
     var ordersList: MutableList<Orders> = mutableListOf()
 ) {
     fun updateRefreshToken(refreshToken: String?) {
