@@ -43,6 +43,15 @@ const QnAPage = () => {
         setNewQuestion({ title: '', description: '' }); // 입력 초기화
     };
 
+    const updateQuestions = (updatedQuestion, deletedQuestionId) => {
+        if (updatedQuestion) {
+            setQuestions(questions.map(q => (q.id === updatedQuestion.id ? updatedQuestion : q)));
+        }
+        if (deletedQuestionId) {
+            setQuestions(questions.filter(q => q.id !== deletedQuestionId));
+        }
+    };
+
     return (
         <div className="qna-container">
             <h1 className="qna-header">QnA 게시판</h1>
@@ -77,7 +86,7 @@ const QnAPage = () => {
             )}
 
             {showDetail && (
-                <QnADetail question={showDetail} onClose={() => setShowDetail(null)} />
+                <QnADetail question={showDetail} onClose={() => setShowDetail(null)} onUpdateQuestions={updateQuestions} />
             )}
 
             <h2 className="qna-subheader">질문 목록</h2>
