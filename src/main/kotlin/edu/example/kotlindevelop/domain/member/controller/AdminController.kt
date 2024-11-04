@@ -2,6 +2,8 @@ package edu.example.kotlindevelop.domain.member.controller
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.service.MemberService
+import edu.example.kotlindevelop.domain.product.dto.ProductDTO
+import edu.example.kotlindevelop.domain.product.service.ProductService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/adm")
 class AdminController (
     private val memberService: MemberService,
-//    private val productService: ProductService
+    private val productService: ProductService
 ){
 
 
@@ -31,12 +33,12 @@ class AdminController (
 
     // 아래는 ProductService merge 후 완성
 
-//    //모든 회원 식재료 정보 조회하기
-//    @GetMapping("/products/all")
-//    fun getProducts(pageRequestDTO: ProductDTO.PageRequestDTO?): ResponseEntity<Page<ProductDTO>> {
-//        val responseDto: Page<ProductDTO> = productService.getProducts(pageRequestDTO)
-//        return ResponseEntity.ok<Page<ProductDTO>>(responseDto)
-//    }
+    //모든 회원 식재료 정보 조회하기
+    @GetMapping("/products/all")
+    fun getProducts(pageRequestDTO: ProductDTO.PageRequestDto): ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
+        val responseDto: Page<ProductDTO.ProductResponseDto> = productService.getProducts(pageRequestDTO)
+        return ResponseEntity.ok(responseDto)
+    }
 
 //    // 상품 이름 검색
 //    @GetMapping("/products/search")

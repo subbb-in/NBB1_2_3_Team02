@@ -44,6 +44,20 @@ class ProductService(
         }
     }
 
+    // 관리자용 목록 전체 조회
+    @Transactional(readOnly = true)
+    fun getProducts(dto: ProductDTO.PageRequestDto): Page<ProductDTO.ProductResponseDto> {
+        val pageable: Pageable = dto.pageable
+        val productProjections: Page<ProductProjection> = productRepository.findAllProducts(pageable)
+        return productProjections.map { projection ->
+            ProductDTO.ProductResponseDto(
+                productId = projection.getProductId(),
+                productName = projection.getProductName(),
+                latestLossRate = projection.getLatestLossRate()
+            )
+        }
+    }
+
 //    @Transactional
 //    fun addLoss(lossRateDTO: ProductDTO.lossRateDTO , memberId : Long): ProductDTO.lossRateDTO{
 //        val member: Member = memberService.getMemberById(memberId)
