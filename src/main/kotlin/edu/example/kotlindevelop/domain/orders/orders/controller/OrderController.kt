@@ -50,14 +50,14 @@ class OrderController(private val orderService: OrderService) {
     // 주문 목록 조회
     @GetMapping("/list")
     fun getList(
-        @Validated pageRequestDTO: OrderDTO.PageRequestDTO?,
+        @Validated pageRequestDTO: OrderDTO.PageRequestDTO,
         @AuthenticationPrincipal user: SecurityUser
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.id
-        val orders = orderService.getList(pageRequestDTO!!, memberId)
-// !!지워보기, it 해보기
+        val orders = orderService.getList(pageRequestDTO, memberId)
         return ResponseEntity.ok(orders)
     }
+
     @GetMapping("/list/{month}")
     fun getListByMonthOrderByOrder(
         @PathVariable month: Int?,
@@ -67,9 +67,6 @@ class OrderController(private val orderService: OrderService) {
         val memberId: Long = user.id
         return ResponseEntity.ok(pageRequestDTO?.let { orderService.getList(month, it, memberId) })
     }
-    //
-    //
-    //
     //
     // 주문 삭제
     @DeleteMapping("/{orderId}")
