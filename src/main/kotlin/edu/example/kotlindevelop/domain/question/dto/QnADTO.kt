@@ -13,13 +13,16 @@ data class QnACreateRequestDto(
     @field:NotBlank(message = "내용은 필수 입력 값입니다.")
     val description: String,
 
+    var status: QuestionStatus = QuestionStatus.UNANSWERED,
+
     var userId: Long
 ) {
     fun toEntity(): QnA {
         return QnA(
             title = title,
             description = description,
-            userId = userId
+            userId = userId,
+            status = status,
         )
     }
 }
