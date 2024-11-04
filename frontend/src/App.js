@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import './App.css';
 import UserInfo from './components/UserInfo';
 import Login from './components/Login';
-import SocialLogin from './components/SocialLogin';
 import ProfileImageChange from './components/ProfileImageChange';
 import UserDelete from './components/UserDelete';
 import Register from './components/Register';
@@ -27,7 +26,7 @@ function App() {
     const handleLogin = ( name, mImage, username ) => {
         setUserName(name);
         setProfileImage(mImage);
-        setSocial(username)
+        setSocial(username||'')
         setActiveComponent('');
         setActiveMenu(null); // 로그인 시 메뉴 초기화
     };
@@ -76,9 +75,9 @@ function App() {
         setActiveMenu(null);
     };
 
-    const handleProfileImageChange = async (newImageUrl) => {
-        setProfileImage(newImageUrl);
-    };
+    // const handleProfileImageChange = (newImage) => {
+    //     setProfileImage(newImage);
+    // };
 
 
     const renderSubMenu = () => {
@@ -108,7 +107,7 @@ function App() {
                     </ul>
                 );
             } else {
-                if (social === null) {
+                if (social === '') {
                     return (
                         <ul className="sub-menu">
                             <li onClick={() => showComponent('userInfo')}> 회원 정보 수정</li>
@@ -184,13 +183,9 @@ function App() {
                             {activeComponent === 'userInfo' && <UserInfo userId={userId} onUpdate={setUserName} />}
                             {activeComponent === 'profileImageChange' &&
                                 <ProfileImageChange
-                                    userId={userId}
-                                    onProfileImageChange={handleProfileImageChange}
-                                    onSuccess={(msg) => alert(msg)} // 성공 메시지 처리
-                                    onError={(msg) => alert(msg)} // 에러 메시지 처리
+                                    onProfileImageChange={setProfileImage}
                                 />
                             }
-
                             {activeComponent === 'userDelete' && <UserDelete userId={userId} onDelete={handleUserDelete} />}
                             {activeComponent === 'insertOrder' && <InsertOrder memberId={userId} />}
                             {activeComponent === 'orderListPage' && <OrderListPage />}
