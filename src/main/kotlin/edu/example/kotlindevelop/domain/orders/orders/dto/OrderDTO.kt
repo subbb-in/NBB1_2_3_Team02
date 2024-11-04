@@ -3,10 +3,8 @@ package edu.example.kotlindevelop.domain.orders.orders.dto
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.orders.orderItem.dto.OrderItemDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
-import edu.example.kotlindevelop.domain.product.Product
-import edu.example.kotlindevelop.domain.product.ProductRepository
-import edu.example.kotlindevelop.domain.orders.orders.entity.QOrders.orders
-
+import edu.example.kotlindevelop.domain.product.entity.Product
+import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort

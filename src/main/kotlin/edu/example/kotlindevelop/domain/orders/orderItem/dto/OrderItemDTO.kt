@@ -2,9 +2,7 @@ package edu.example.kotlindevelop.domain.orders.orderItem.dto
 
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
-import edu.example.kotlindevelop.domain.orders.orders.entity.QOrders.orders
-import edu.example.kotlindevelop.domain.product.Product
-import edu.example.kotlindevelop.domain.product.QProduct.product
+import edu.example.kotlindevelop.domain.product.entity.Product
 
 
 data class OrderItemDTO(

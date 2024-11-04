@@ -2,9 +2,9 @@ package edu.example.kotlindevelop.domain.orders.orders.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import edu.example.kotlindevelop.domain.member.entity.Member
-import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
-import edu.example.kotlindevelop.domain.product.Product
+import edu.example.kotlindevelop.domain.product.entity.Product
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener

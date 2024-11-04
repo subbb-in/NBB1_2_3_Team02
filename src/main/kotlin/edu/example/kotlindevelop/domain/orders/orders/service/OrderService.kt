@@ -2,12 +2,13 @@ package edu.example.kotlindevelop.domain.orders.orders.service
 
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.orders.orderItem.repository.OrderItemRepository
 import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.orders.orders.exception.OrderException
 import edu.example.kotlindevelop.domain.orders.orders.repository.OrderRepository
-import edu.example.kotlindevelop.domain.product.ProductRepository
+import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
