@@ -29,11 +29,14 @@ data class QnA (
     var modifiedAt: LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
-    var status: QuestionStatus = QuestionStatus.ACTIVE
+    var status: QuestionStatus = QuestionStatus.UNANSWERED
 )
 
 enum class QuestionStatus {
     ACTIVE,
     INACTIVE,
-    DELETED
+    DELETED,
+    ANSWERED,
+    IN_PROGRESS,
+    UNANSWERED,
 }

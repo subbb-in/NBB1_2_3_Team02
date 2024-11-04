@@ -41,7 +41,9 @@ const QnADetail = ({ question, onClose, onUpdateQuestions  }) => {
 
     return (
         <div className="qna-modal">
-            <h2>{question.title}</h2>
+            <h2>
+                {question.title}
+            </h2>
             <p>{question.description}</p>
             {question.userId === userIdFromSession && (
                 <>
