@@ -18,6 +18,10 @@ class Product(
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     var lossRates: MutableList<LossRate> = mutableListOf()
 
+    // 보조 생성자 추가
+    constructor(id: Long?, maker: Member?) : this(name = "", maker = maker) {
+    }
+
     fun addLossRate(lossRate: LossRate) {
         lossRates.add(lossRate)
         lossRate.product = this

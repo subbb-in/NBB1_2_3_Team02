@@ -1,19 +1,25 @@
 package edu.example.kotlindevelop.domain.product.service
 
+import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.service.MemberService
+import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
 import edu.example.kotlindevelop.domain.product.exception.ProductException
+import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
 import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
-    private val memberService: MemberService
+    private val memberService: MemberService,
+    private val lossRateRepository: LossRateRepository
+
 ) {
     // 식재료 등록
     @Transactional
@@ -26,6 +32,23 @@ class ProductService(
 
         productRepository.save(dto.toEntity(member))
         return dto
+    }
+
+    // 식재료 추가 등록
+    @Transactional
+    fun addLoss(dto: LossRateDTO.LossRateRequestDTO, memberId : Long): LossRateDTO.LossRateRequestDTO{
+        val member: Member = memberService.getMemberById(memberId)
+
+        lossRateRepository.findLatestProductByMakerAndName(memberId, dto.productId)?.let{
+            throw ProductException.PRODUCT_NOT_FOUND.getProductException()
+        }
+
+        val product = productRepository.findByIdOrNull(dto.productId)!!
+
+        lossRateRepository.save(dto.toEntity(member, product))
+
+        return dto
+
     }
 
     // 사용자용 목록 전체 조회
@@ -84,14 +107,4 @@ class ProductService(
         }
     }
 
-//    @Transactional
-//    fun addLoss(lossRateDTO: ProductDTO.lossRateDTO , memberId : Long): ProductDTO.lossRateDTO{
-//        val member: Member = memberService.getMemberById(memberId)
-//
-//        productRepository.findByMakerAndName(member, productDTO.getName())
-//            .ifPresent { product ->
-//                throw ProductException.PRODUCT_ALREADY_EXIST.getProductException()
-//            }
-//
-//    }
 }

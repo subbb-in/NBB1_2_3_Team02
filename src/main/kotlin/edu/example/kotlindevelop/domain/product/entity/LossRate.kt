@@ -29,4 +29,5 @@ class LossRate(
     @CreatedDate
     @Column(name = "recorded_at", nullable = false, updatable = false)
     var recordedAt: LocalDate? = null
+
 }
