@@ -14,6 +14,8 @@ import UserControl from './components/UserControl';
 import OrderSummary from "./components/OrderSummary";
 import LossControl from './components/LossControl';
 import FindIdPw from "./components/FindIdPw";
+import QnAPage from "./components/QnAPage";
+import QnADetail from "./components/QnADetail";
 
 function App() {
     const [userName, setUserName] = useState('');
@@ -125,6 +127,13 @@ function App() {
                 }
             }
         }
+        if (activeMenu === 'QnAManagement') {
+            return (
+                <ul className="sub-menu">
+                    <li onClick={() => showComponent('qnaPage')}> Q&A</li>
+                </ul>
+            );
+        }
         return null;
     }
 
@@ -177,6 +186,11 @@ function App() {
                                 정보 관리
                             </button>
                             {activeMenu === 'infoManagement' && renderSubMenu()}
+
+                            <button className="auth-button" onClick={() => handleMenuClick('QnAManagement')}>
+                                QnA
+                            </button>
+                            {activeMenu === 'QnAManagement' && renderSubMenu()}
                         </div>
 
                         <div className="component-container">
@@ -194,6 +208,8 @@ function App() {
                             {activeComponent === 'productList' && <ProductList />}
                             {activeComponent === 'userControl' && <UserControl />}
                             {activeComponent === 'lossControl' && <LossControl />}
+                            {activeComponent === 'qnaPage' && <QnAPage />}
+                            {activeComponent === 'qnaDetail' && <QnADetail />}
                         </div>
                     </>
                 ) : (
