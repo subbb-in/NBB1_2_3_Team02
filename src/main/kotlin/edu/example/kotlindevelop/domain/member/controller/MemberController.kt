@@ -167,7 +167,7 @@ class MemberController (
     fun modifyImage(
         @AuthenticationPrincipal user: SecurityUser,
         @RequestParam("mImage") mImage: MultipartFile
-    ): ResponseEntity<MemberDTO.ChangeImage> {
+    ): ResponseEntity<MemberDTO.ChangeImageResponse> {
         val dto: MemberDTO.ChangeImage = MemberDTO.ChangeImage(user.id,mImage)
         return ResponseEntity.ok(memberService.changeImage(dto, mImage))
     }
