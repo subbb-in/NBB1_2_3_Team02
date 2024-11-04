@@ -9,7 +9,8 @@ import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 @Entity
 @Table(name = "orderItem")
-open class OrderItem(
+//open class OrderItem(
+data class OrderItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -21,7 +22,6 @@ open class OrderItem(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")
     var orders: Orders,
-
     val quantity: Int,
     val price: Int
 ) {

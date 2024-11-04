@@ -39,33 +39,15 @@ class OrderController(private val orderService: OrderService) {
         val previousOrders = orderService.getPrevMonthOrders(memberId)
         return ResponseEntity.ok(previousOrders)
     }
-//
-//        if (previousOrders.isEmpty()) {
-//            return ResponseEntity.badRequest().body(mapOf("error" to "전 주문 내역이 없습니다."))
-//        }
-//        //이전 주문 기반
-//        previousOrders.forEach { previousOrder -> // 각 주문에 대해 반복
-//            val newOrderDTO = OrderDTO(
-//                id = 0L,
-//                items = previousOrder.orderItems.map { item -> // OrderItemDTO 변환
-//                    OrderItemDTO(
-//                        productId = item.product?.id,
-//                        quantity = item.quantity,
-//                        price = item.price
-//                    )
-//                },
-//                    totalPrice = previousOrder.totalPrice
-//                )
-//            }
-//        return ResponseEntity.ok(mapOf("success" to "Orders created from previous month"))
-//    }
 
+    // 주문 조회
     @GetMapping("/{orderId}")
     fun getOrder(@PathVariable orderId: Long?): ResponseEntity<OrderDTO> {
         val orderDTO = orderService.read(orderId) ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(orderDTO)
     }
-
+    //###//
+    // 주문 목록 조회
     @GetMapping("/list")
     fun getList(
         @Validated pageRequestDTO: OrderDTO.PageRequestDTO?,
@@ -73,16 +55,30 @@ class OrderController(private val orderService: OrderService) {
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.id
         val orders = orderService.getList(pageRequestDTO!!, memberId)
-
+// !!지워보기, it 해보기
         return ResponseEntity.ok(orders)
     }
-
+    @GetMapping("/list/{month}")
+    fun getListByMonthOrderByOrder(
+        @PathVariable month: Int?,
+        @Validated pageRequestDTO: OrderDTO.PageRequestDTO?,
+        @AuthenticationPrincipal user: SecurityUser
+    ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
+        val memberId: Long = user.id
+        return ResponseEntity.ok(pageRequestDTO?.let { orderService.getList(month, it, memberId) })
+    }
+    //
+    //
+    //
+    //
+    // 주문 삭제
     @DeleteMapping("/{orderId}")
-    fun deleteOrder(@PathVariable orderId: Long?): ResponseEntity<Map<String, String>> {
+    fun deleteOrder(@PathVariable orderId: Long?): Map<String, String> {
         orderService.delete(orderId)
-        return ResponseEntity.ok(mapOf("success" to "delete"))
+        return java.util.Map.of("success", "delete")
     }
 
+    //주문 월별 그래프 조회
     @GetMapping("/monthly-summary")
     fun getMonthlyOrderSummary(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<List<Map<String, Any?>>> {
         val memberId: Long = user.id
@@ -90,10 +86,10 @@ class OrderController(private val orderService: OrderService) {
         return ResponseEntity.ok(monthlySummary)
     }
 
-    @GetMapping("/average-prices")
-    fun getMonthlyAveragePrices(): ResponseEntity<Map<String, Map<String, Double>>> {
-        return ResponseEntity.ok(orderService.getMonthlyAveragePrices())
-    }
 
+    @GetMapping("/average-prices")
+    fun getMonthlyAveragePrices(): Map<String, Map<String, Int>> {
+        return orderService.getMonthlyAveragePrices()
+    }
 
 }

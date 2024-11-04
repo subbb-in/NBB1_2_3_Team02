@@ -1,6 +1,7 @@
 package edu.example.kotlindevelop.domain.member.controller
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.service.MemberService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/adm")
 class AdminController (
-    private val memberService: edu.example.kotlindevelop.domain.member.service.MemberService,
+    private val memberService: MemberService,
 //    private val productService: ProductService
 ){
 

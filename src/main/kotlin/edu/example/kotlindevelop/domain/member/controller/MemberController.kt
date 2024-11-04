@@ -1,6 +1,7 @@
 package edu.example.kotlindevelop.domain.member.controller
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.global.security.SecurityUser
 import jakarta.mail.internet.MimeMessage
 import org.hibernate.query.sqm.tree.SqmNode.log
@@ -21,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/api/v1/members")
 class MemberController (
-    val memberService: edu.example.kotlindevelop.domain.member.service.MemberService,
+    val memberService: MemberService,
     val resourceLoader: ResourceLoader,
     val mailSender: JavaMailSender
 ){

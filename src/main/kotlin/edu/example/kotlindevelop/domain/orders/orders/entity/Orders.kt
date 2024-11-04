@@ -13,7 +13,6 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener::class)
-
 class Orders(
     var totalPrice: Long,
 
@@ -29,7 +28,6 @@ class Orders(
     @CreatedDate
     @Column(name = "created_at", updatable = false) // 생성일은 업데이트하지 않음
     var createdAt: LocalDateTime? = null
-
 
     @LastModifiedDate
     @Column(name = "modified_at") // 수정일
@@ -48,7 +46,6 @@ class Orders(
             quantity = quantity,
             price = price
         )
-
         orderItems.add(orderItem)
         this.totalPrice += price.toLong() * quantity
     }

@@ -6,12 +6,11 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface MemberRepository : JpaRepository<edu.example.kotlindevelop.domain.member.entity.Member, Long>,
-    edu.example.kotlindevelop.domain.member.repository.MemberRepositoryCustom {
-    fun findByLoginId(loginId: String): Optional<edu.example.kotlindevelop.domain.member.entity.Member>
+interface MemberRepository : JpaRepository<Member, Long>, MemberRepositoryCustom {
+    fun findByLoginId(loginId: String): Optional<Member>
 
-    fun findByRefreshToken(refreshToken: String): Optional<edu.example.kotlindevelop.domain.member.entity.Member>
+    fun findByRefreshToken(refreshToken: String): Optional<Member>
 
-    fun findByEmail(email: String): Optional<edu.example.kotlindevelop.domain.member.entity.Member>
-    fun findByLoginIdAndEmail(loginId: String, email: String): Optional<edu.example.kotlindevelop.domain.member.entity.Member>
+    fun findByEmail(email: String): Optional<Member>
+    fun findByLoginIdAndEmail(loginId: String, email: String): Optional<Member>
 }

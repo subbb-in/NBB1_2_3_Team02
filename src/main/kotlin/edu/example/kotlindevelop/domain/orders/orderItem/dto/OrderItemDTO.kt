@@ -8,17 +8,17 @@ import edu.example.kotlindevelop.domain.product.QProduct.product
 
 
 data class OrderItemDTO(
-    var productId: Long? = null, // 상품 ID
-    var quantity: Int = 0, // 수량
-    var price: Int = 0 // 사용자가 입력한 가격
+    var productId: Long? = null,  // 상품 ID
+    var quantity: Int = 0,        // 수량
+    var price: Int = 0            // 사용자가 입력한 가격
 ) {
     // DTO -> 엔티티 변환 메서드
-    fun toEntity(product: Product?, orders: Orders?): OrderItem {
+    fun toEntity(product: Product, orders: Orders): OrderItem {
         return OrderItem(
             product = product,
-            orders = orders!!,
-            quantity = quantity,
-            price = price
+            orders = orders,
+            quantity = this.quantity,
+            price = this.price
         )
     }
 

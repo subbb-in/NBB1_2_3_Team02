@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableJpaRepositories
-
 class KotlindevelopApplication
 
 fun main(args: Array<String>) {

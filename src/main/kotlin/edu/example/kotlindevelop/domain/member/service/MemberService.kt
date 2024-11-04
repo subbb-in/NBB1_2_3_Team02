@@ -1,11 +1,11 @@
 package edu.example.kotlindevelop.domain.member.service
 
-import edu.example.kotlindevelop.domain.member.dto.MemberDTO
-import edu.example.kotlindevelop.global.jwt.JwtUtil
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
+import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.util.PasswordUtil
+import edu.example.kotlindevelop.global.jwt.JwtUtil
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import org.modelmapper.ModelMapper
@@ -32,7 +32,7 @@ class MemberService(
     @Transactional
     fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.CreateResponseDto {
         // 기존의 회원이 있는지 검사
-        val member: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findByLoginId(dto.loginId)
+        val member: Optional<Member> = memberRepository.findByLoginId(dto.loginId)
         if (member.isPresent) {
             throw MemberException.MEMBER_ALREADY_EXISTS.memberTaskException
         }
@@ -41,7 +41,7 @@ class MemberService(
         dto.pw = passwordEncoder.encode(dto.pw)
 
         // 회원 저장
-        val savedMember: edu.example.kotlindevelop.domain.member.entity.Member = memberRepository.save(dto.toEntity())
+        val savedMember: Member = memberRepository.save(dto.toEntity())
 
         return MemberDTO.CreateResponseDto("회원가입이 완료되었습니다")
     }
@@ -49,10 +49,10 @@ class MemberService(
 
     @Transactional
     fun update(dto: MemberDTO.Update): MemberDTO.Update {
-        val memberOptional: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findById(dto.id)
+        val memberOptional: Optional<Member> = memberRepository.findById(dto.id)
 
         if (memberOptional.isPresent) {
-            val member: edu.example.kotlindevelop.domain.member.entity.Member = memberOptional.get()
+            val member: Member = memberOptional.get()
             member.loginId = dto.loginId?:member.loginId
             member.pw = passwordEncoder.encode(dto.pw?:member.pw)
             member.name = dto.name?:member.name
@@ -75,9 +75,9 @@ class MemberService(
 
     @Transactional
     fun delete(id: Long) {
-        val memberOptional: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findById(id)
+        val memberOptional: Optional<Member> = memberRepository.findById(id)
         if (memberOptional.isPresent) {
-            val member: edu.example.kotlindevelop.domain.member.entity.Member = memberOptional.get()
+            val member: Member = memberOptional.get()
             memberRepository.delete(member)
         } else {
             throw MemberException.MEMBER_NOT_REMOVED.memberTaskException
@@ -85,9 +85,9 @@ class MemberService(
     }
 
     fun read(id: Long): MemberDTO.Response {
-        val memberOptional: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findById(id)
+        val memberOptional: Optional<Member> = memberRepository.findById(id)
         if (memberOptional.isPresent) {
-            val member: edu.example.kotlindevelop.domain.member.entity.Member = memberOptional.get()
+            val member: Member = memberOptional.get()
             return MemberDTO.Response(member)
         } else {
             throw MemberException.MEMBER_NOT_REMOVED.memberTaskException
@@ -95,7 +95,7 @@ class MemberService(
     }
 
     fun readAll(pageable: Pageable): Page<MemberDTO.Response> {
-        val members: Page<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.searchMembers(pageable)
+        val members: Page<Member> = memberRepository.searchMembers(pageable)
         return members.map { MemberDTO.Response(it) }
     }
 
@@ -103,9 +103,9 @@ class MemberService(
 
     @Transactional
     fun changeImage(dto: MemberDTO.ChangeImage, imageFile: MultipartFile): MemberDTO.ChangeImage { // MultipartFile 추가
-        val memberOptional: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findById(dto.id)
+        val memberOptional: Optional<Member> = memberRepository.findById(dto.id)
         if (memberOptional.isPresent) {
-            val member: edu.example.kotlindevelop.domain.member.entity.Member = memberOptional.get()
+            val member: Member = memberOptional.get()
             val fileName = saveImage(imageFile)
 
             member.mImage = fileName // URL 저장
@@ -136,7 +136,7 @@ class MemberService(
     }
 
     fun checkLoginIdAndPassword(loginId: String, pw: String): MemberDTO.LoginResponseDto {
-        val opMember: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findByLoginId(loginId)
+        val opMember: Optional<Member> = memberRepository.findByLoginId(loginId)
 
         if (opMember.isEmpty()) {
             throw MemberException.MEMBER_NOT_FOUND.memberTaskException
@@ -146,14 +146,14 @@ class MemberService(
             throw MemberException.MEMBER_LOGIN_DENIED.memberTaskException
         }
 
-        val member: edu.example.kotlindevelop.domain.member.entity.Member = opMember.get()
+        val member: Member = opMember.get()
         val responseDto: MemberDTO.LoginResponseDto = MemberDTO.LoginResponseDto(member)
 
         return responseDto
     }
 
-    fun getMemberById(id: Long): edu.example.kotlindevelop.domain.member.entity.Member {
-        val opMember: Optional<edu.example.kotlindevelop.domain.member.entity.Member> = memberRepository.findById(id)
+    fun getMemberById(id: Long): Member {
+        val opMember: Optional<Member> = memberRepository.findById(id)
 
         if (opMember.isEmpty()) {
             throw MemberException.MEMBER_NOT_FOUND.memberTaskException
@@ -168,7 +168,7 @@ class MemberService(
 
     @Transactional
     fun setRefreshToken(id: Long, refreshToken: String?) {
-        val member: edu.example.kotlindevelop.domain.member.entity.Member = memberRepository.findById(id).get()
+        val member: Member = memberRepository.findById(id).get()
         member.updateRefreshToken(refreshToken)
     }
 
@@ -191,7 +191,7 @@ class MemberService(
 
     fun generateRefreshToken(id: Long, loginId: String): String {
         return jwtUtil.encodeRefreshToken(
-            3,
+            300,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId
@@ -201,7 +201,7 @@ class MemberService(
 
     fun refreshAccessToken(refreshToken: String): String {
         //화이트리스트 처리
-        val member: edu.example.kotlindevelop.domain.member.entity.Member = memberRepository.findByRefreshToken(refreshToken)
+        val member: Member = memberRepository.findByRefreshToken(refreshToken)
             .orElseThrow { MemberException.MEMBER_LOGIN_DENIED.memberTaskException }
 
         //리프레시 토큰이 만료되었다면 로그아웃
@@ -221,14 +221,14 @@ class MemberService(
 
 
     fun findByEmail(email: String): String {
-        val member: edu.example.kotlindevelop.domain.member.entity.Member = memberRepository.findByEmail(email)
+        val member: Member = memberRepository.findByEmail(email)
             .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
         return member.loginId
     }
 
     @Transactional
     fun setTemplatePassword(loginId: String, email: String): String {
-        val member: edu.example.kotlindevelop.domain.member.entity.Member = memberRepository.findByLoginIdAndEmail(loginId, email)
+        val member: Member = memberRepository.findByLoginIdAndEmail(loginId, email)
             .orElseThrow { MemberException.MEMBER_NOT_FOUND.memberTaskException }
         val templatePassword: String = PasswordUtil.generateTempPassword()
         member.pw = (passwordEncoder.encode(templatePassword))

@@ -5,6 +5,8 @@ import edu.example.kotlindevelop.domain.orders.orderItem.dto.OrderItemDTO
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.Product
 import edu.example.kotlindevelop.domain.product.ProductRepository
+import edu.example.kotlindevelop.domain.orders.orders.entity.QOrders.orders
+
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -32,10 +34,8 @@ data class OrderDTO(
             }
             orders.addOrderItem(product, itemDTO.quantity, itemDTO.price)
         }
-
         return orders
     }
-
 
     // 엔티티로부터 DTO 생성
     constructor(orders: Orders) : this(
@@ -73,7 +73,14 @@ data class OrderDTO(
             val pageNum = if (page < 0) 1 else page - 1
             val sizeNum = if (size <= 10) 10 else size
 
-            return PageRequest.of(pageNum, sizeNum, sort ?: Sort.unsorted())
+            return PageRequest.of(pageNum, sizeNum)
+        }
+
+        fun getPageable2(sort: Sort): Pageable {
+            val pageNum = if (page < 0) 1 else page - 1
+            val sizeNum = if (size <= 10) 10 else size
+
+            return PageRequest.of(pageNum, sizeNum, sort)
         }
     }
 }

@@ -20,9 +20,9 @@ class MemberDTO {
         @JsonProperty("mImage")
         var mImage: String? = null
     ) {
-        fun toEntity(): edu.example.kotlindevelop.domain.member.entity.Member {
+        fun toEntity(): Member {
             // Member 객체를 초기화
-            return edu.example.kotlindevelop.domain.member.entity.Member(
+            return Member(
                 loginId = loginId,
                 email = email,
                 pw = pw,
@@ -61,7 +61,7 @@ class MemberDTO {
         var accessToken: String? = null,
         var refreshToken: String? = null
     ) {
-        constructor(member: edu.example.kotlindevelop.domain.member.entity.Member) : this(
+        constructor(member: Member) : this(
             id = member.id,
             loginId = member.loginId,
             name = member.name,
@@ -89,7 +89,7 @@ class MemberDTO {
         var createdAt: LocalDateTime,
         var modifiedAt: LocalDateTime
     ) {
-        constructor(member: edu.example.kotlindevelop.domain.member.entity.Member) : this(
+        constructor(member: Member) : this(
             id = member.id ?: throw IllegalArgumentException("Member ID cannot be null"),
             loginId = member.loginId,
             pw = member.pw,
