@@ -1,13 +1,10 @@
-package edu.example.kotlindevelop.global.OAuth2
+package edu.example.kotlindevelop.global.securityOAuth2
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO.CustomOAuth2User
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO.NaverResponse
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.member.util.EncoderUtil
-import edu.example.kotlindevelop.domain.member.util.PasswordUtil
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.OAuth2User

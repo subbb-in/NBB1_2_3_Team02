@@ -95,14 +95,16 @@ class MemberDTO {
         var name: String,
         var mImage: String,
         var accessToken: String? = null,
-        var refreshToken: String? = null
+        var refreshToken: String? = null,
+        var userName: String? = null
     ) {
         constructor(member: Member) : this(
             // id는 AutoIncrement 로 생성하기 때문에 Null허용 객체 이지만, Response 과정에서는 null일 가능성이 없기 때문에 대입 값으로 0 설정
             id = member.id?:0,
             loginId = member.loginId,
             name = member.name,
-            mImage = member.mImage ?: "default_image.png"
+            mImage = member.mImage ?: "default_image.png",
+            userName = member.userName ?: ""
         )
 
     }
@@ -141,6 +143,10 @@ class MemberDTO {
     data class ChangeImage (
         var id: Long,
         var mImage: MultipartFile
+    )
+    data class ChangeImageResponse (
+        var id: Long,
+        var mImage: String
     )
 
     data class LogoutResponseDto ( var message: String)

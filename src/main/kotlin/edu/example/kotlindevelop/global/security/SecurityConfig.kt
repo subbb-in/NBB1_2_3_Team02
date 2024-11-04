@@ -1,7 +1,6 @@
 package edu.example.kotlindevelop.global.security
 
-import edu.example.kotlindevelop.domain.member.service.MemberService
-import edu.example.kotlindevelop.global.OAuth2.CustomOAuth2UserService
+import edu.example.kotlindevelop.global.securityOAuth2.CustomOAuth2UserService
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -34,7 +33,8 @@ class SecurityConfig(
                     ).permitAll()
 //                    .requestMatchers("/adm/**").hasRole("ADMIN")
                     .requestMatchers("/").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/api/v1/qna/**").permitAll()
+                    .anyRequest().permitAll()
             }
             .headers { headers ->
                 headers

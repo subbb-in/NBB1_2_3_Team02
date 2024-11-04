@@ -72,22 +72,6 @@ class MemberController (
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(MemberDTO.StringResponseDto(errorMessage))
         }
-        /* 코틀린 정규 표현식 let 으로 변환
-        val responseDto = memberService.checkLoginIdAndPassword(request.loginId, request.pw)
-
-        val id = responseDto.id
-        val loginId = responseDto.loginId
-
-        val accessToken = memberService.generateAccessToken(id, loginId)
-        val refreshToken = memberService.generateRefreshToken(id, loginId)
-
-        memberService.setRefreshToken(id, refreshToken)
-
-        responseDto.accessToken = accessToken
-        responseDto.refreshToken = refreshToken
-
-        return ResponseEntity.ok(responseDto)
-        */
         // 인증 성공
         return memberService.checkLoginIdAndPassword(request.loginId, request.pw).let {
                 val accessToken = memberService.generateAccessToken(it.id, it.loginId)
@@ -167,7 +151,7 @@ class MemberController (
     fun modifyImage(
         @AuthenticationPrincipal user: SecurityUser,
         @RequestParam("mImage") mImage: MultipartFile
-    ): ResponseEntity<MemberDTO.ChangeImage> {
+    ): ResponseEntity<MemberDTO.ChangeImageResponse> {
         val dto: MemberDTO.ChangeImage = MemberDTO.ChangeImage(user.id,mImage)
         return ResponseEntity.ok(memberService.changeImage(dto, mImage))
     }

@@ -15,12 +15,12 @@ function Login({ onLogin, handleBack }) {
         try {
             const response = await axios.get('/api/v1/members/loginSuccess'); // 사용자 정보 요청
             const { userInfo } = response.data;
-            const { id, refreshToken, accessToken, name, mimage, username } = userInfo;
+            const { id, refreshToken, accessToken, name, mimage, userName } = userInfo;
 
             localStorage.setItem('accessToken', accessToken); // JWT 저장
             localStorage.setItem('refreshToken', refreshToken); // JWT 저장
             localStorage.setItem('id', id); // id 저장
-            onLogin(name, mimage, username );
+            onLogin(name, mimage, userName );
         } catch (error) {
             setErrorMessage('로그인 실패: ' + (error.response?.data?.message || '서버에 문제가 발생했습니다.'));
         }
