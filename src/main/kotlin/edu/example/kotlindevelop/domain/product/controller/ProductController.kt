@@ -36,5 +36,15 @@ class ProductController(
         return ResponseEntity.ok(productDtoPage)
     }
 
-
+    // 사용자용 상품 이름 검색
+    @GetMapping("/search")
+    fun searchPersonalProducts(
+        @RequestParam keyword: String,
+        @AuthenticationPrincipal user: SecurityUser,
+        request: ProductDTO.PageRequestDto
+    ): ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
+        val memberId: Long = user.id
+        val productDtoPage: Page<ProductDTO.ProductResponseDto> = productService.searchPersonalProducts(keyword, request, memberId)
+        return ResponseEntity.ok(productDtoPage)
+    }
 }

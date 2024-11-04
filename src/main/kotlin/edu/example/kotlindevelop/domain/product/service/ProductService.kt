@@ -44,6 +44,20 @@ class ProductService(
         }
     }
 
+    // 사용자용 상품 이름 검색
+    @Transactional(readOnly = true)
+    fun searchPersonalProducts(keyword: String, dto: ProductDTO.PageRequestDto, memberId: Long): Page<ProductDTO.ProductResponseDto> {
+        val pageable: Pageable = dto.pageable
+        val productProjections: Page<ProductProjection> = productRepository.findPersonalProductsByKeyword(keyword, memberId, pageable)
+        return productProjections.map { projection ->
+            ProductDTO.ProductResponseDto(
+                productId = projection.getProductId(),
+                productName = projection.getProductName(),
+                latestLossRate = projection.getLatestLossRate()
+            )
+        }
+    }
+
     // 관리자용 목록 전체 조회
     @Transactional(readOnly = true)
     fun getProducts(dto: ProductDTO.PageRequestDto): Page<ProductDTO.ProductResponseDto> {
