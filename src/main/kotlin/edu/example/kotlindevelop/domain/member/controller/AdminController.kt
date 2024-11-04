@@ -31,8 +31,6 @@ class AdminController (
         return ResponseEntity.ok<Page<MemberDTO.Response>>(responseDto)
     }
 
-    // 아래는 ProductService merge 후 완성
-
     //모든 회원 식재료 정보 조회하기
     @GetMapping("/products/all")
     fun getProducts(pageRequestDTO: ProductDTO.PageRequestDto): ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
@@ -40,13 +38,12 @@ class AdminController (
         return ResponseEntity.ok(responseDto)
     }
 
-//    // 상품 이름 검색
-//    @GetMapping("/products/search")
-//    fun searchProducts(
-//        @RequestParam("keyword") keyword: String?,
-//        pageRequestDTO: ProductDTO.PageRequestDTO?
-//    ): ResponseEntity<Page<ProductDTO>> {
-//        val productDTOPage: Page<ProductDTO> = productService.searchProducts(keyword, pageRequestDTO)
-//        return ResponseEntity.ok<Page<ProductDTO>>(productDTOPage)
-//    }
+    // 상품 이름 검색
+    @GetMapping("/products/search")
+    fun searchProducts(
+        @RequestParam("keyword") keyword: String,
+        pageRequestDTO: ProductDTO.PageRequestDto): ResponseEntity<Page<ProductDTO.ProductResponseDto>> {
+        val responseDto: Page<ProductDTO.ProductResponseDto> = productService.searchProducts(keyword, pageRequestDTO)
+        return ResponseEntity.ok(responseDto)
+    }
 }

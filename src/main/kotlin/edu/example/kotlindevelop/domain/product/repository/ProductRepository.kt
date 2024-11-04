@@ -64,4 +64,17 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
         ORDER BY l.recordedAt DESC
     """)
     fun findAllProducts(pageable: Pageable): Page<ProductProjection>
+
+    // 관리자용 상품 이름 검색
+    @Query("""
+        SELECT p.id AS productId, p.name AS productName, l.loss AS latestLossRate 
+        FROM Product p LEFT JOIN p.lossRates l 
+        WHERE p.name LIKE %:keyword% AND l.recordedAt = (
+            SELECT MAX(l2.recordedAt) 
+            FROM LossRate l2 
+            WHERE l2.product.id = p.id
+        ) 
+        ORDER BY l.recordedAt DESC
+    """)
+    fun findProductsByKeyword(keyword: String, pageable: Pageable): Page<ProductProjection>
 }

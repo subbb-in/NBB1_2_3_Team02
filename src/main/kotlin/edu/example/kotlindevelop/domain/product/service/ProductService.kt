@@ -72,6 +72,20 @@ class ProductService(
         }
     }
 
+    // 관리자용 상품 이름 검색
+    @Transactional(readOnly = true)
+    fun searchProducts(keyword: String, dto: ProductDTO.PageRequestDto): Page<ProductDTO.ProductResponseDto> {
+        val pageable: Pageable = dto.pageable
+        val productProjections: Page<ProductProjection> = productRepository.findProductsByKeyword(keyword, pageable)
+        return productProjections.map { projection ->
+            ProductDTO.ProductResponseDto(
+                productId = projection.getProductId(),
+                productName = projection.getProductName(),
+                latestLossRate = projection.getLatestLossRate()
+            )
+        }
+    }
+
 //    @Transactional
 //    fun addLoss(lossRateDTO: ProductDTO.lossRateDTO , memberId : Long): ProductDTO.lossRateDTO{
 //        val member: Member = memberService.getMemberById(memberId)
