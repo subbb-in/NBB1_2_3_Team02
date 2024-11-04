@@ -50,11 +50,11 @@ class OrderController(private val orderService: OrderService) {
     // 주문 목록 조회
     @GetMapping("/list")
     fun getList(
-        @Validated pageRequestDTO: OrderDTO.PageRequestDTO?,
+        @Validated pageRequestDTO: OrderDTO.PageRequestDTO,
         @AuthenticationPrincipal user: SecurityUser
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.id
-        val orders = orderService.getList(pageRequestDTO!!, memberId)
+        val orders = orderService.getList(pageRequestDTO, memberId)
 // !!지워보기, it 해보기
         return ResponseEntity.ok(orders)
     }

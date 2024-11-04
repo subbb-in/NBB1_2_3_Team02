@@ -4,11 +4,13 @@ package edu.example.kotlindevelop.domain.orders.orderItem.entity
 import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
+import org.modelmapper.internal.bytebuddy.build.ToStringPlugin
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 
 @Entity
 @Table(name = "orderItem")
+
 //open class OrderItem(
 data class OrderItem(
     @Id
@@ -22,6 +24,7 @@ data class OrderItem(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")
     var orders: Orders,
+
     val quantity: Int,
     val price: Int
 ) {

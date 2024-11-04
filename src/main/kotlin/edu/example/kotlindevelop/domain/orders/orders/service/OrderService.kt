@@ -92,7 +92,7 @@ class OrderService(
             .mapValues { (_, items) ->
                 items.filterNotNull().groupBy { it.product?.name ?: "chicken" } // 상품 이름
                     .mapValues { (_: String, productItems: List<OrderItem>) -> // 타입 명시
-                        productItems.sumOf { it.price / it.quantity } / productItems.size // 평균 단가 계산
+                        productItems.sumOf { it.price * it.quantity } / productItems.sumOf { it.quantity } // 평균 단가 계산
                     }
             }
     }

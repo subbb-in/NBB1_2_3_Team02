@@ -1,6 +1,7 @@
 package edu.example.kotlindevelop.domain.orders.orders.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.product.entity.Product
@@ -34,6 +35,7 @@ class Orders(
     var modifiedAt: LocalDateTime? = null
 
     @OneToMany(mappedBy = "orders", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonIgnoreProperties("orders")
     val orderItems: MutableList<OrderItem> = ArrayList()
 
     // 기본 생성자 (JPA를 위한)
