@@ -36,9 +36,6 @@ class Orders(
     @OneToMany(mappedBy = "orders", cascade = [CascadeType.ALL], orphanRemoval = true)
     val orderItems: MutableList<OrderItem> = ArrayList()
 
-    // 기본 생성자 (JPA를 위한)
-//    protected constructor() : this(0L, Member())
-
     fun addOrderItem(product: Product?, quantity: Int, price: Int) {
         val orderItem = OrderItem(
             orders = this,
