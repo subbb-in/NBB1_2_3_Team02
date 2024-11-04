@@ -84,6 +84,20 @@ class OrderService(
         } ?: emptyList() // results가 null일 경우 빈 리스트 반환
     }
 
+//    fun getMonthlyAveragePrices(): Map<String, Map<String, Int>> {
+//        val orderItems = orderItemRepository.findAll()
+//
+//        // 월별 및 상품별로 그룹화하여 평균 단가 계산
+//        return orderItems.groupBy { it!!.orders?.createdAt?.month?.name ?: "Unknown" } // 월 이름
+//            .mapValues { (_, itemsByMonth) ->
+//                itemsByMonth.filterNotNull().groupBy { it.product?.name ?: "Unknown Product" } // 상품 이름
+//                    .mapValues { (_, itemsByProduct) ->
+//                        val totalSum = itemsByProduct.sumOf { it.price * it.quantity }           // 해당 상품의 총 가격
+//                        val totalQuantity = itemsByProduct.sumOf { it.quantity }    // 해당 상품의 총 수량
+//                        if (totalQuantity > 0) totalSum / totalQuantity else 0      // 평균 단가 계산
+//                    }
+//            }
+//    }
     fun getMonthlyAveragePrices(): Map<String, Map<String, Int>> {
         val orderItems = orderItemRepository.findAll()
 
@@ -92,10 +106,10 @@ class OrderService(
             .mapValues { (_, items) ->
                 items.filterNotNull().groupBy { it.product?.name ?: "chicken" } // 상품 이름
                     .mapValues { (_: String, productItems: List<OrderItem>) -> // 타입 명시
-                        productItems.sumOf { it.price / it.quantity } / productItems.size // 평균 단가 계산
+                        productItems.sumOf { it.price * it.quantity } / productItems.sumOf { it.quantity } // 평균 단가 계산
                     }
-            }
-    }
+            }}
+
 
     fun getList(month: Int?, pageRequestDTO: OrderDTO.PageRequestDTO, memberId: Long?): Page<OrderDTO.OrderListDTO> {
         val sort = Sort.by(Sort.Order.desc("id"))
