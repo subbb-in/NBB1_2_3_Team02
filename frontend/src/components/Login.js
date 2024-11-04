@@ -1,10 +1,38 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
 function Login({ onLogin, handleBack }) {
     const [loginId, setLoginId] = useState('');
     const [pw, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    //소셜 로그인 로직 부분
+    const redirectToNaver = () => {
+        window.location.href = 'http://localhost:8090/login';
+    };
+    const fetchUserInfo = async () => {
+        try {
+            const response = await axios.get('/api/v1/members/loginSuccess'); // 사용자 정보 요청
+            const { userInfo } = response.data;
+            const { id, refreshToken, accessToken, name, mimage, username } = userInfo;
+
+            localStorage.setItem('accessToken', accessToken); // JWT 저장
+            localStorage.setItem('refreshToken', refreshToken); // JWT 저장
+            localStorage.setItem('id', id); // id 저장
+            onLogin(name, mimage, username );
+        } catch (error) {
+            setErrorMessage('로그인 실패: ' + (error.response?.data?.message || '서버에 문제가 발생했습니다.'));
+        }
+    };
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code'); // OAuth2 인증 코드
+
+        if (code) {
+            setIsAuthenticated(true); // 인증 완료 상태 설정
+        }
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -44,6 +72,16 @@ function Login({ onLogin, handleBack }) {
             <div className="button-container">
                 <button type="submit">로그인</button>
                 <button type="button" onClick={handleBack}>뒤로가기</button>
+                {isAuthenticated ? (
+                    <>
+                        <button type="button" onClick={fetchUserInfo}>인증 완료</button>
+                    </>
+                ) : (
+                    <>
+                        <button type="button" onClick={redirectToNaver}>네이버 로그인</button>
+                    </>
+                )
+                }
             </div>
         </form>
     );

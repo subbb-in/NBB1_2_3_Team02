@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.validation.annotation.Validated
@@ -28,6 +29,22 @@ class MemberController (
     val resourceLoader: ResourceLoader,
     val mailSender: JavaMailSender
 ){
+    @GetMapping("/loginSuccess")
+    fun loginSuccess(@AuthenticationPrincipal oauth2User: OAuth2User): ResponseEntity<Any> {
+        val userId = oauth2User.getAttribute<String>("providerId")
+        return memberService.checkLoginIdAndPassword(userId!!, "123").let {
+            val accessToken = memberService.generateAccessToken(it.id, it.loginId)
+            val refreshToken = memberService.generateRefreshToken(it.id, it.loginId)
+
+            memberService.setRefreshToken(it.id, refreshToken)
+
+            it.apply {
+                this.accessToken = accessToken
+                this.refreshToken = refreshToken
+            }
+            ResponseEntity.ok(mapOf("redirectUrl" to "http://localhost:3000", "userInfo" to it))
+        }
+    }
 
     //회원가입
     @PostMapping("/register")
@@ -42,8 +59,6 @@ class MemberController (
         }
         return ResponseEntity.ok(memberService.create(request))
     }
-
-
 
     //로그인
     @PostMapping("/login")

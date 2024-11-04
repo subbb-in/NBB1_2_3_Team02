@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import UserInfo from './components/UserInfo';
 import Login from './components/Login';
+import SocialLogin from './components/SocialLogin';
 import ProfileImageChange from './components/ProfileImageChange';
 import UserDelete from './components/UserDelete';
 import Register from './components/Register';
@@ -21,15 +22,22 @@ function App() {
     const [activeComponent, setActiveComponent] = useState('login');
     const [activeMenu, setActiveMenu] = useState(null);
     const [profileImage, setProfileImage] = useState('');
+    const [social, setSocial] = useState('');
 
-    const handleLogin = ( name, mImage) => {
+    const handleLogin = ( name, mImage, username ) => {
         setUserName(name);
-        setProfileImage(mImage ? `/api/v1/members/upload/${mImage}` : '/api/v1/members/upload/defaultImageUrl.jpg');
+        setProfileImage(mImage);
+        setSocial(username)
         setActiveComponent('');
         setActiveMenu(null); // 로그인 시 메뉴 초기화
     };
+    
 
     const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('id');
+
         setUserName('');
         setUserId(null);
         setProfileImage('');
@@ -100,17 +108,26 @@ function App() {
                     </ul>
                 );
             } else {
-                return (
-                    <ul className="sub-menu">
-                        <li onClick={() => showComponent('userInfo')}> 회원 정보 수정</li>
-                        <li onClick={() => showComponent('profileImageChange')}> 프로필 사진 수정</li>
-                        <li onClick={() => showComponent('userDelete')}> 회원 탈퇴</li>
-                    </ul>
-                );
+                if (social === null) {
+                    return (
+                        <ul className="sub-menu">
+                            <li onClick={() => showComponent('userInfo')}> 회원 정보 수정</li>
+                            <li onClick={() => showComponent('profileImageChange')}> 프로필 사진 수정</li>
+                            <li onClick={() => showComponent('userDelete')}> 회원 탈퇴</li>
+                        </ul>
+                    );
+                } else {
+                    return (
+                        <ul className="sub-menu">
+                            <li onClick={() => showComponent('profileImageChange')}> 프로필 사진 수정</li>
+                            <li onClick={() => showComponent('userDelete')}> 회원 탈퇴</li>
+                        </ul>
+                    );
+                }
             }
         }
         return null;
-    };
+    }
 
 
     return (
@@ -201,7 +218,7 @@ function App() {
                                 ID/PW 찾기
                             </button>
                         )}
-                        {activeComponent === 'login' && <Login onLogin={handleLogin} handleBack={handleBack}/>}
+                        {activeComponent === 'login' && <Login onLogin={handleLogin} handleBack={handleBack} />}
                         {activeComponent === 'register' && <Register onRegister={handleRegister} handleBack={handleBack}/>}
                         {activeComponent === 'IdPw' && <FindIdPw onRegister={handleFind} handleBack={handleBack}/>}
                     </div>

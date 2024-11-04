@@ -3,10 +3,46 @@ package edu.example.kotlindevelop.domain.member.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.validation.constraints.NotBlank
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
 class MemberDTO {
+    class NaverResponse(private val attribute: Map<String, Any>) {
+        val provider: String = "naver"
+        val providerId: String = attribute["id"] as String
+        val email: String = attribute["email"] as String
+        val name: String = attribute["name"] as String
+        val nickname: String = attribute["nickname"] as String
+        var profileImage: String = attribute["profile_image"] as String
+    }
+
+    class CustomOAuth2User(
+        private var oAuth2Response: NaverResponse,
+        private var role: String
+    ): OAuth2User {
+        override fun getName(): String {
+            return oAuth2Response.name
+        }
+        override fun getAttributes(): Map<String, Any> {
+            return mapOf(
+                "provider" to oAuth2Response.provider,
+                "providerId" to oAuth2Response.providerId,
+                "email" to oAuth2Response.email,
+                "name" to oAuth2Response.name,
+                "nickname" to oAuth2Response.nickname,
+                "profileImage" to oAuth2Response.profileImage,
+            )
+        }
+        override fun getAuthorities(): Collection<GrantedAuthority> {
+            return listOf(GrantedAuthority { role })
+        }
+        fun getUsername(): String {
+            return "${oAuth2Response.provider} ${oAuth2Response.providerId}"
+        }
+    }
+
 
     data class CreateRequestDto(
         @field:NotBlank(message = "로그인 ID는 필수 입력 값 입니다")
@@ -95,7 +131,7 @@ class MemberDTO {
             loginId = member.loginId,
             pw = member.pw,
             name = member.name,
-            mImage = member.mImage ?: "default_image.png",
+            mImage = member.mImage ?: "api/v1/member/upload/defaultImageUrl.jpg",
             createdAt = member.createdAt ?: LocalDateTime.now(),
             modifiedAt = member.modifiedAt ?: LocalDateTime.now(),
             email = member.email

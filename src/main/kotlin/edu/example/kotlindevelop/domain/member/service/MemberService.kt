@@ -2,6 +2,7 @@ package edu.example.kotlindevelop.domain.member.service
 
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.dto.MemberDTO.CustomOAuth2User
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
@@ -11,8 +12,10 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -27,9 +30,9 @@ import java.util.*
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
-    //사용하지 않는 ModelMapper 제거
     private val jwtUtil: JwtUtil
 ) {
+
     @Transactional
     fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.StringResponseDto {
         // 기존의 회원이 있는지 검사
@@ -108,7 +111,7 @@ class MemberService(
             val member: Member = memberOptional.get()
             val fileName = saveImage(imageFile)
 
-            member.mImage = fileName // URL 저장
+            member.mImage = "api/v1/member/upload/$fileName" // URL 저장
             memberRepository.save(member)
 
             return MemberDTO.ChangeImage(dto.id, imageFile)
