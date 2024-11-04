@@ -15,7 +15,7 @@ import OrderSummary from "./components/OrderSummary";
 import LossControl from './components/LossControl';
 import FindIdPw from "./components/FindIdPw";
 import QnAPage from "./components/QnAPage";
-import QnADetail from "./components/QnADetail";
+import QnAPageAdmin from "./components/QnAPageAdmin";
 
 function App() {
     const [userName, setUserName] = useState('');
@@ -128,13 +128,20 @@ function App() {
             }
         }
         if (activeMenu === 'QnAManagement') {
-            return (
-                <ul className="sub-menu">
-                    <li onClick={() => showComponent('qnaPage')}> Q&A</li>
-                </ul>
-            );
+            if (userName === '운영자') {
+                return (
+                    <ul className="sub-menu">
+                        <li onClick={() => showComponent('qnaPageAdmin')}> Q&A Admin</li>
+                    </ul>
+                );
+            } else {
+                return (
+                    <ul className="sub-menu">
+                        <li onClick={() => showComponent('qnaPage')}> Q&A</li>
+                    </ul>
+                );
+            }
         }
-        return null;
     }
 
 
@@ -209,7 +216,8 @@ function App() {
                             {activeComponent === 'userControl' && <UserControl />}
                             {activeComponent === 'lossControl' && <LossControl />}
                             {activeComponent === 'qnaPage' && <QnAPage />}
-                            {activeComponent === 'qnaDetail' && <QnADetail />}
+                            {activeComponent === 'qnaPageAdmin' && <QnAPageAdmin />}
+
                         </div>
                     </>
                 ) : (
