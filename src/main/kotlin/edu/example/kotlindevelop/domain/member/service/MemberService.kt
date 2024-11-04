@@ -3,9 +3,9 @@ package edu.example.kotlindevelop.domain.member.service
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
+import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.util.PasswordUtil
 import edu.example.kotlindevelop.global.jwt.JwtUtil
-import edu.example.kotlindevelop.member.dto.MemberDTO
-import edu.example.kotlindevelop.member.util.PasswordUtil
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import org.modelmapper.ModelMapper

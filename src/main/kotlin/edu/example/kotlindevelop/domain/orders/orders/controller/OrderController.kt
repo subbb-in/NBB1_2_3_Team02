@@ -1,9 +1,12 @@
 package edu.example.kotlindevelop.domain.orders.orders.controller
 
+import edu.example.kotlindevelop.domain.orders.orderItem.dto.OrderItemDTO
 import edu.example.kotlindevelop.domain.orders.orders.dto.OrderDTO
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.orders.orders.service.OrderService
 import edu.example.kotlindevelop.global.security.SecurityUser
 import org.springframework.data.domain.Page
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -13,24 +16,34 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/orders")
 class OrderController(private val orderService: OrderService) {
 
-
     @PostMapping
     fun createOrder(
         @RequestBody orderDTO: OrderDTO?,
         @AuthenticationPrincipal user: SecurityUser
-    ): Map<String, String> {
+    ): ResponseEntity<Map<String, String>> {
         val memberId: Long = user.id
-        if (orderDTO != null) {
-            orderService.createOrder(orderDTO, memberId)
+        orderDTO?.let {
+            orderService.createOrder(it, memberId)
+            return ResponseEntity.ok(mapOf("success" to "create"))
         }
 
-        return java.util.Map.of("success", "create")
+        return ResponseEntity.badRequest().body(mapOf("error" to "Invalid order data"))
     }
-    //
+
+
+    @GetMapping("/repeat")
+    fun putOrderFromPrevMonth(
+        @AuthenticationPrincipal user: SecurityUser
+    ): ResponseEntity<List<Orders>> {
+        val memberId = user.id
+        val previousOrders = orderService.getPrevMonthOrders(memberId)
+        return ResponseEntity.ok(previousOrders)
+    }
+
     // 주문 조회
     @GetMapping("/{orderId}")
     fun getOrder(@PathVariable orderId: Long?): ResponseEntity<OrderDTO> {
-        val orderDTO: OrderDTO? = orderService.read(orderId)
+        val orderDTO = orderService.read(orderId) ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(orderDTO)
     }
     //###//
@@ -41,9 +54,11 @@ class OrderController(private val orderService: OrderService) {
         @AuthenticationPrincipal user: SecurityUser
     ): ResponseEntity<Page<OrderDTO.OrderListDTO>> {
         val memberId: Long = user.id
-        return ResponseEntity.ok(pageRequestDTO?.let { orderService.getList(it, memberId) })
+        val orders = orderService.getList(pageRequestDTO!!, memberId)
+// !!지워보기, it 해보기
+        return ResponseEntity.ok(orders)
     }
-    @GetMapping("/liste/{month}")
+    @GetMapping("/list/{month}")
     fun getListByMonthOrderByOrder(
         @PathVariable month: Int?,
         @Validated pageRequestDTO: OrderDTO.PageRequestDTO?,
@@ -67,7 +82,7 @@ class OrderController(private val orderService: OrderService) {
     @GetMapping("/monthly-summary")
     fun getMonthlyOrderSummary(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<List<Map<String, Any?>>> {
         val memberId: Long = user.id
-        val monthlySummary: List<Map<String, Any?>> = orderService.getMonthlyOrderSummary(memberId) ?: emptyList()
+        val monthlySummary = orderService.getMonthlyOrderSummary(memberId)
         return ResponseEntity.ok(monthlySummary)
     }
 

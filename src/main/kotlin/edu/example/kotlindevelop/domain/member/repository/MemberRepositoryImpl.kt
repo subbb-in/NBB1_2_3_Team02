@@ -1,4 +1,4 @@
-package edu.example.kotlindevelop.member.repository
+package edu.example.kotlindevelop.domain.member.repository
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository
 import com.querydsl.jpa.impl.JPAQueryFactory
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.entity.QMember
-import edu.example.kotlindevelop.domain.member.repository.MemberRepositoryCustom
 
 
 @Repository

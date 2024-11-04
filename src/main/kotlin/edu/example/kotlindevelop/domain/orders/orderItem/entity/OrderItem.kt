@@ -4,10 +4,12 @@ package edu.example.kotlindevelop.domain.orders.orderItem.entity
 import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 
 @Entity
 @Table(name = "orderItem")
+//open class OrderItem(
 data class OrderItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,6 +4,7 @@ import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
 
+
 data class OrderItemDTO(
     var productId: Long? = null,  // 상품 ID
     var quantity: Int = 0,        // 수량

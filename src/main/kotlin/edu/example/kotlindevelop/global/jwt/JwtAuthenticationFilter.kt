@@ -50,8 +50,8 @@ class JwtAuthenticationFilter (
                 val loginId = data["loginId"] as String
 
 
-                val authorities: List<GrantedAuthority> = (data["authorities"] as List<String>)
-                    .map { SimpleGrantedAuthority(it) }
+                val authorities: List<GrantedAuthority> = (data["authorities"] as List<String>).map { SimpleGrantedAuthority(it) }
+
 
 
                 val user = SecurityUser(id, loginId, "", authorities)
