@@ -121,8 +121,12 @@ class MemberController (
     }
 
 
+    //내 정보 수정하기
+    @PutMapping("/")
+    fun modify(
+        @AuthenticationPrincipal user: SecurityUser,
+        // 원하는 필드만 수정할 수 있어야 하므로 null 허용 및 불필요한 @Validated 어노테이션 제거
         //@Validated @RequestBody dto: MemberDTO.Update
-
         @RequestBody dto: MemberDTO.Update
     ): ResponseEntity<MemberDTO.Update> {
         dto.id = user.id
