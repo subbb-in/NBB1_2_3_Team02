@@ -6,7 +6,7 @@ import edu.example.kotlindevelop.domain.product.entity.Product
 
 
 data class OrderItemDTO(
-    var productId: Long? = null,  // 상품 ID
+    var productId: Long? = 0,  // 상품 ID
     var quantity: Int = 0,        // 수량
     var price: Int = 0            // 사용자가 입력한 가격
 ) {
