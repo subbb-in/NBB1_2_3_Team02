@@ -5,6 +5,7 @@ import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
 import edu.example.kotlindevelop.domain.product.entity.LossRate
+import edu.example.kotlindevelop.domain.product.entity.Product
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
 import edu.example.kotlindevelop.domain.product.exception.ProductException
 import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
@@ -32,7 +33,17 @@ class ProductService(
             throw ProductException.PRODUCT_ALREADY_EXIST.getProductException()
         }
 
-        productRepository.save(dto.toEntity(member))
+        val product = Product(name = dto.name, maker = member)
+        val lossRateValue = dto.loss ?: 222
+        val lossRate = LossRate(
+            maker = member,
+            product = product,
+            loss = lossRateValue
+        )
+
+        product.addLossRate(lossRate)
+
+        productRepository.save(product)
         return dto
     }
 
