@@ -33,7 +33,7 @@ class SecurityConfig(
                     ).permitAll()
 //                    .requestMatchers("/adm/**").hasRole("ADMIN")
                     .requestMatchers("/").permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             }
             .headers { headers ->
                 headers
