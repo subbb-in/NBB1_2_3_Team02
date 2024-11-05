@@ -10,6 +10,6 @@ interface MemberRepositoryCustom {
     fun searchMemberCursorBased(
         lastCreatedAt: LocalDateTime?,
         lastId:Long?,
-        limit:Int?
+        limit:Int
     ) : List<Member>
 }

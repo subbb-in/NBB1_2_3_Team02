@@ -111,22 +111,29 @@ class MemberService(
     fun readAllCursorBased(
         lastCreatedAt: LocalDateTime?,
         lastId: Long?,
-        limit: Int?
+        limit: Int
     ): MemberDTO.MemberCursorResponse {
-        val members: List<Member> = memberRepository.searchMemberCursorBased(lastCreatedAt, lastId, limit)
+        val members: List<Member> = memberRepository.searchMemberCursorBased(lastCreatedAt, lastId, limit+1)
 
-        val hasNext = members.size > limit!!
+        val hasNext = members.size > limit
         val pagedMembers = if (hasNext) members.subList(0, limit).map { MemberDTO.Response(it) } else members.map {MemberDTO.Response(it) }
+
 
         val nextCursor: Cursor? = if (hasNext) {
             val lastMember = pagedMembers.last()
+            println("lastMember$lastMember")
             Cursor(
                 lastCreatedAt = lastMember.createdAt,
                 lastId = lastMember.id!!
             )
+
         } else {
             null
         }
+
+        println("Next Cursor: $nextCursor")
+
+
         return MemberDTO.MemberCursorResponse(
             members = pagedMembers,
             nextCursor = nextCursor
@@ -214,7 +221,7 @@ class MemberService(
         }
 
         return jwtUtil.encodeAccessToken(
-            1,
+            5,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId,
@@ -225,7 +232,7 @@ class MemberService(
 
     fun generateRefreshToken(id: Long, loginId: String): String {
         return jwtUtil.encodeRefreshToken(
-            3,
+            60,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId

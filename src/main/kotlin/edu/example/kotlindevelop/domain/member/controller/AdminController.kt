@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/adm")
@@ -30,12 +31,14 @@ class AdminController (
     //무한 스크롤 회원 정보 조회하기
     @GetMapping("/members/all/cursor")
     fun getMembersCursorBased(
-        @RequestBody request : MemberDTO.MemberCursorRequest,
+        @RequestParam lastCreatedAt : LocalDateTime?,
+        @RequestParam lastId : Long?,
+        @RequestParam (defaultValue = "10") limit: Int,
     ): ResponseEntity<MemberDTO.MemberCursorResponse> {
         val response : MemberDTO.MemberCursorResponse = memberService.readAllCursorBased(
-            request.lastCreatedAt,
-            request.lastId,
-            request.limit
+            lastCreatedAt,
+            lastId,
+            limit
         )
 
         return ResponseEntity.ok(response)
