@@ -9,7 +9,6 @@ import jakarta.mail.internet.MimeMessage
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
@@ -17,7 +16,6 @@ import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.validation.BindingResult
-import org.springframework.validation.FieldError
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -169,42 +167,6 @@ class MemberController (
         val loginId: String = memberService.findByEmail(email)
         return ResponseEntity.ok(loginId)
     }
-
-
-    /* 입력값 검증 및 정규 표현식 적용
-    @PostMapping("/findPW")
-    fun findPw(@RequestBody request: MemberDTO.FindPWRequestDto): ResponseEntity<String> {
-        val templatePassword: String = memberService.setTemplatePassword(request.loginId, request.email )
-
-        val title = "데브코스 팀2 아이디/비밀번호 찾기 인증 이메일 입니다."
-        val from = "seodo1e1205@gmail.com"
-        val to: String = request.email
-        val content =
-            (System.getProperty("line.separator") +
-                    System.getProperty("line.separator") +
-                    "임시 비밀번호로 로그인 후 꼭 새로운 비밀번호로 설정해주시기 바랍니다."
-                    + System.getProperty("line.separator") +
-                    System.getProperty("line.separator") +
-                    "임시비밀번호는 " + templatePassword + " 입니다. "
-                    + System.getProperty("line.separator"))
-
-        try {
-            val message: MimeMessage = mailSender.createMimeMessage()
-            val messageHelper: MimeMessageHelper = MimeMessageHelper(message, true, "UTF-8")
-
-            messageHelper.setFrom(from)
-            messageHelper.setTo(to)
-            messageHelper.setSubject(title)
-            messageHelper.setText(content)
-
-            mailSender.send(message)
-        } catch (e: Exception) {
-            log.debug(e)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("임시 비밀번호 전송을 실패하였습니다")
-        }
-        return ResponseEntity.ok("임시 비밀번호를 이메일로 전송했습니다")
-    }
-    */
 
     //비밀번호 찾기
     @PostMapping("/findPW")
