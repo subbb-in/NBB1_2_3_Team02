@@ -1,17 +1,21 @@
 package edu.example.kotlindevelop.domain.member.service
 
-import edu.example.kotlindevelop.global.jwt.JwtUtil
+
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
+import edu.example.kotlindevelop.domain.member.dto.MemberDTO.CustomOAuth2User
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.member.util.PasswordUtil
+import edu.example.kotlindevelop.global.jwt.JwtUtil
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
-import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -26,11 +30,11 @@ import java.util.*
 class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val modelMapper: ModelMapper,
     private val jwtUtil: JwtUtil
 ) {
+
     @Transactional
-    fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.CreateResponseDto {
+    fun create(dto: MemberDTO.CreateRequestDto): MemberDTO.StringResponseDto {
         // 기존의 회원이 있는지 검사
         val member: Optional<Member> = memberRepository.findByLoginId(dto.loginId)
         if (member.isPresent) {
@@ -41,9 +45,9 @@ class MemberService(
         dto.pw = passwordEncoder.encode(dto.pw)
 
         // 회원 저장
-        val savedMember: Member = memberRepository.save(dto.toEntity())
+        memberRepository.save(dto.toEntity())
 
-        return MemberDTO.CreateResponseDto("회원가입이 완료되었습니다")
+        return MemberDTO.StringResponseDto("회원가입이 완료되었습니다")
     }
 
 
@@ -52,12 +56,13 @@ class MemberService(
         val memberOptional: Optional<Member> = memberRepository.findById(dto.id)
 
         if (memberOptional.isPresent) {
-            val member: Member = memberOptional.get()
-            member.loginId = dto.loginId?:member.loginId
-            member.pw = passwordEncoder.encode(dto.pw?:member.pw)
-            member.name = dto.name?:member.name
-            member.mImage = dto.mImage?:member.mImage
-            member.email = dto.email?:member.email
+            val member = memberOptional.get().apply {
+                loginId = dto.loginId ?: loginId
+                pw = passwordEncoder.encode(dto.pw ?: pw)
+                name = dto.name ?: name
+                mImage = dto.mImage ?: mImage
+                email = dto.email ?: email
+            }
             memberRepository.save(member)
 
             return MemberDTO.Update(
@@ -66,7 +71,7 @@ class MemberService(
                 member.pw,
                 member.name,
                 member.mImage,
-                member.email // 잠시 수정
+                member.email
             )
         } else {
             throw MemberException.MEMBER_NOT_MODIFIED.memberTaskException
@@ -77,8 +82,7 @@ class MemberService(
     fun delete(id: Long) {
         val memberOptional: Optional<Member> = memberRepository.findById(id)
         if (memberOptional.isPresent) {
-            val member: Member = memberOptional.get()
-            memberRepository.delete(member)
+            memberRepository.delete(memberOptional.get())
         } else {
             throw MemberException.MEMBER_NOT_REMOVED.memberTaskException
         }
@@ -87,8 +91,7 @@ class MemberService(
     fun read(id: Long): MemberDTO.Response {
         val memberOptional: Optional<Member> = memberRepository.findById(id)
         if (memberOptional.isPresent) {
-            val member: Member = memberOptional.get()
-            return MemberDTO.Response(member)
+            return MemberDTO.Response(memberOptional.get())
         } else {
             throw MemberException.MEMBER_NOT_REMOVED.memberTaskException
         }
@@ -108,7 +111,7 @@ class MemberService(
             val member: Member = memberOptional.get()
             val fileName = saveImage(imageFile)
 
-            member.mImage = fileName // URL 저장
+            member.mImage = "api/v1/member/upload/$fileName" // URL 저장
             memberRepository.save(member)
 
             return MemberDTO.ChangeImage(dto.id, imageFile)
@@ -138,24 +141,21 @@ class MemberService(
     fun checkLoginIdAndPassword(loginId: String, pw: String): MemberDTO.LoginResponseDto {
         val opMember: Optional<Member> = memberRepository.findByLoginId(loginId)
 
-        if (opMember.isEmpty()) {
+        if (opMember.isEmpty) {
             throw MemberException.MEMBER_NOT_FOUND.memberTaskException
         }
 
-        if (!passwordEncoder!!.matches(pw, opMember.get().pw)) {
+        if (!passwordEncoder.matches(pw, opMember.get().pw)) {
             throw MemberException.MEMBER_LOGIN_DENIED.memberTaskException
         }
 
-        val member: Member = opMember.get()
-        val responseDto: MemberDTO.LoginResponseDto = MemberDTO.LoginResponseDto(member)
-
-        return responseDto
+        return MemberDTO.LoginResponseDto(opMember.get())
     }
 
     fun getMemberById(id: Long): Member {
         val opMember: Optional<Member> = memberRepository.findById(id)
 
-        if (opMember.isEmpty()) {
+        if (opMember.isEmpty) {
             throw MemberException.MEMBER_NOT_FOUND.memberTaskException
         }
 
@@ -180,7 +180,7 @@ class MemberService(
         }
 
         return jwtUtil.encodeAccessToken(
-            1,
+            100,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId,

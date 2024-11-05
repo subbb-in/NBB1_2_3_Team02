@@ -1,5 +1,6 @@
 package edu.example.kotlindevelop.domain.member.entity
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.persistence.*
@@ -20,20 +21,23 @@ data class Member(
     var name: String,
     var email: String,
     var mImage: String? = null,
+    var userName: String? = null,
 
     @Column(columnDefinition = "TEXT")
     var refreshToken: String? = null,
 
     @CreatedDate
-    val createdAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @LastModifiedDate
-    val modifiedAt: LocalDateTime? = null,
+    val modifiedAt: LocalDateTime = LocalDateTime.now(),
+
 
     @OneToMany(mappedBy = "maker", cascade = [CascadeType.ALL], orphanRemoval = true)
     var productList: MutableList<Product> = mutableListOf(),
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonManagedReference
     var ordersList: MutableList<Orders> = mutableListOf()
 ) {
     fun updateRefreshToken(refreshToken: String?) {

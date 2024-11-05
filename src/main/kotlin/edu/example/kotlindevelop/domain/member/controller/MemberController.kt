@@ -1,21 +1,25 @@
 package edu.example.kotlindevelop.domain.member.controller
 
-import edu.example.kotlindevelop.global.security.SecurityUser
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.service.MemberService
+import edu.example.kotlindevelop.domain.member.util.ValidationUtils
+import edu.example.kotlindevelop.global.security.SecurityUser
 import jakarta.mail.internet.MimeMessage
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("api/v1/members")
@@ -24,39 +28,53 @@ class MemberController (
     val resourceLoader: ResourceLoader,
     val mailSender: JavaMailSender
 ){
+    @GetMapping("/loginSuccess")
+    fun loginSuccess(@AuthenticationPrincipal oauth2User: OAuth2User): ResponseEntity<Any> {
+        val userId = oauth2User.getAttribute<String>("providerId")
+        return memberService.checkLoginIdAndPassword(userId!!, "123").let {
+            val accessToken = memberService.generateAccessToken(it.id, it.loginId)
+            val refreshToken = memberService.generateRefreshToken(it.id, it.loginId)
+
+            memberService.setRefreshToken(it.id, refreshToken)
+
+            it.apply {
+                this.accessToken = accessToken
+                this.refreshToken = refreshToken
+            }
+            ResponseEntity.ok(mapOf("redirectUrl" to "http://localhost:3000", "userInfo" to it))
+        }
+    }
 
     //회원가입
     @PostMapping("/register")
     fun register(
         @Validated @RequestBody request: MemberDTO.CreateRequestDto,
         bindingResult: BindingResult
-    ): ResponseEntity<MemberDTO.CreateResponseDto> {
-        if (bindingResult.hasErrors()) {
-            val errorMessage = bindingResult.allErrors.joinToString(", ") { error ->
-                when (error) {
-                    is FieldError -> error.defaultMessage.toString()
-                    else -> error.defaultMessage.toString()
-                }
-            }
-
+    ): ResponseEntity<Any> {
+        val errorMessage = ValidationUtils.generateErrorMessage(bindingResult)
+        if (errorMessage != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(MemberDTO.CreateResponseDto(errorMessage))
+                .body(MemberDTO.StringResponseDto(errorMessage))
         }
-
-        val createResponseDto = memberService.create(request)
-
-        return ResponseEntity.ok(createResponseDto)
+        return ResponseEntity.ok(memberService.create(request))
     }
-
-
 
     //로그인
     @PostMapping("/login")
-    fun login(@Validated @RequestBody request: MemberDTO.LoginRequestDto): ResponseEntity<MemberDTO.LoginResponseDto> {
-        // 인증 성공
+    fun login(
+        @Validated @RequestBody request: MemberDTO.LoginRequestDto,
+        bindingResult: BindingResult
+    ): ResponseEntity<Any> {
+        // 아이디, 비밀번호가 입력 되었는지 확인 과정 추가
+        val errorMessage = ValidationUtils.generateErrorMessage(bindingResult)
+        if (errorMessage != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(MemberDTO.StringResponseDto(errorMessage))
+        }
+        /* 코틀린 정규 표현식 let 으로 변환
         val responseDto = memberService.checkLoginIdAndPassword(request.loginId, request.pw)
 
-        val id = responseDto.id ?: throw IllegalArgumentException("Member ID cannot be null")
+        val id = responseDto.id
         val loginId = responseDto.loginId
 
         val accessToken = memberService.generateAccessToken(id, loginId)
@@ -68,6 +86,20 @@ class MemberController (
         responseDto.refreshToken = refreshToken
 
         return ResponseEntity.ok(responseDto)
+        */
+        // 인증 성공
+        return memberService.checkLoginIdAndPassword(request.loginId, request.pw).let {
+                val accessToken = memberService.generateAccessToken(it.id, it.loginId)
+                val refreshToken = memberService.generateRefreshToken(it.id, it.loginId)
+
+                memberService.setRefreshToken(it.id, refreshToken)
+
+                it.apply {
+                    this.accessToken = accessToken
+                    this.refreshToken = refreshToken
+                }
+                ResponseEntity.ok(it)
+        }
     }
 
 
@@ -76,8 +108,10 @@ class MemberController (
         val accessToken: String = memberService.refreshAccessToken(request.refreshToken)
         val responseDto: MemberDTO.RefreshAccessTokenResponseDto =
             MemberDTO.RefreshAccessTokenResponseDto(accessToken, "새로운 AccessToken 발급")
+        // 리턴 값이 명백하기 때문에 일부 생략
+        // return ResponseEntity.ok<MemberDTO.RefreshAccessTokenResponseDto>(responseDto)
+        return ResponseEntity.ok(responseDto)
 
-        return ResponseEntity.ok<MemberDTO.RefreshAccessTokenResponseDto>(responseDto)
     }
 
 
@@ -91,11 +125,12 @@ class MemberController (
 
 
      //나의 회원 정보 조회화기
-    @GetMapping("/")
-    fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
-        val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
-        return ResponseEntity.ok(memberService.read(id))
-    }
+     @GetMapping("/")
+     fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
+         // DTO 객체의 생성자에서 기본값 지정에 따른 null 예외처리 제거 및 불필요한 변수 생성과정 삭제
+         //val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
+         return ResponseEntity.ok(memberService.read(user.id))
+     }
 
     //다른 유저의 회원정보 조회하기
     @GetMapping("/{id}")
@@ -104,35 +139,7 @@ class MemberController (
     }
 
 
-//    //내 정보 수정하기
-//    @PutMapping("/")
-//    fun modify(
-//        @AuthenticationPrincipal user: SecurityUser,
-//        @Validated @RequestBody dto: MemberDTO.Update
-//    ): ResponseEntity<MemberDTO.Update> {
-//        val id: Long = user.getId()
-//        dto.setId(id)
-//        return ResponseEntity.ok<T>(memberService.update(dto))
-//    }
-//
-//    //주문 삭제하기
-//    @DeleteMapping("/")
-//    fun delete(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<Map<String, String>> {
-//        val id: Long = user.getId()
-//        memberService.delete(id)
-//        return ResponseEntity.ok(java.util.Map.of("result", "success"))
-//    }
-//
-//    @PutMapping("/update-image")
-//    fun modifyImage(
-//        @AuthenticationPrincipal user: SecurityUser,
-//        @RequestParam("mImage") mImage: MultipartFile?
-//    ): ResponseEntity<ChangeImage> {
-//        val dto: ChangeImage = ChangeImage()
-//        dto.setId(user.getId())
-//        dto.setMImage(mImage)
-//        return ResponseEntity.ok<T>(memberService.changeImage(dto, mImage))
-//    }
+        //@Validated @RequestBody dto: MemberDTO.Update
 
     // 이미지 서빙 엔드포인트
     @GetMapping("/upload/{filename:.+}")
@@ -145,11 +152,9 @@ class MemberController (
     @GetMapping("/findId")
     fun findId(@RequestParam email: String): ResponseEntity<String> {
         val loginId: String = memberService.findByEmail(email)
-
         return ResponseEntity.ok(loginId)
     }
 
-    //비밀번호 찾기
     @PostMapping("/findPW")
     fun findPw(@RequestBody request: MemberDTO.FindPWRequestDto): ResponseEntity<String> {
         val templatePassword: String = memberService.setTemplatePassword(request.loginId, request.email )
