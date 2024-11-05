@@ -5,6 +5,7 @@ import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO.CustomOAuth2User
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.exception.MemberException
+import edu.example.kotlindevelop.domain.member.pagination.Cursor
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.member.util.PasswordUtil
 import edu.example.kotlindevelop.global.jwt.JwtUtil
@@ -24,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -104,6 +107,34 @@ class MemberService(
         val members: Page<Member> = memberRepository.searchMembers(pageable)
         return members.map { MemberDTO.Response(it) }
     }
+
+    fun readAllCursorBased(
+        lastCreatedAt: LocalDateTime?,
+        lastId: Long?,
+        limit: Int?
+    ): MemberDTO.MemberCursorResponse {
+        val members: List<Member> = memberRepository.searchMemberCursorBased(lastCreatedAt, lastId, limit)
+
+        val hasNext = members.size > limit!!
+        val pagedMembers = if (hasNext) members.subList(0, limit).map { MemberDTO.Response(it) } else members.map {MemberDTO.Response(it) }
+
+        val nextCursor: Cursor? = if (hasNext) {
+            val lastMember = pagedMembers.last()
+            Cursor(
+                lastCreatedAt = lastMember.createdAt,
+                lastId = lastMember.id!!
+            )
+        } else {
+            null
+        }
+        return MemberDTO.MemberCursorResponse(
+            members = pagedMembers,
+            nextCursor = nextCursor
+        )
+
+
+    }
+
 
     private val uploadDir = "upload/" // 현재 디렉토리의 upload 폴더
 
@@ -187,7 +218,7 @@ class MemberService(
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId,
-                "authorities" to  authorities
+                "authorities" to authorities
             )
         )
     }
@@ -242,7 +273,8 @@ class MemberService(
 
     @Transactional
     fun bulkInsertMembers(members: List<Member>, batchSize: Int = 1000) {
-        members.forEachIndexed{ index , member -> memberRepository.save(member)
+        members.forEachIndexed { index, member ->
+            memberRepository.save(member)
             if (index % batchSize == 0 && index > 0) {
                 memberRepository.flush()
                 entityManager.clear()
