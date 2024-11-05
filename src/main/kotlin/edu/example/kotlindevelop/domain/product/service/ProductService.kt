@@ -4,14 +4,11 @@ import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
-import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
-import edu.example.kotlindevelop.domain.product.entity.QLossRate.lossRate
 import edu.example.kotlindevelop.domain.product.exception.ProductException
 import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
 import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -64,9 +61,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findPersonalProducts(memberId, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -78,9 +75,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findPersonalProductsByKeyword(keyword, memberId, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -92,9 +89,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findAllProducts(pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -106,59 +103,12 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findProductsByKeyword(keyword, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
-
-
-    // 그래프 작업
-//    fun getAverageStatistics(memberId: Long, name: String, startDate: LocalDate, endDate: LocalDate): List<ProductDTO.AverageResponseDTO> {
-//        // 기간별 개인의 평균 로스율 조회
-//        val personalAverages: List<Array<Any>> = productRepository.findPersonalAverageByMakerAndName(
-//            memberId = memberId,
-//            name = name,
-//            startDate = startDate,
-//            endDate = endDate
-//        )
-//
-//        // 기간별 전체 사용자의 평균 로스율 조회
-//        val allUsersAverages: List<Array<Any>> = productRepository.findAverageStatisticsByName(
-//            name = name,
-//            startDate = startDate,
-//            endDate = endDate
-//        )
-//
-//        // 전체 사용자의 평균 로스율을 Map 형태로 변환
-//        val allUserAverages: Map<LocalDate, Double> = allUsersAverages.associate {
-//            LocalDate.parse(it[0].toString()) to (it[1] as Double)
-//        }
-//
-//        // 결과 DTO에 매핑할 리스트 생성
-//        val dates = mutableListOf<LocalDate>()
-//        val personalAverageList = mutableListOf<BigDecimal>()
-//        val allUserAverageList = mutableListOf<BigDecimal>()
-//
-//        // 개인 평균 로스율 데이터와 전체 평균 로스율 데이터를 병합
-//        for (data in personalAverages) {
-//            val date = LocalDate.parse(data[0].toString())
-//            val personalAverage = data[1] as BigDecimal
-//            val allUserAverage = BigDecimal.valueOf(allUserAverages[date] ?: 0.0)
-//
-//            dates.add(date)
-//            personalAverageList.add(personalAverage)
-//            allUserAverageList.add(allUserAverage)
-//        }
-//
-//        // 결과 DTO 생성
-//        val responseDTO = ProductDTO.AverageResponseDTO(dates, personalAverageList, allUserAverageList)
-//        return listOf(responseDTO)
-//
-//    }
-
-    // r그래프 수정
 
     // 상품의 기간별 평균 로스율
     fun getAverageStatistics(memberId: Long, name: String, startDate: LocalDate, endDate: LocalDate): List<ProductDTO.AverageResponseDTO> {
