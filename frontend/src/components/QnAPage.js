@@ -52,6 +52,19 @@ const QnAPage = () => {
         }
     };
 
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'ANSWERED':
+                return 'green'; // 답변됨
+            case 'IN_PROGRESS':
+                return 'orange'; // 문제 해결중
+            case 'UNANSWERED':
+                return 'red'; // 답변되지 않음
+            default:
+                return 'black'; // 기본 색상
+        }
+    };
+
     return (
         <div className="qna-container">
             <h1 className="qna-header">QnA 게시판</h1>
@@ -93,7 +106,12 @@ const QnAPage = () => {
             <ul className="qna-list">
                 {questions.map(question => (
                     <li key={question.id} className="qna-item">
-                        <h3 onClick={() => setShowDetail(question)}>{question.title}</h3>
+                        <h3 onClick={() => setShowDetail(question)} style={{cursor: 'pointer'}}>
+                            {question.title}
+                            <span style={{marginLeft: '10px', color: getStatusColor(question.status)}}>
+                                {question.status}
+                            </span>
+                        </h3>
                     </li>
                 ))}
             </ul>

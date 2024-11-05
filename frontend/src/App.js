@@ -16,6 +16,8 @@ import LossControl from './components/LossControl';
 import FindIdPw from "./components/FindIdPw";
 import QnAPage from "./components/QnAPage";
 import QnAPageAdmin from "./components/QnAPageAdmin";
+import ChatComponent from './components/ChatComponent';
+import ChatComponentAdmin from "./components/ChatComponentAdmin";
 
 function App() {
     const [userName, setUserName] = useState('');
@@ -138,6 +140,7 @@ function App() {
                 return (
                     <ul className="sub-menu">
                         <li onClick={() => showComponent('qnaPage')}> Q&A</li>
+                        <li onClick={() => showComponent('chatting')}> 상담 서비스</li>
                     </ul>
                 );
             }
@@ -201,23 +204,27 @@ function App() {
                         </div>
 
                         <div className="component-container">
-                            {activeComponent === 'userInfo' && <UserInfo userId={userId} onUpdate={setUserName} />}
+                            {activeComponent === 'userInfo' && <UserInfo userId={userId} onUpdate={setUserName}/>}
                             {activeComponent === 'profileImageChange' &&
                                 <ProfileImageChange
                                     onProfileImageChange={setProfileImage}
                                 />
                             }
-                            {activeComponent === 'userDelete' && <UserDelete userId={userId} onDelete={handleUserDelete} />}
-                            {activeComponent === 'insertOrder' && <InsertOrder memberId={userId} />}
-                            {activeComponent === 'orderListPage' && <OrderListPage />}
-                            {activeComponent === 'orderSummary' && <OrderSummary />}
-                            {activeComponent === 'addProduct' && <AddProduct />}
-                            {activeComponent === 'productList' && <ProductList />}
-                            {activeComponent === 'userControl' && <UserControl />}
-                            {activeComponent === 'lossControl' && <LossControl />}
-                            {activeComponent === 'qnaPage' && <QnAPage />}
-                            {activeComponent === 'qnaPageAdmin' && <QnAPageAdmin />}
-
+                            {activeComponent === 'userDelete' &&
+                                <UserDelete userId={userId} onDelete={handleUserDelete}/>}
+                            {activeComponent === 'insertOrder' && <InsertOrder memberId={userId}/>}
+                            {activeComponent === 'orderListPage' && <OrderListPage/>}
+                            {activeComponent === 'orderSummary' && <OrderSummary/>}
+                            {activeComponent === 'addProduct' && <AddProduct/>}
+                            {activeComponent === 'productList' && <ProductList/>}
+                            {activeComponent === 'userControl' && <UserControl/>}
+                            {activeComponent === 'lossControl' && <LossControl/>}
+                            {activeComponent === 'qnaPage' && <QnAPage/>}
+                            {activeComponent === 'qnaPageAdmin' && <QnAPageAdmin/>}
+                            {activeComponent === 'chatting' && <ChatComponent user={userName}/>}
+                        </div>
+                        <div>
+                            {userName === '운영자' && <ChatComponentAdmin user={userName}/>}
                         </div>
                     </>
                 ) : (

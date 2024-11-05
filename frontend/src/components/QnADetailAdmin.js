@@ -5,6 +5,7 @@ const QnADetailAdmin = ({ question, onClose, onUpdateQuestions  }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedTitle, setUpdatedTitle] = useState(question.title);
     const [updatedDescription, setUpdatedDescription] = useState(question.description);
+    const [updatedStatus, setUpdatedStatus] = useState(question.status);
 
     const handleEditToggle = () => {
         setIsEditing(!isEditing);
@@ -16,6 +17,7 @@ const QnADetailAdmin = ({ question, onClose, onUpdateQuestions  }) => {
             ...question,
             title: updatedTitle,
             description: updatedDescription,
+            status: updatedStatus,
         };
         try {
             const response = await axiosInstance.put(`/api/v1/qna/${question.id}`, updatedQuestion);
@@ -38,6 +40,7 @@ const QnADetailAdmin = ({ question, onClose, onUpdateQuestions  }) => {
         }
     };
 
+
     return (
         <div className="qna-modal">
             <h2>{question.title}</h2>
@@ -58,10 +61,15 @@ const QnADetailAdmin = ({ question, onClose, onUpdateQuestions  }) => {
                                 onChange={(e) => setUpdatedDescription(e.target.value)}
                                 required
                             />
+                            <select value={updatedStatus} onChange={(e) => setUpdatedStatus(e.target.value)}>
+                                <option value="ANSWERED">답변됨</option>
+                                <option value="IN_PROGRESS">문제 해결중임</option>
+                                <option value="UNANSWERED">답변되지 않음</option>
+                            </select>
                             <button className="qna-modal-button" type="submit">저장</button>
                         </form>
                     )}
-                    <button className="qna-modal-button" onClick={handleDelete}>삭제</button>
+            <button className="qna-modal-button" onClick={handleDelete}>삭제</button>
             <button className="qna-modal-button" onClick={onClose}>닫기</button>
         </div>
     );
