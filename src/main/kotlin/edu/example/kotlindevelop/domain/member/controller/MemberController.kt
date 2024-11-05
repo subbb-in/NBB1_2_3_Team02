@@ -1,6 +1,5 @@
 package edu.example.kotlindevelop.domain.member.controller
 
-
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.member.util.ValidationUtils
@@ -108,29 +107,22 @@ class MemberController (
 
 
      //나의 회원 정보 조회화기
-    @GetMapping("/")
-    fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
-        // DTO 객체의 생성자에서 기본값 지정에 따른 null 예외처리 제거 및 불필요한 변수 생성과정 삭제
-        //val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
-        return ResponseEntity.ok(memberService.read(user.id))
-    }
+     @GetMapping("/")
+     fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
+         // DTO 객체의 생성자에서 기본값 지정에 따른 null 예외처리 제거 및 불필요한 변수 생성과정 삭제
+         //val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
+         return ResponseEntity.ok(memberService.read(user.id))
+     }
 
     //다른 유저의 회원정보 조회하기
-
-    // 너무 과도한 권한을 주는것은 아닌지? 고민해야함
-
     @GetMapping("/{id}")
     fun read(@PathVariable id: Long): ResponseEntity<MemberDTO.Response> {
         return ResponseEntity.ok(memberService.read(id))
     }
 
 
-    //내 정보 수정하기
-    @PutMapping("/")
-    fun modify(
-        @AuthenticationPrincipal user: SecurityUser,
-        // 원하는 필드만 수정할 수 있어야 하므로 null 허용 및 불필요한 @Validated 어노테이션 제거
         //@Validated @RequestBody dto: MemberDTO.Update
+
         @RequestBody dto: MemberDTO.Update
     ): ResponseEntity<MemberDTO.Update> {
         dto.id = user.id
@@ -168,8 +160,6 @@ class MemberController (
         return ResponseEntity.ok(loginId)
     }
 
-
-    /* 입력값 검증 및 정규 표현식 적용
     @PostMapping("/findPW")
     fun findPw(@RequestBody request: MemberDTO.FindPWRequestDto): ResponseEntity<String> {
         val templatePassword: String = memberService.setTemplatePassword(request.loginId, request.email )
@@ -196,47 +186,6 @@ class MemberController (
             messageHelper.setText(content)
 
             mailSender.send(message)
-        } catch (e: Exception) {
-            log.debug(e)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("임시 비밀번호 전송을 실패하였습니다")
-        }
-        return ResponseEntity.ok("임시 비밀번호를 이메일로 전송했습니다")
-    }
-    */
-
-    //비밀번호 찾기
-    @PostMapping("/findPW")
-    fun findPw(
-        @RequestBody request: MemberDTO.FindPWRequestDto,
-        bindingResult: BindingResult
-    ): ResponseEntity<Any> {
-        val errorMessage = ValidationUtils.generateErrorMessage(bindingResult)
-        if (errorMessage != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(MemberDTO.StringResponseDto(errorMessage))
-        }
-
-        //데이터베이스의 비밀번호를 임시 비밀번호로 변경
-        val templatePassword: String = memberService.setTemplatePassword(request.loginId, request.email )
-
-        // 메일 발송시도 및 예외처리
-        try {
-            val message: MimeMessage = mailSender.createMimeMessage()
-            MimeMessageHelper(mailSender.createMimeMessage(), true, "UTF-8").run {
-                setFrom("seodo1e1205@gmail.com")
-                setTo(request.email)
-                setSubject("데브코스 팀2 아이디/비밀번호 찾기 인증 이메일 입니다.")
-                setText(
-                    System.lineSeparator() +
-                    System.lineSeparator() +
-                    "임시 비밀번호로 로그인 후 꼭 새로운 비밀번호로 설정해주시기 바랍니다." +
-                    System.lineSeparator() +
-                    System.lineSeparator() +
-                    "임시비밀번호는 " + templatePassword + " 입니다. " +
-                    System.lineSeparator()
-                )
-                mailSender.send(message)
-            }
         } catch (e: Exception) {
             log.debug(e)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("임시 비밀번호 전송을 실패하였습니다")

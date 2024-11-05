@@ -180,7 +180,7 @@ class MemberService(
         }
 
         return jwtUtil.encodeAccessToken(
-            1,
+            100,
             mapOf(
                 "id" to id.toString(),
                 "loginId" to loginId,

@@ -1,5 +1,8 @@
 package edu.example.kotlindevelop.domain.member.entity
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
+import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
+import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -34,6 +37,7 @@ data class Member(
     var productList: MutableList<Product> = mutableListOf(),
 
     @OneToMany(mappedBy = "member", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonManagedReference
     var ordersList: MutableList<Orders> = mutableListOf()
 ) {
     fun updateRefreshToken(refreshToken: String?) {

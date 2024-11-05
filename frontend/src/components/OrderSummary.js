@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../axiosInstance";
 import ChartComponent from './ChartComponent';
+import 'chart.js/auto';
 
 
 const OrderSummary = () => {
