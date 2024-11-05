@@ -122,23 +122,18 @@ class ProductService(
             LocalDate.parse(it[0].toString()) to BigDecimal.valueOf(it[1] as Double)
         }
 
-        val dates = mutableListOf<LocalDate>()
-        val personalAverageList = mutableListOf<BigDecimal>()
-        val allUserAverageList = mutableListOf<BigDecimal>()
+        return personalAverages.map { data ->
+            val date = LocalDate.parse(data[0].toString())
+            val personalAverage = BigDecimal.valueOf(data[1] as Double)
+            val allUserAverage = allUserAverages[date] ?: BigDecimal.ZERO
 
-        // 결과 DTO 리스트 생성
-        for (data in personalAverages) {
-            val date = LocalDate.parse(data[0].toString()) // 날짜 파싱
-            val personalAverage = BigDecimal.valueOf(data[1] as Double) // 개인 평균 로스율
-            val allUserAverage = allUserAverages[date] ?: BigDecimal.ZERO // 전체 평균 로스율
-
-            dates.add(date)
-            personalAverageList.add(personalAverage)
-            allUserAverageList.add(allUserAverage)
+            ProductDTO.AverageResponseDTO(
+                dates = listOf(date),
+                personalAverages = listOf(personalAverage),
+                allUserAverages = listOf(allUserAverage)
+            )
         }
 
-        // 결과 DTO 생성
-        return listOf(ProductDTO.AverageResponseDTO(dates, personalAverageList, allUserAverageList))
     }
 
 }
