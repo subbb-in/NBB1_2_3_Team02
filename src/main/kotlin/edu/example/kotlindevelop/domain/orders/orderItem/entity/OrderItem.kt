@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
+import org.modelmapper.internal.bytebuddy.build.ToStringPlugin
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 
 
 @Entity
 @Table(name = "orderItem")
+
 //open class OrderItem(
 data class OrderItem(
     @Id
@@ -24,6 +26,7 @@ data class OrderItem(
     @JoinColumn(name = "orders_id")
     @JsonIgnore
     var orders: Orders,
+
     val quantity: Int,
     val price: Int
 ) {
