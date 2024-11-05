@@ -2,6 +2,8 @@ package edu.example.kotlindevelop.domain.product.entity
 
 import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.persistence.*
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDate
@@ -19,6 +21,8 @@ class LossRate(
     @JoinColumn(name = "product_id")
     var product: Product,
 
+    @Min(0)
+    @Max(100)
     @Column(nullable = false)
     var loss: Int
 ) {

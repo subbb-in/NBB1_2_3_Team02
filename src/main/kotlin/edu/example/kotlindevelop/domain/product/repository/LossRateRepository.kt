@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param
 interface LossRateRepository : JpaRepository<LossRate, Long> {
 
     @Query(
-        value = "SELECT * FROM loss_rate l WHERE l.member_id = :memberId AND l.product_id = :productId ORDER BY l.recorded_at DESC LIMIT 1",
+        value = "SELECT * FROM loss_rate l WHERE l.member_id = :memberId AND l.product_id = :productId ORDER BY l.id DESC LIMIT 1",
         nativeQuery = true
     )
     fun findLatestProductByMakerAndName(
