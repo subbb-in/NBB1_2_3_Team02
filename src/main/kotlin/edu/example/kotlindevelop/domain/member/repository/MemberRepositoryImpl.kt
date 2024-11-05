@@ -9,6 +9,7 @@ import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.entity.QMember
 
 
+
 @Repository
 class MemberRepositoryImpl(
     private val queryFactory: JPAQueryFactory
@@ -27,8 +28,8 @@ class MemberRepositoryImpl(
         val total = queryFactory
             .selectFrom(member)
             .fetch()
-            .size.toLong() // total을 Long으로 변환
+            .size.toLong()
 
-        return PageImpl(content, pageable, total)
+        return PageImpl(content,pageable,total)
     }
 }

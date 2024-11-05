@@ -1,6 +1,7 @@
 package edu.example.kotlindevelop.domain.orders.orderItem.entity
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import edu.example.kotlindevelop.domain.orders.orders.entity.Orders
 import edu.example.kotlindevelop.domain.product.entity.Product
@@ -23,6 +24,7 @@ data class OrderItem(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orders_id")
+    @JsonIgnore
     var orders: Orders,
 
     val quantity: Int,

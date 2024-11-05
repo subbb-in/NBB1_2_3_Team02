@@ -1,7 +1,9 @@
 package edu.example.kotlindevelop.domain.orders.orders.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+import com.fasterxml.jackson.annotation.JsonFormat
+
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.product.entity.Product
@@ -28,18 +30,12 @@ class Orders(
 
     @CreatedDate
     @Column(name = "created_at", updatable = false) // 생성일은 업데이트하지 않음
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm") // 초 단위 생략
     var createdAt: LocalDateTime? = null
-
-    @LastModifiedDate
-    @Column(name = "modified_at") // 수정일
-    var modifiedAt: LocalDateTime? = null
 
     @OneToMany(mappedBy = "orders", cascade = [CascadeType.ALL], orphanRemoval = true)
     @JsonIgnoreProperties("orders")
     val orderItems: MutableList<OrderItem> = ArrayList()
-
-    // 기본 생성자 (JPA를 위한)
-//    protected constructor() : this(0L, Member())
 
     fun addOrderItem(product: Product?, quantity: Int, price: Int) {
         val orderItem = OrderItem(
