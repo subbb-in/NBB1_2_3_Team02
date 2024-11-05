@@ -2,6 +2,7 @@ package edu.example.kotlindevelop.domain.member.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.member.pagination.Cursor
 import jakarta.validation.constraints.NotBlank
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -95,14 +96,16 @@ class MemberDTO {
         var name: String,
         var mImage: String,
         var accessToken: String? = null,
-        var refreshToken: String? = null
+        var refreshToken: String? = null,
+        var userName: String? = null
     ) {
         constructor(member: Member) : this(
             // id는 AutoIncrement 로 생성하기 때문에 Null허용 객체 이지만, Response 과정에서는 null일 가능성이 없기 때문에 대입 값으로 0 설정
             id = member.id?:0,
             loginId = member.loginId,
             name = member.name,
-            mImage = member.mImage ?: "default_image.png"
+            mImage = member.mImage ?: "default_image.png",
+            userName = member.userName ?: ""
         )
 
     }
@@ -142,6 +145,10 @@ class MemberDTO {
         var id: Long,
         var mImage: MultipartFile
     )
+    data class ChangeImageResponse (
+        var id: Long,
+        var mImage: String
+    )
 
     data class LogoutResponseDto ( var message: String)
 
@@ -150,6 +157,22 @@ class MemberDTO {
          var loginId: String,
          var email: String
     )
+
+    data class MemberCursorRequest(
+        val lastCreatedAt: LocalDateTime?,
+        val lastId : Long?,
+        val limit: Int?
+
+    )
+
+    data class MemberCursorResponse(
+        val members : List<Response>,
+        val nextCursor : Cursor?
+
+    )
+
+
+
 }
 //    @Data
         //    @AllArgsConstructor

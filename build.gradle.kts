@@ -72,6 +72,8 @@ dependencies {
 
 	//OAuth2.0
 	implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
+	//websocket
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
 }
 
 kotlin {
