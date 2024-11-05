@@ -41,7 +41,6 @@ class ProductService(
     @Transactional
     fun addLoss(dto: LossRateDTO.LossRateRequestDTO, memberId : Long): LossRateDTO.LossRateRequestDTO{
         val member: Member = memberService.getMemberById(memberId)
-        println("사용자가 입력한 로스값은 ${dto.loss} 이고, 사용자의 상품 아이디는 ${dto.productId}입니다 1")
 
         val product = productRepository.findByIdOrNull(dto.productId)
             ?: throw ProductException.PRODUCT_NOT_FOUND.getProductException()
