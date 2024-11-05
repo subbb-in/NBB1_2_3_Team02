@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 // "주문 데이터 전송 객체"
@@ -18,6 +19,7 @@ data class OrderDTO(
     val id: Long,
     var items: List<OrderItemDTO> = emptyList(),
     val totalPrice: Long
+
 ) {
     // 기존 엔티티로 변환하는 메서드
 
@@ -47,8 +49,7 @@ data class OrderDTO(
         var id: Long? = null, // 주문 ID
         var memberId: Long? = null, // 회원 ID
         var totalPrice: Long? = null, // 총 가격
-        var createdAt: LocalDateTime? = null, // 생성일
-        var modifiedAt: LocalDateTime? = null, // 수정일
+        var createdAt: String? = null, // 생성일
         var orderItems: List<OrderItemDTO>? = null // 주문 항목 리스트
     ) {
         // 엔티티로부터 DTO 생성
@@ -56,8 +57,7 @@ data class OrderDTO(
             id = orders!!.id,
             memberId = orders.member.id,
             totalPrice = orders.totalPrice,
-            createdAt = orders.createdAt,
-            modifiedAt = orders.modifiedAt,
+            createdAt = orders.createdAt?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), // 포맷 적용
             orderItems = orders.orderItems.map { OrderItemDTO(it) } // OrderItem을 OrderItemDTO로 변환
         )
     }

@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import './App.css';
 import UserInfo from './components/UserInfo';
 import Login from './components/Login';
-import SocialLogin from './components/SocialLogin';
 import ProfileImageChange from './components/ProfileImageChange';
 import UserDelete from './components/UserDelete';
 import Register from './components/Register';
