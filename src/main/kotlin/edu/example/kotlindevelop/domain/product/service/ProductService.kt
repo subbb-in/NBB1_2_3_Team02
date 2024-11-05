@@ -18,11 +18,9 @@ import java.time.LocalDate
 
 @Service
 class ProductService(
-    private val productRepository: ProductRepository,
     private val memberService: MemberService,
+    private val productRepository: ProductRepository,
     private val lossRateRepository: LossRateRepository
-
-
 ) {
     // 식재료 등록
     @Transactional
@@ -58,12 +56,9 @@ class ProductService(
     fun getPersonalProducts(dto: ProductDTO.PageRequestDto, memberId: Long): Page<ProductDTO.ProductResponseDto> {
         val pageable: Pageable = dto.pageable
         val productProjections: Page<ProductProjection> = productRepository.findPersonalProducts(memberId, pageable)
+
         return productProjections.map { projection ->
-            ProductDTO.ProductResponseDto(
-                id = projection.getProductId(),
-                name = projection.getProductName(),
-                loss = projection.getLatestLossRate()
-            )
+            createProductResponseDto(projection)
         }
     }
 
@@ -72,12 +67,9 @@ class ProductService(
     fun searchPersonalProducts(keyword: String, dto: ProductDTO.PageRequestDto, memberId: Long): Page<ProductDTO.ProductResponseDto> {
         val pageable: Pageable = dto.pageable
         val productProjections: Page<ProductProjection> = productRepository.findPersonalProductsByKeyword(keyword, memberId, pageable)
+
         return productProjections.map { projection ->
-            ProductDTO.ProductResponseDto(
-                id = projection.getProductId(),
-                name = projection.getProductName(),
-                loss = projection.getLatestLossRate()
-            )
+            createProductResponseDto(projection)
         }
     }
 
@@ -86,12 +78,9 @@ class ProductService(
     fun getProducts(dto: ProductDTO.PageRequestDto): Page<ProductDTO.ProductResponseDto> {
         val pageable: Pageable = dto.pageable
         val productProjections: Page<ProductProjection> = productRepository.findAllProducts(pageable)
+
         return productProjections.map { projection ->
-            ProductDTO.ProductResponseDto(
-                id = projection.getProductId(),
-                name = projection.getProductName(),
-                loss = projection.getLatestLossRate()
-            )
+            createProductResponseDto(projection)
         }
     }
 
@@ -100,16 +89,14 @@ class ProductService(
     fun searchProducts(keyword: String, dto: ProductDTO.PageRequestDto): Page<ProductDTO.ProductResponseDto> {
         val pageable: Pageable = dto.pageable
         val productProjections: Page<ProductProjection> = productRepository.findProductsByKeyword(keyword, pageable)
+
         return productProjections.map { projection ->
-            ProductDTO.ProductResponseDto(
-                id = projection.getProductId(),
-                name = projection.getProductName(),
-                loss = projection.getLatestLossRate()
-            )
+            createProductResponseDto(projection)
         }
     }
 
     // 상품의 기간별 평균 로스율
+    @Transactional(readOnly = true)
     fun getAverageStatistics(memberId: Long, name: String, startDate: LocalDate, endDate: LocalDate): List<ProductDTO.AverageResponseDTO> {
         // 기간별 개인의 평균 로스율
         val personalAverages = productRepository.findPersonalAverageByMakerAndName(memberId, name, startDate, endDate)
@@ -133,6 +120,15 @@ class ProductService(
             )
         }
 
+    }
+
+    // 변환 함수
+    private fun createProductResponseDto(projection: ProductProjection): ProductDTO.ProductResponseDto {
+        return ProductDTO.ProductResponseDto(
+            id = projection.getProductId(),
+            name = projection.getProductName(),
+            loss = projection.getLatestLossRate()
+        )
     }
 
 }
