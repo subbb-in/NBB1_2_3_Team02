@@ -1,6 +1,5 @@
 package edu.example.kotlindevelop.domain.member.controller
 
-
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.member.util.ValidationUtils
@@ -108,12 +107,12 @@ class MemberController (
 
 
      //나의 회원 정보 조회화기
-    @GetMapping("/")
-    fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
-        // DTO 객체의 생성자에서 기본값 지정에 따른 null 예외처리 제거 및 불필요한 변수 생성과정 삭제
-        //val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
-        return ResponseEntity.ok(memberService.read(user.id))
-    }
+     @GetMapping("/")
+     fun getMyPage(@AuthenticationPrincipal user: SecurityUser): ResponseEntity<MemberDTO.Response> {
+         // DTO 객체의 생성자에서 기본값 지정에 따른 null 예외처리 제거 및 불필요한 변수 생성과정 삭제
+         //val id: Long = user.id ?: throw IllegalArgumentException("User ID cannot be null")
+         return ResponseEntity.ok(memberService.read(user.id))
+     }
 
     //다른 유저의 회원정보 조회하기
 

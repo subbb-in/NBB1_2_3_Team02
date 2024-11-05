@@ -1,23 +1,30 @@
 package edu.example.kotlindevelop.domain.product.entity
 
 import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "product")
-class Product(
-    val name: String,
-    @ManyToOne // 관계 매핑
-    @JoinColumn(name = "member_id") // 외래 키 설정
-    var maker: Member? = null
-) {
+@EntityListeners(AuditingEntityListener::class)
+data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null
+    val id: Long? = null,
+
+    var name: String,
+    var loss: Long? = null,
+
+    @CreatedDate
+    var createdAt: LocalDateTime? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    var maker: Member? = null,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
-    var lossRateList: MutableList<LossRate> = mutableListOf()
-
-//    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
-//    val orderItems: List<OrderItem> = mutableListOf()
-}
+    var orderItems: MutableList<OrderItem> = mutableListOf()
+)
