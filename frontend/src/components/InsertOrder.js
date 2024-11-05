@@ -10,6 +10,10 @@ function InsertOrder({ memberId }) {
     const [selectedProductName, setSelectedProductName] = useState('');
     const [lastMonthOrder, setLastMonthOrder] = useState([]);
 
+    useEffect(() => {
+        calculateTotalPrice();
+    }, [items]);
+
     const id = localStorage.getItem('id');
 
     const handleRegister = async (e) => {
@@ -240,28 +244,28 @@ function InsertOrder({ memberId }) {
             </div>
 
             {/* 지난달 주문 목록 표시 */}
-            <h3>지난달 주문 내역</h3>
-            <table className="last-month-order-table">
-                <thead>
-                <tr>
-                    <th>상품명</th>
-                    <th>개수</th>
-                    <th>가격</th>
-                </tr>
-                </thead>
-                <tbody>
-                {lastMonthOrder.map((order, index) => (
-                    // orderItems 배열을 순회
-                    order.orderItems.map((item, itemIndex) => (
-                        <tr key={`${index}-${itemIndex}`}>
-                            <td>{item.product?.name || '상품 정보 없음'}</td>
-                            <td>{item.quantity}</td>
-                            <td>{item.price}</td>
-                        </tr>
-                    ))
-                ))}
-                </tbody>
-            </table>
+            {/*<h3>지난달 주문 내역</h3>*/}
+            {/*<table className="last-month-order-table">*/}
+            {/*    <thead>*/}
+            {/*    <tr>*/}
+            {/*        <th>상품명</th>*/}
+            {/*        <th>개수</th>*/}
+            {/*        <th>가격</th>*/}
+            {/*    </tr>*/}
+            {/*    </thead>*/}
+            {/*    <tbody>*/}
+            {/*    {lastMonthOrder.map((order, index) => (*/}
+            {/*        // orderItems 배열을 순회*/}
+            {/*        order.orderItems.map((item, itemIndex) => (*/}
+            {/*            <tr key={`${index}-${itemIndex}`}>*/}
+            {/*                <td>{item.product?.name || '상품 정보 없음'}</td>*/}
+            {/*                <td>{item.quantity}</td>*/}
+            {/*                <td>{item.price}</td>*/}
+            {/*            </tr>*/}
+            {/*        ))*/}
+            {/*    ))}*/}
+            {/*    </tbody>*/}
+            {/*</table>*/}
         </div>
     );
 }
