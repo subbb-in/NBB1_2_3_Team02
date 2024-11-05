@@ -3,7 +3,6 @@ package edu.example.kotlindevelop.global.initData
 
 import edu.example.kotlindevelop.domain.member.dto.MemberDTO
 import edu.example.kotlindevelop.domain.member.entity.Member
-import edu.example.kotlindevelop.domain.member.entity.Product
 import edu.example.kotlindevelop.domain.member.repository.MemberRepository
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import org.springframework.beans.factory.annotation.Autowired
