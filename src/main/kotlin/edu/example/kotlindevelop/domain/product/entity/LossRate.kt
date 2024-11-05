@@ -2,9 +2,11 @@ package edu.example.kotlindevelop.domain.product.entity
 
 import edu.example.kotlindevelop.domain.member.entity.Member
 import jakarta.persistence.*
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 
 @Entity
@@ -28,5 +30,6 @@ class LossRate(
 
     @CreatedDate
     @Column(name = "recorded_at", nullable = false, updatable = false)
-    var recordedAt: LocalDateTime? = null
+    var recordedAt: LocalDate? = null
+
 }

@@ -27,40 +27,57 @@ function DetailProduct({ product, onBack }) {
     const handleUpdateProduct = async (e) => {
         e.preventDefault();
         const dataToUpdate = {
-            name: product.name, // ProductList에서 받은 식품 이름 사용
+            productId: product.id,
             loss: productLoss ? parseInt(productLoss) : null,
         };
 
         try {
-            await axiosInstance.post(`/api/v1/products/loss`, dataToUpdate, {
+            const response = await axiosInstance.post(`/api/v1/products/loss`, dataToUpdate, {
                 headers: { 'Content-Type': 'application/json' },
             });
 
+            console.log('응답데이터: ',response)
+
             alert('로스율이 등록되었습니다!');
-            product.loss = productLoss; // 입력받은 로스율로 변경
+
+            setProductLoss(productLoss); // 입력받은 로스율로 변경
+            product.loss = productLoss ? productLoss : null;
             setIsUpdating(false); // 수정 모드 종료
         } catch (error) {
             alert('로스율 등록 실패: ' + (error.response.data || '알 수 없는 오류'));
         }
     };
 
+    // 날짜 포매팅 함수
+    const formatDateToLocalDateString = (date) => {
+        return date.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Asia/Seoul",
+        })
+        .replace(/\.\s?|\s/g, '-')
+        .replace(/-$/, '');
+    };
+
     // 통계 데이터 가져오는 함수 >> 매 랜더링 시 useEffect 재실행
     const fetchStatistics = useCallback(async (selectedStartDate, selectedEndDate) => {
         try {
-            const adjustedStartDate = new Date(selectedStartDate);
-            adjustedStartDate.setHours(0, 0, 0, 0); // 시작일을 00:00:00.000로 설정
+            const adjustedStartDate = formatDateToLocalDateString(selectedStartDate)
+            const adjustedEndDate = formatDateToLocalDateString(selectedEndDate)
 
-            const adjustedEndDate = new Date(selectedEndDate);
-            adjustedEndDate.setHours(23, 59, 59, 999); // 종료일을 23:59:59.999로 설정
+            console.log('포맷된 시작 날짜:', adjustedStartDate);
+            console.log('끝나는 날짜: ',adjustedEndDate)
+
             const response = await axiosInstance.get(`/api/v1/products/loss/${product.name}`, {
                 params: {
-                    startDate: adjustedStartDate.toISOString(),
-                    endDate: adjustedEndDate.toISOString(),
+                    startDate: adjustedStartDate,
+                    endDate: adjustedEndDate,
                 },
             });
 
             const data = response.data;
-            console.log('응답 데이터:', data);
+            console.log('응답 데이터2:', response.data);
 
             // 응답 데이터에서 차트에 필요한 형식으로 변환
             if (data.length > 0) {
@@ -70,12 +87,12 @@ function DetailProduct({ product, onBack }) {
                 data.forEach(item => {
                     if (item.personalAverage && item.allUsersAverage) {
                         const myData = item.personalAverage.map((avg, index) => ({
-                            x: item.dates[index],
+                            x: formatDateToLocalDateString(new Date(item.dates[index])),
                             y: avg // 개인 평균 로스율
                         }));
 
                         const allData = item.allUsersAverage.map((avg, index) => ({
-                            x: item.dates[index],
+                            x: formatDateToLocalDateString(new Date(item.dates[index])),
                             y: avg // 전체 사용자 평균 로스율
                         }));
                         if (myData.length > 0 && allData.length > 0) {
