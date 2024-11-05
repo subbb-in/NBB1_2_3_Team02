@@ -58,7 +58,7 @@ class ProductDTO {
 
     data class AverageResponseDTO(
         val dates: List<LocalDate>,
-        val personalAverages: List<BigDecimal>,
-        val allUserAverages: List<BigDecimal>
+        val personalAverage: List<BigDecimal>,
+        val allUsersAverage: List<BigDecimal>
     )
 }

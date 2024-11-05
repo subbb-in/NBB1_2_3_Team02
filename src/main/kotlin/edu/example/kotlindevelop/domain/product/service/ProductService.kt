@@ -128,8 +128,8 @@ class ProductService(
 
             ProductDTO.AverageResponseDTO(
                 dates = listOf(date),
-                personalAverages = listOf(personalAverage),
-                allUserAverages = listOf(allUserAverage)
+                personalAverage = listOf(personalAverage),
+                allUsersAverage = listOf(allUserAverage)
             )
         }
 
