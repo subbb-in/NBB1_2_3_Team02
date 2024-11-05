@@ -10,7 +10,7 @@ class LossRateDTO {
     data class LossRateRequestDTO(
         val productId: Long,
 
-        val loss: Int,
+        val loss: Int?,
 
     ){
         fun toEntity(member: Member, product: Product): LossRate {

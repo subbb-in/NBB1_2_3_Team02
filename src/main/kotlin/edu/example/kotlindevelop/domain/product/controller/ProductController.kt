@@ -59,7 +59,7 @@ class ProductController(
         return ResponseEntity.ok(productDtoPage)
     }
 
-
+    // 그래프처리
     @GetMapping("/loss/{name}")
     fun getAverageLossStatistics(
         @AuthenticationPrincipal user: SecurityUser,
