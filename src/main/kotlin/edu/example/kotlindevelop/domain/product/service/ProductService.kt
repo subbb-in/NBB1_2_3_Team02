@@ -4,6 +4,7 @@ import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
+import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
 import edu.example.kotlindevelop.domain.product.exception.ProductException
 import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
@@ -43,7 +44,13 @@ class ProductService(
         val product = productRepository.findByIdOrNull(dto.productId)
             ?: throw ProductException.PRODUCT_NOT_FOUND.getProductException()
 
-        val lossRate = dto.toEntity(member, product)
+        val lossValue = dto.loss ?: 222
+
+        val lossRate = LossRate(
+            maker = member,
+            product = product,
+            loss = lossValue
+        )
 
         product.addLossRate(lossRate)
         lossRateRepository.save(lossRate)

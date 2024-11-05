@@ -21,8 +21,6 @@ class LossRate(
     @JoinColumn(name = "product_id")
     var product: Product,
 
-    @Min(0)
-    @Max(100)
     @Column(nullable = false)
     var loss: Int
 ) {

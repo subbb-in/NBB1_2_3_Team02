@@ -3,6 +3,8 @@ package edu.example.kotlindevelop.domain.product.dto
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.Product
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 
 class LossRateDTO {
@@ -10,6 +12,8 @@ class LossRateDTO {
     data class LossRateRequestDTO(
         val productId: Long,
 
+        @field:Min(value = 0, message = "로스율은 0 이상이어야 합니다.")
+        @field:Max(value = 100, message = "로스율은 100 이하여야 합니다.")
         val loss: Int?,
 
     ){
