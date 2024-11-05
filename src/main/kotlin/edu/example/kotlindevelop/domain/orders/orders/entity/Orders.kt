@@ -1,15 +1,12 @@
 package edu.example.kotlindevelop.domain.orders.orders.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-
 import com.fasterxml.jackson.annotation.JsonFormat
-
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import edu.example.kotlindevelop.domain.product.entity.Product
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
@@ -34,7 +31,6 @@ class Orders(
     var createdAt: LocalDateTime? = null
 
     @OneToMany(mappedBy = "orders", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JsonIgnoreProperties("orders")
     val orderItems: MutableList<OrderItem> = ArrayList()
 
     fun addOrderItem(product: Product?, quantity: Int, price: Int) {
