@@ -5,8 +5,8 @@ import './ChatComponent.css';
 
 const ChatComponent = ({ user }) => {
     const [client, setClient] = useState(null);
-    const [sendMessages, setSendMessages] = useState([]); // 사용자에게 보낸 메시지들
-    const [inputMessage, setInputMessage] = useState(''); // 입력 중인 메시지
+    const [sendMessages, setSendMessages] = useState([]);
+    const [inputMessage, setInputMessage] = useState('');
 
     useEffect(() => {
         // STOMP 클라이언트 설정
@@ -19,7 +19,7 @@ const ChatComponent = ({ user }) => {
             },
             onConnect: () => {
                 console.log('Connected');
-                stompClient.subscribe(`/topic/public`, (message) => {
+                stompClient.subscribe(`/topic/${user}`, (message) => {
                     if (message.body) {
                         setSendMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
                     }
@@ -44,13 +44,13 @@ const ChatComponent = ({ user }) => {
         if (client && inputMessage) {
             e.preventDefault();
 
-            const chatMessageAd = {
+            const chatMessage = {
                 type: 'CHAT',
                 content: inputMessage,
-                sender: user,  // 보내는 사람은 사용자
-                receiver: 'public'  // 받는 사람은 어드민
+                sender: user,
+                receiver: user
             };
-            client.publish({ destination: '/app/chat.sendMessage', body: JSON.stringify(chatMessageAd) });
+            client.publish({ destination: '/app/chat.sendMessage', body: JSON.stringify(chatMessage) });
 
             setInputMessage(''); // 메시지 전송 후 입력창 초기화
         }
