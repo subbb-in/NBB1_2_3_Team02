@@ -36,7 +36,7 @@ class MemberRepositoryImpl(
 
 
     //커서 기반 페이징 처리
-    override fun searchMemberCursorBased(lastCreatedAt: LocalDateTime?, lastId: Long?, limit: Int?): List<Member> {
+    override fun searchMemberCursorBased(lastCreatedAt: LocalDateTime?, lastId: Long?, limit: Int): List<Member> {
         val member = QMember.member
 
         return queryFactory
@@ -50,7 +50,7 @@ class MemberRepositoryImpl(
                 }
             )
             .orderBy(member.createdAt.desc(), member.id.desc())
-            .limit(limit?.toLong() ?:10)
+            .limit(limit.toLong() )
             .fetch()
 
     }
