@@ -3,6 +3,8 @@ package edu.example.kotlindevelop.domain.product.dto
 import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.Product
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -16,6 +18,9 @@ class ProductDTO {
     data class CreateProductRequestDto(
         @field:NotBlank(message = "식재료 이름은 필수 값입니다.")
         val name: String,
+
+        @field:Min(value = 0, message = "로스율은 0 이상이어야 합니다.")
+        @field:Max(value = 100, message = "로스율은 100 이하여야 합니다.")
         val loss: Int?
     ) {
         fun toEntity(member: Member): Product {

@@ -14,6 +14,10 @@ import UserControl from './components/UserControl';
 import OrderSummary from "./components/OrderSummary";
 import LossControl from './components/LossControl';
 import FindIdPw from "./components/FindIdPw";
+import QnAPage from "./components/QnAPage";
+import QnAPageAdmin from "./components/QnAPageAdmin";
+import ChatComponent from './components/ChatComponent';
+import ChatComponentAdmin from "./components/ChatComponentAdmin";
 
 function App() {
     const [userName, setUserName] = useState('');
@@ -26,7 +30,7 @@ function App() {
     const handleLogin = ( name, mImage, username ) => {
         setUserName(name);
         setProfileImage(mImage);
-        setSocial(username)
+        setSocial(username||'')
         setActiveComponent('');
         setActiveMenu(null); // 로그인 시 메뉴 초기화
     };
@@ -75,9 +79,9 @@ function App() {
         setActiveMenu(null);
     };
 
-    const handleProfileImageChange = async (newImageUrl) => {
-        setProfileImage(newImageUrl);
-    };
+    // const handleProfileImageChange = (newImage) => {
+    //     setProfileImage(newImage);
+    // };
 
 
     const renderSubMenu = () => {
@@ -107,7 +111,7 @@ function App() {
                     </ul>
                 );
             } else {
-                if (social === null) {
+                if (social === '') {
                     return (
                         <ul className="sub-menu">
                             <li onClick={() => showComponent('userInfo')}> 회원 정보 수정</li>
@@ -125,7 +129,22 @@ function App() {
                 }
             }
         }
-        return null;
+        if (activeMenu === 'QnAManagement') {
+            if (userName === '운영자') {
+                return (
+                    <ul className="sub-menu">
+                        <li onClick={() => showComponent('qnaPageAdmin')}> Q&A Admin</li>
+                    </ul>
+                );
+            } else {
+                return (
+                    <ul className="sub-menu">
+                        <li onClick={() => showComponent('qnaPage')}> Q&A</li>
+                        <li onClick={() => showComponent('chatting')}> 상담 서비스</li>
+                    </ul>
+                );
+            }
+        }
     }
 
 
@@ -177,27 +196,35 @@ function App() {
                                 정보 관리
                             </button>
                             {activeMenu === 'infoManagement' && renderSubMenu()}
+
+                            <button className="auth-button" onClick={() => handleMenuClick('QnAManagement')}>
+                                QnA
+                            </button>
+                            {activeMenu === 'QnAManagement' && renderSubMenu()}
                         </div>
 
                         <div className="component-container">
-                            {activeComponent === 'userInfo' && <UserInfo userId={userId} onUpdate={setUserName} />}
+                            {activeComponent === 'userInfo' && <UserInfo userId={userId} onUpdate={setUserName}/>}
                             {activeComponent === 'profileImageChange' &&
                                 <ProfileImageChange
-                                    userId={userId}
-                                    onProfileImageChange={handleProfileImageChange}
-                                    onSuccess={(msg) => alert(msg)} // 성공 메시지 처리
-                                    onError={(msg) => alert(msg)} // 에러 메시지 처리
+                                    onProfileImageChange={setProfileImage}
                                 />
                             }
-
-                            {activeComponent === 'userDelete' && <UserDelete userId={userId} onDelete={handleUserDelete} />}
-                            {activeComponent === 'insertOrder' && <InsertOrder memberId={userId} />}
-                            {activeComponent === 'orderListPage' && <OrderListPage />}
-                            {activeComponent === 'orderSummary' && <OrderSummary />}
-                            {activeComponent === 'addProduct' && <AddProduct />}
-                            {activeComponent === 'productList' && <ProductList />}
-                            {activeComponent === 'userControl' && <UserControl />}
-                            {activeComponent === 'lossControl' && <LossControl />}
+                            {activeComponent === 'userDelete' &&
+                                <UserDelete userId={userId} onDelete={handleUserDelete}/>}
+                            {activeComponent === 'insertOrder' && <InsertOrder memberId={userId}/>}
+                            {activeComponent === 'orderListPage' && <OrderListPage/>}
+                            {activeComponent === 'orderSummary' && <OrderSummary/>}
+                            {activeComponent === 'addProduct' && <AddProduct/>}
+                            {activeComponent === 'productList' && <ProductList/>}
+                            {activeComponent === 'userControl' && <UserControl/>}
+                            {activeComponent === 'lossControl' && <LossControl/>}
+                            {activeComponent === 'qnaPage' && <QnAPage/>}
+                            {activeComponent === 'qnaPageAdmin' && <QnAPageAdmin/>}
+                            {activeComponent === 'chatting' && <ChatComponent user={userName}/>}
+                        </div>
+                        <div>
+                            {userName === '운영자' && <ChatComponentAdmin user={userName}/>}
                         </div>
                     </>
                 ) : (
