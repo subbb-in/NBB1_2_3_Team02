@@ -4,14 +4,11 @@ import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.service.MemberService
 import edu.example.kotlindevelop.domain.product.dto.LossRateDTO
 import edu.example.kotlindevelop.domain.product.dto.ProductDTO
-import edu.example.kotlindevelop.domain.product.entity.LossRate
 import edu.example.kotlindevelop.domain.product.entity.ProductProjection
-import edu.example.kotlindevelop.domain.product.entity.QLossRate.lossRate
 import edu.example.kotlindevelop.domain.product.exception.ProductException
 import edu.example.kotlindevelop.domain.product.repository.LossRateRepository
 import edu.example.kotlindevelop.domain.product.repository.ProductRepository
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -44,7 +41,6 @@ class ProductService(
     @Transactional
     fun addLoss(dto: LossRateDTO.LossRateRequestDTO, memberId : Long): LossRateDTO.LossRateRequestDTO{
         val member: Member = memberService.getMemberById(memberId)
-        println("사용자가 입력한 로스값은 ${dto.loss} 이고, 사용자의 상품 아이디는 ${dto.productId}입니다 1")
 
         val product = productRepository.findByIdOrNull(dto.productId)
             ?: throw ProductException.PRODUCT_NOT_FOUND.getProductException()
@@ -64,9 +60,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findPersonalProducts(memberId, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -78,9 +74,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findPersonalProductsByKeyword(keyword, memberId, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -92,9 +88,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findAllProducts(pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -106,9 +102,9 @@ class ProductService(
         val productProjections: Page<ProductProjection> = productRepository.findProductsByKeyword(keyword, pageable)
         return productProjections.map { projection ->
             ProductDTO.ProductResponseDto(
-                productId = projection.getProductId(),
-                productName = projection.getProductName(),
-                latestLossRate = projection.getLatestLossRate()
+                id = projection.getProductId(),
+                name = projection.getProductName(),
+                loss = projection.getLatestLossRate()
             )
         }
     }
@@ -132,8 +128,8 @@ class ProductService(
 
             ProductDTO.AverageResponseDTO(
                 dates = listOf(date),
-                personalAverages = listOf(personalAverage),
-                allUserAverages = listOf(allUserAverage)
+                personalAverage = listOf(personalAverage),
+                allUsersAverage = listOf(allUserAverage)
             )
         }
 

@@ -42,12 +42,12 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
     @Query("""
         SELECT p.id AS productId, p.name AS productName, l.loss AS latestLossRate 
         FROM Product p LEFT JOIN p.lossRates l 
-        WHERE p.maker.id = :memberId AND l.recordedAt = (
-            SELECT MAX(l2.recordedAt) 
+        WHERE p.maker.id = :memberId AND l.id = (
+            SELECT MAX(l2.id) 
             FROM LossRate l2 
             WHERE l2.product.id = p.id
         ) 
-        ORDER BY l.recordedAt DESC
+        ORDER BY p.name
     """)
     fun findPersonalProducts(memberId: Long, pageable: Pageable): Page<ProductProjection>
 
@@ -55,12 +55,12 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
     @Query("""
         SELECT p.id AS productId, p.name AS productName, l.loss AS latestLossRate 
         FROM Product p LEFT JOIN p.lossRates l 
-        WHERE p.name LIKE %:keyword% AND p.maker.id = :memberId AND l.recordedAt = (
-            SELECT MAX(l2.recordedAt) 
+        WHERE p.name LIKE %:keyword% AND p.maker.id = :memberId AND l.id = (
+            SELECT MAX(l2.id) 
             FROM LossRate l2 
             WHERE l2.product.id = p.id
         ) 
-        ORDER BY l.recordedAt DESC
+        ORDER BY p.name
     """)
     fun findPersonalProductsByKeyword(keyword: String, memberId: Long, pageable: Pageable): Page<ProductProjection>
 
@@ -68,12 +68,12 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
     @Query("""
         SELECT p.id AS productId, p.name AS productName, l.loss AS latestLossRate 
         FROM Product p LEFT JOIN p.lossRates l 
-        WHERE l.recordedAt = (
-            SELECT MAX(l2.recordedAt) 
+        WHERE l.id = (
+            SELECT MAX(l2.id) 
             FROM LossRate l2 
             WHERE l2.product.id = p.id
         ) 
-        ORDER BY l.recordedAt DESC
+        ORDER BY p.name
     """)
     fun findAllProducts(pageable: Pageable): Page<ProductProjection>
 
@@ -81,12 +81,12 @@ interface ProductRepository : JpaRepository<Product?, Long?> {
     @Query("""
         SELECT p.id AS productId, p.name AS productName, l.loss AS latestLossRate 
         FROM Product p LEFT JOIN p.lossRates l 
-        WHERE p.name LIKE %:keyword% AND l.recordedAt = (
-            SELECT MAX(l2.recordedAt) 
+        WHERE p.name LIKE %:keyword% AND l.id = (
+            SELECT MAX(l2.id) 
             FROM LossRate l2 
             WHERE l2.product.id = p.id
         ) 
-        ORDER BY l.recordedAt DESC
+        ORDER BY p.name
     """)
     fun findProductsByKeyword(keyword: String, pageable: Pageable): Page<ProductProjection>
 }

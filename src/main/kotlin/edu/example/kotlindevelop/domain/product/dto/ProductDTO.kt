@@ -33,9 +33,9 @@ class ProductDTO {
     }
 
     data class ProductResponseDto (
-        val productId: Long,
-        val productName: String,
-        val latestLossRate: Int
+        val id: Long,
+        val name: String,
+        val loss: Int
     )
 
     data class PageRequestDto(
@@ -58,7 +58,7 @@ class ProductDTO {
 
     data class AverageResponseDTO(
         val dates: List<LocalDate>,
-        val personalAverages: List<BigDecimal>,
-        val allUserAverages: List<BigDecimal>
+        val personalAverage: List<BigDecimal>,
+        val allUsersAverage: List<BigDecimal>
     )
 }
