@@ -1,12 +1,13 @@
 package edu.example.kotlindevelop.domain.member.repository
 
-import edu.example.kotlindevelop.domain.member.entity.Member
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import com.querydsl.jpa.impl.JPAQueryFactory
+import edu.example.kotlindevelop.domain.member.entity.Member
 import edu.example.kotlindevelop.domain.member.entity.QMember
+
 
 
 @Repository
@@ -27,8 +28,8 @@ class MemberRepositoryImpl(
         val total = queryFactory
             .selectFrom(member)
             .fetch()
-            .size.toLong() // total을 Long으로 변환
+            .size.toLong()
 
-        return PageImpl(content, pageable, total)
+        return PageImpl(content,pageable,total)
     }
 }

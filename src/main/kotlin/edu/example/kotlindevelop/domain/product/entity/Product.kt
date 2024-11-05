@@ -1,7 +1,11 @@
 package edu.example.kotlindevelop.domain.product.entity
 
 import edu.example.kotlindevelop.domain.member.entity.Member
+import edu.example.kotlindevelop.domain.orders.orderItem.entity.OrderItem
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "product")
@@ -27,6 +31,9 @@ class Product(
         lossRate.product = this
     }
 
-//    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+    var orderItems: MutableList<OrderItem> = mutableListOf()
 //    val orderItems: List<OrderItem> = mutableListOf()
 }
+
+
