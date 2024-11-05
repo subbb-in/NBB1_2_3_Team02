@@ -105,16 +105,16 @@ class MemberService(
     private val uploadDir = "upload/" // 현재 디렉토리의 upload 폴더
 
     @Transactional
-    fun changeImage(dto: MemberDTO.ChangeImage, imageFile: MultipartFile): MemberDTO.ChangeImage { // MultipartFile 추가
+    fun changeImage(dto: MemberDTO.ChangeImage, imageFile: MultipartFile): MemberDTO.ChangeImageResponse { // MultipartFile 추가
         val memberOptional: Optional<Member> = memberRepository.findById(dto.id)
         if (memberOptional.isPresent) {
             val member: Member = memberOptional.get()
             val fileName = saveImage(imageFile)
 
-            member.mImage = "api/v1/member/upload/$fileName" // URL 저장
-            memberRepository.save(member)
+            member.mImage = "api/v1/members/upload/${fileName}"
+            val result = memberRepository.save(member)
 
-            return MemberDTO.ChangeImage(dto.id, imageFile)
+            return MemberDTO.ChangeImageResponse(dto.id, result.mImage!!)
         } else {
             throw MemberException.MEMBER_IMAGE_NOT_MODIFIED.memberTaskException
         }
@@ -124,7 +124,7 @@ class MemberService(
         try {
             val uploadPath = Paths.get(uploadDir)
             if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath) // 디렉토리가 존재하지 않으면 생성
+                Files.createDirectories(uploadPath)
             }
 
             // 파일 이름 생성 및 저장
