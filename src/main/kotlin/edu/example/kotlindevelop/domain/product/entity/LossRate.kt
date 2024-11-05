@@ -21,8 +21,8 @@ class LossRate(
     @JoinColumn(name = "product_id")
     var product: Product,
 
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "로스율은 0 이상이어야 합니다.")
+    @Max(value = 100, message = "로스율은 100 이하여야 합니다.")
     @Column(nullable = false)
     var loss: Int
 ) {
