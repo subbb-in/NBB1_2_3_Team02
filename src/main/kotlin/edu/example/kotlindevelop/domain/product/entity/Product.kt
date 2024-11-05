@@ -9,22 +9,31 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "product")
-@EntityListeners(AuditingEntityListener::class)
-data class Product(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-
+class Product(
     var name: String,
-    var loss: Long? = null,
-
-    @CreatedDate
-    var createdAt: LocalDateTime? = null,
-
     @ManyToOne
     @JoinColumn(name = "member_id")
-    var maker: Member? = null,
+    var maker: Member? = null
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
+    var lossRates: MutableList<LossRate> = mutableListOf()
+
+    // 보조 생성자 추가
+    constructor(id: Long?, maker: Member?) : this(name = "", maker = maker) {
+    }
+
+    fun addLossRate(lossRate: LossRate) {
+        lossRates.add(lossRate)
+        lossRate.product = this
+    }
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     var orderItems: MutableList<OrderItem> = mutableListOf()
-)
+//    val orderItems: List<OrderItem> = mutableListOf()
+}
+
+
