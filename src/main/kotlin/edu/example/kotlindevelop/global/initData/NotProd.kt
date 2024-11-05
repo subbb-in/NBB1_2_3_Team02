@@ -59,7 +59,7 @@ class NotProd(
 
         // 10만 회원 생성 - bulk query
         val members = mutableListOf<Member>()
-        for (i in 1..1000) {
+        for (i in 1..2) {
             members.add(Member(null ,"abc$i","1234","testname$i","test$i@naver.com" ))
         }
         memberService.bulkInsertMembers(members)
