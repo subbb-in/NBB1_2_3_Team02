@@ -117,6 +117,10 @@
   flex-grow: 1; /* 가변 높이 */
   padding: 20px; /* 내부 여백 */
 }
+.chat-container {
+  width: 300px; /* 고정 폭 또는 비율로 설정 */
+  margin-left: 20px; /* 간격 조정 */
+}
 
 /* 로그인 및 회원가입 페이지 스타일 */
 .auth-container {
