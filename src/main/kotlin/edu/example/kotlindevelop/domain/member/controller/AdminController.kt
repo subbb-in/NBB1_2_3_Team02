@@ -27,7 +27,7 @@ class AdminController (
         val pageable: Pageable = PageRequest.of(page, pageSize)
         val responseDto: Page<MemberDTO.Response> = memberService.readAll(pageable)
 
-        return ResponseEntity.ok(responseDto)
+        return ResponseEntity.ok<Page<MemberDTO.Response>>(responseDto)
     }
 
     // 아래는 ProductService merge 후 완성
