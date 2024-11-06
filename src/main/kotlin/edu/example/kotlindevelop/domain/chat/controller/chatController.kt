@@ -29,7 +29,6 @@ class ChatController {
         return chatMessage
     }
 
-    // 메시지 전송 후, 메시지를 해당 사용자에게도 전달
     @Autowired
     private lateinit var messagingTemplate: SimpMessagingTemplate
 }
