@@ -67,7 +67,7 @@
     margin-left: 2px;
     margin-right: 0;
 }
-form {
+.adm-form {
     display: flex;
     justify-content: space-between;
     align-items: center;

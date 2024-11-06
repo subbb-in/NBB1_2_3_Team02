@@ -118,7 +118,7 @@ const ChatComponentAdmin = ({ user }) => {
             )}
 
             {/* 메시지 입력 폼 */}
-            <form onSubmit={handleSendMessage}>
+            <form className="adm-form" onSubmit={handleSendMessage}>
                 <input
                     className="adm-chat-input"
                     type="text"
