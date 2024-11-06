@@ -94,7 +94,8 @@ class OrderService(
                     .mapValues { (_: String, productItems: List<OrderItem>) -> // 타입 명시
                         productItems.sumOf { it.price * it.quantity } / productItems.sumOf { it.quantity } // 평균 단가 계산
                     }
-            }}
+            }
+    }
 
 
     fun getList(month: Int?, pageRequestDTO: OrderDTO.PageRequestDTO, memberId: Long?): Page<OrderDTO.OrderListDTO> {
@@ -115,7 +116,7 @@ class OrderService(
         return ordersPage.map { OrderDTO.OrderListDTO(it) }
     }
 
-    fun getPrevMonthOrders(memberId: Long): List<Orders> {
+    fun getPrevMonthOrders(memberId: Long): List<OrderDTO.OrderListDTO> {
         // 이전 월의 시작과 끝 날짜 계산
         val now = LocalDate.now()
         val startOfLastMonth = now.minusMonths(1).withDayOfMonth(1)
@@ -126,6 +127,18 @@ class OrderService(
         val endOfLastMonthDateTime: LocalDateTime = endOfLastMonth.atTime(23, 59, 59)
 
 // 해당 기간의 주문 내역 조회
-        return orderRepository.findByMemberIdAndCreatedAtBetween(memberId, startOfLastMonthDateTime, endOfLastMonthDateTime)
+        val orders = orderRepository.findByMemberIdAndCreatedAtBetween(
+            memberId,
+            startOfLastMonthDateTime,
+            endOfLastMonthDateTime
+        )
+
+        val response = mutableListOf<OrderDTO.OrderListDTO>()
+        for (order in orders) {
+            response.add(OrderDTO.OrderListDTO(order))
+        }
+
+        return response
+
     }
 }
