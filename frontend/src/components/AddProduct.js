@@ -14,7 +14,7 @@ function AddProduct() {
         };
 
         try {
-            await axiosInstance.post('/api/v1/products/', dataToSend, {});
+            await axiosInstance.post('/api/v1/products/register', dataToSend, {});
 
             alert('식재료가 등록되었습니다!');
             setProductName(''); // 등록창 상태 초기화

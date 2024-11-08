@@ -27,7 +27,7 @@ class LossRateRepositoryTests {
     fun 로스율등록테스트() {
         // Given
         val member: Member = Member(
-            loginId = "membertest",
+            loginId = "membertest2",
             pw = "qwer",
             name = "테스트",
             mImage = "아바타",
@@ -36,7 +36,7 @@ class LossRateRepositoryTests {
         val savedMember = memberRepository!!.save(member)
 
         val product:Product = Product(
-            name = "양파",
+            name = "당당",
             maker = savedMember
         )
         val savedProduct = productRepository!!.save(product)
@@ -60,7 +60,7 @@ class LossRateRepositoryTests {
 
         assertNotNull(savedProduct)
         assertEquals(savedMember.name, savedProduct.maker?.name)
-        assertEquals("양파", savedProduct.name)
+        assertEquals("당당", savedProduct.name)
         assertEquals(10, savedLossRate.loss)
     }
 }

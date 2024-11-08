@@ -33,7 +33,7 @@ class OrderController(private val orderService: OrderService) {
     @GetMapping("/repeat")
     fun putOrderFromPrevMonth(
         @AuthenticationPrincipal user: SecurityUser
-    ): ResponseEntity<List<Orders>> {
+    ): ResponseEntity<List<OrderDTO.OrderListDTO>> {
         val memberId = user.id
         val previousOrders = orderService.getPrevMonthOrders(memberId)
         return ResponseEntity.ok(previousOrders)
